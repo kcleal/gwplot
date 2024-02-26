@@ -1,8 +1,10 @@
 import os
+import sys
 import glob
 import shutil
 import sysconfig
 import setuptools
+import numpy
 from subprocess import run
 from distutils import ccompiler
 from setuptools import Extension
@@ -53,54 +55,60 @@ def get_extra_args(flags):
             extra_compile_args.append(f)
     return extra_compile_args
 
-##################
-# WFA2_lib build #
-##################
+###############
+# gwplot build #
+###############
 extras = ["-Wno-unused-function", "-Wno-unused-result",
           "-Wno-ignored-qualifiers", "-Wno-deprecated-declarations"]
-extras_pywfa = get_extra_args(extras)
+extras_args = get_extra_args(extras) + ["-std=c++17"]
+
+print("Extra compile args:",  extras_args)
 
 root = os.path.abspath(os.path.dirname(__file__))
-gw = os.path.join(root, "gw")
-libraries = ["gw"]
-library_dirs = [f"{gw}/libgw"]
-include_dirs = [".", root, gw, f"gw/libgw/include"]
-
+libraries = ["skia", "gw"]
+library_dirs = [numpy.get_include(), glob.glob("./_gw/lib/skia/out/Release*")[0], "./_gw/libgw"]
+include_dirs = [numpy.get_include(), ".", root, "./_gw/libgw/include", "./_gw/lib/skia", "./_gw/lib/libBigWig"]
+extra_objects = glob.glob("./gwplot/libgw.*")
 print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)
+print("Extra objects", extra_objects)
 
-
-ret = run(f"cd gw; make clean; make prep; make shared",
+ret = run(f"cd _gw; make shared; cp -rf libgw ..",
+# ret = run(f"cd _gw; make clean; make prep; make shared; cp -rf libgw ..",
           shell=True)
-if ret.returncode != 0:
-    print("Unable to build gw")
-    print(ret)
-    exit(ret.returncode)
 
 ##################
 # bindings build #
 ##################
-m_ext_module = cythonize(Extension("libgw.interface",
-                                ["libgw/interface.pyx"],
-                                libraries=libraries,
-                                library_dirs=library_dirs,
-                                include_dirs=include_dirs,
-                                extra_compile_args=extras_pywfa,
-                                language="c",
-                                extra_objects=[f"{gw}/lib/libwfa.a"]
-                                ),
-                        **cy_options)
+m_ext_module = cythonize(Extension("gwplot.interface",
+                            ["gwplot/interface.pyx"],
+                                    libraries=libraries,
+                                    library_dirs=library_dirs,
+                                    include_dirs=include_dirs,
+                                    extra_compile_args=extras_args,
+                                    # runtime_library_dirs=["./gwplot"],
+                                    language="c++",
+                                    extra_objects=extra_objects,
+                                    ), **cy_options)
 
-shared = glob.glob(f"{root}/build/lib*/libgw/*.so") + glob.glob(f"{root}/build/lib*/libgw/*.dll")
-[shutil.copy(i, f"{root}/libgw") for i in shared]
+
+shared = glob.glob(f"{root}/build/lib*/gwplot/*.so") + glob.glob(f"{root}/build/lib*/gwplot/*.dll")
+[shutil.copy(i, f"{root}/gwplot") for i in shared]
+print("Shared: ", shared)
 
 ###################
 # Basic build_ext #
 ###################
-# Thanks to https://stackoverflow.com/questions/73800736/pyproject-toml-and-cython-extension-module
 class build_py(_build_py):
     def run(self):
+        if len(glob.glob("./gwplot/libgw.*")) == 0 or "REBUILD_GW" in os.environ:
+            if ret.returncode != 0:
+                print("Unable to build gw")
+                print(ret)
+                exit(ret.returncode)
+        else:
+            print("[INFO] GW already built, to re-build add REBUILD_GW=1 as environment variable", file=sys.stderr)
         self.run_command("build_ext")
         return super().run()
 

@@ -1,1 +1,15 @@
 /var/
+/gwplotinterface.cpp
+/gwplot/interface.cpython-310-darwin.so
+/gwplot/libgw.so
+/_gw/
+/venv/
+/libgw/
+/gwplot.egg-info/
+/out.png
+.DS_*
+/.idea/
+/__pycache__/
+/gwplot/__pycache__
+/gwplot/tests/__pycache__/
+/build/

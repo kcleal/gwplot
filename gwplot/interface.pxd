@@ -2,7 +2,11 @@
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+import numpy as np
+cimport numpy as np
+from enum import Enum
 from cython.operator cimport dereference as deref, preincrement as inc
+
 
 cdef extern from "utils.h" namespace "Utils" nogil:
     cdef struct Dims:
@@ -16,6 +20,7 @@ cdef extern from "utils.h" namespace "Utils" nogil:
 
 
 cdef extern from "themes.h" namespace "Themes" nogil:
+
     cpdef enum GwPaint:
         bgPaint, fcNormal, fcDel, fcDup, fcInvF, fcInvR, fcTra, fcIns, fcSoftClip,
         fcA, fcT, fcC, fcG, fcN, fcCoverage, fcTrack, fcNormal0, fcDel0, fcDup0, fcInvF0, fcInvR0, fcTra0,
@@ -28,7 +33,7 @@ cdef extern from "themes.h" namespace "Themes" nogil:
         string name;
         float lwMateUnmapped, lwSplit, lwCoverage;
         void setAlphas();
-        void setPaintARGB(GwPaint paint_name, int alpha, int red, int green, int blue);
+        void setPaintARGB(int paint_name, int alpha, int red, int green, int blue);
 
     cdef cppclass IniOptions:
         IniOptions() nogil
@@ -50,16 +55,42 @@ cdef extern from "themes.h" namespace "Themes" nogil:
         void setTheme(string &theme_str)
 
 
+cdef extern from "include/core/SkCanvas.h" nogil:
+    cdef cppclass SkCanvas:
+        pass
+
+
+# cdef extern from "include/core/SkSurface.h" nogil:
+#     cdef cppclass sk_sp:
+#         SkCanvas *getCanvas();
+#     cdef cppclass SkSurface:
+#         pass
+
+
 cdef extern from "plot_manager.h" namespace "Manager" nogil:
     cdef cppclass GwPlot:
         GwPlot(string reference, vector[string] &bampaths, IniOptions &opts, vector[Region] &regions, vector[string] &track_paths);
 
-        void initBack(int width, int height)
+        IniOptions opts
+        vector[char] pixelMemory
+        vector[Region] regions
+        int fb_width, fb_height
 
-cdef class GWplot:
+
+        void addBam(string bam_path)
+
+        int makeRasterSurface()
+
+        void runDrawNoBuffer()
+
+        void rasterToPng(const char * path);
+
+
+cdef class Gw:
 
     cdef GwPlot *thisptr
-    cdef IniOptions opts
-    cdef vector[string] __bampaths, __track_paths
-    cdef vector[Region] __regions
-    cdef int message
+
+    cdef Py_ssize_t shape[1]
+    cdef Py_ssize_t strides[1]
+
+    cdef bint raster_surface_created

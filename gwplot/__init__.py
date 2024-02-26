@@ -1,3 +1,6 @@
-from libgw.interface import (
-    GWplot
+
+
+from gwplot.interface import (
+    Gw,
+    GwPaint
 )

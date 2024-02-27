@@ -18,10 +18,10 @@ mv htslib-1.17 htslib && rm htslib.tar.bz2
 cd htslib
 
 CPPFLAGS+="-I./include" LDFLAGS+="-L." ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
-make
-ls
-cp -rf ./htslib ../include
-cp -rf ./cram ../include
-cp ./libhts.3.dylib ../gwplot/
+make && make install
+#ls
+#cp -rf ./htslib ../include
+#cp -rf ./cram ../include
+#cp ./libhts.3.dylib ../gwplot/
 
 echo "OSX-DEPS DONE"

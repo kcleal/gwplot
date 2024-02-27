@@ -24,10 +24,10 @@ class TestConstruct(unittest.TestCase):
         plot.set_image_number(1, 1)
 
     def test_add_bam(self):
-        plot.add_bam(root + "/small.bam")
+        plot.add_bams_from_iter((root + "/small.bam", ))
 
     def test_add_region(self):
-        plot.add_region("chr1", 1, 20000)
+        plot.add_regions_from_iter((("chr1", 1, 20000),))
 
     def test_run_save_png(self):
         plot.draw()

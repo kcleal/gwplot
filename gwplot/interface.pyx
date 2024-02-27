@@ -192,22 +192,20 @@ cdef class Gw:
     def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):
         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
 
-    def add_bam(self, bam_path):
+    def add_bam(self, path):
         cdef string b
-        if isinstance(bam_path, str):
-            assert os.path.exists(bam_path)
-            b = bam_path.encode("utf-8")
-            self.thisptr.addBam(b)
+        assert os.path.exists(path)
+        b = path.encode("utf-8")
+        self.thisptr.addBam(b)
+
+    def add_bams_from_iter(self, paths):
+        try:
+            iterator = iter(paths)
+        except TypeError:
+            raise TypeError("bam_path is not iterable")
         else:
-            try:
-                iterator = iter(bam_path)
-            except TypeError:
-                raise TypeError("bam_path is not iterable")
-            else:
-                for p in bam_path:
-                    assert os.path.exists(p)
-                    b = p.encode("utf-8")
-                    self.thisptr.addBam(b)
+            for p in paths:
+                self.add_bam(p)
 
     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):
         cdef string c = chrom.encode("utf-8")
@@ -219,8 +217,14 @@ cdef class Gw:
         reg.markerPosEnd = marker_end
         self.thisptr.regions.push_back(reg)
 
-    # def update_region(self, str chrom, int start, int end, int marker_start=-1, int marker_end=-1, int index=0):
-
+    def add_regions_from_iter(self, regions):
+        try:
+            iterator = iter(regions)
+        except TypeError:
+            raise TypeError("bam_path is not iterable")
+        else:
+            for item in regions:
+                self.add_region(*item)
     def make_raster_surface(self, width=None, height=None):
         if width is not None:
             assert isinstance(width, int)

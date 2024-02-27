@@ -19,11 +19,11 @@ classifiers=[
 ]
 
 [tool.setuptools]
-py-modules=["_custom_build"]
+#py-modules=["_custom_build"]
 packages=["gwplot"]
 
-[tool.setuptools.cmdclass]
-build_py="_custom_build.build_py"
+#[tool.setuptools.cmdclass]
+#build_py="_custom_build.build_py"
 
 [project.urls]
 Repository="https://github.com/kcleal/gwplot"

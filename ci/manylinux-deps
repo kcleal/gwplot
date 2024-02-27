@@ -38,7 +38,7 @@ cd gw
 make prep
 make shared
 cp -rf libgw/include ../
-cp libgw.* ../gwplot
+cp libgw.* /usr/local/lib
 cd ../
 
 echo "MANYLINUX-DEPS DONE"

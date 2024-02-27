@@ -71,11 +71,11 @@ print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)
 
-link_args = []
-if sys.platform == "darwin":
-    link_args = ["-Wl,-rpath,@loader_path", "-lhts", "-Wl,-rpath,@loader_path", "-lgw"]
-else:
-    link_args = ["-Wl,-rpath,$ORIGIN", "-lhts", "-Wl,-rpath,$ORIGIN", "-lgw"]
+# link_args = []
+# if sys.platform == "darwin":
+#     link_args = ["-Wl,-rpath,@loader_path", "-lhts", "-Wl,-rpath,@loader_path", "-lgw"]
+# else:
+#     link_args = ["-Wl,-rpath,$ORIGIN", "-lhts", "-Wl,-rpath,$ORIGIN", "-lgw"]
 ##################
 # bindings build #
 ##################

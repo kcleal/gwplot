@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4  # checkout gwplot
         with:
           fetch-depth: 2
-      - run: cde _gw; git checkout gw_dev  # checkout gw_dev
+      - run: ls; pwd; cd _gw; git checkout gw_dev; cd ../  # checkout gw_dev
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.0

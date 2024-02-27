@@ -5,7 +5,7 @@ echo "STARTING OSX-DEPS"
 wget https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip
 unzip glfw-3.4.bin.MACOS.zip && cd glfw-3.4.bin.MACOS/lib-universal
 cp /usr/local/lib && cd ../
-cp -rf include/GLFW /usr/local/include && cd ../
+ls; ls include; cp -rf include/GLFW* /usr/local/include && cd ../
 
 mkdir -p libgw
 mkdir -p libgw/include
@@ -22,8 +22,9 @@ cd htslib
 
 CPPFLAGS+="-I./include" LDFLAGS+="-L." ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
 make
-cp -rf htslib ../include
-cp -rf cram ../include
+ls
+cp -rf htslib /usr/local/include
+cp -rf cram /usr/local/include
 cp -rf libhts*.dylib ../gwplot/
 
 echo "OSX-DEPS DONE"

@@ -5,8 +5,8 @@ echo "STARTING MANYLINUX-DEPS"
 
 yum -y install gcc gcc-c++ wget autoconf openssl-devel libffi libffi-devel zlib-devel \
     bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel libssh2 curl-devel curl \
-    cmake libs3 # xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps
-dnf -y install libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel
+    cmake libs3 xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel
+#dnf -y install libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel
 
 wget https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip && unzip glfw-3.4.zip && cd glfw-3.4
 cmake -S . -B build && cd build && make
@@ -29,6 +29,7 @@ cd htslib
 #autoconf
 ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
 make
+ls
 cp -rf htslib ../include
 cp -rf cram ../include
 cp -rf libhts.so ../gwplot/

@@ -74,7 +74,7 @@ if ret.returncode != 0:
 
 
 root = os.path.abspath(os.path.dirname(__file__))
-libraries = ["hts", "skia", "gw"]
+libraries = ["skia"]
 
 library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0], "./gwplot"]
 include_dirs = [numpy.get_include(), "./include", "./gw/lib/skia", "./gw/lib/libBigWig", "./gw/src"]
@@ -82,6 +82,11 @@ print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)
 
+link_args = []
+if sys.platform == "darwin":
+    link_args = ["-Wl,-rpath,@loader_path", "-lhts", "-Wl,-rpath,@loader_path", "-lgw"]
+else:
+    link_args = ["-Wl,-rpath,$ORIGIN", "-lhts", "-Wl,-rpath,$ORIGIN", "-lgw"]
 ##################
 # bindings build #
 ##################
@@ -92,8 +97,7 @@ m_ext_module = cythonize(Extension("gwplot.interface",
                                 include_dirs=include_dirs,
                                 extra_compile_args=extras_args,
                                 language="c++",
-                                # extra_link_args=["-Wl,-rpath,`$ORIGIN`"],
-                                # extra_link_args=["-Wl,-rpath,@loader_path"],
+                                extra_link_args=link_args,
                                     ), **cy_options)
 
 
@@ -107,6 +111,9 @@ class build_py(_build_py):
         if sys.platform == "darwin":  # Fix rpath
             run(f"otool -L {dest}/interface.cpython-310-darwin.so", shell=True)
             run(f"install_name_tool -change libgw.so @loader_path/libgw.so {dest}/interface.cpython-310-darwin.so", shell=True)
+        else:
+            run("readelf -d {dest}/interface.cpython-310-linux-gnu.so", shell=True)
+            run("patchelf --replace-needed libgw.so $ORIGIN/libgw.so {dest}/interface.cpython-310-linux-gnu.so", shell=True)
         return super().run()
 
     def initialize_options(self):

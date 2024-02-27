@@ -14,6 +14,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4  # checkout gwplot
+        with:
+          fetch-depth: 0
+          submodules: recursive
       - run: ls; pwd; cd gw; ls; git branch; git remote show origin; git fetch origin; git switch gw_dev; cd ../  # checkout gw_dev
 
       - name: Build wheels

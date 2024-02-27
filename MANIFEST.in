@@ -1,4 +1,3 @@
-recursive-include gwplot
 include _custom_build.py
 include gwplot/*
 include gwplot/tests/*

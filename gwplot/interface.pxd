@@ -76,6 +76,9 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         vector[Region] regions
         int fb_width, fb_height
 
+        bint processed
+
+        void clearCollections()
 
         void addBam(string bam_path)
 

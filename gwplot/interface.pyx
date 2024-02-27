@@ -2,26 +2,9 @@
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
-from libc.stdint cimport uint8_t
 import numpy as np
 cimport numpy as np
 
-
-"""
-Dims dimensions, number
-
-         parse_label, labels
-
-        int indel_length, ylim, split_view_size, pad, link_op, max_coverage, max_tlen
-        bint log2_cov, tlen_yscale, expand_tracks, vcf_as_tracks, sv_arcs
-        float scroll_speed, tab_track_height
-        int scroll_right, scroll_left, scroll_down, scroll_up
-        int next_region_view, previous_region_view
-        int zoom_out, zoom_in
-        int start_index
-        int soft_clip_threshold, small_indel_threshold, snp_threshold, variant_distance, low_memory
-        int font_size
-        """
 
 cdef class Gw:
     """Interface to GW"""
@@ -230,30 +213,29 @@ cdef class Gw:
     def run_draw_no_buffer(self):
         if not self.raster_surface_created:
             assert self.make_raster_surface()
+        self.thisptr.processed = False
         self.thisptr.runDrawNoBuffer()
 
     # def __array__(self):
+    #     print("In array")
+    #     # https://stackoverflow.com/questions/45133276/passing-c-vector-to-numpy-through-cython-without-copying-and-taking-care-of-me
+    #     # Memory is managed on the c++ side, so I assume this wrapper does not need to call free, or reference count
+    #     cdef np.npy_intp shape[1]
+    #     shape[0] = <np.npy_intp> self.thisptr.pixelMemory.size()
+    #     ndarray = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT8, self.thisptr.pixelMemory.data())
+    #     return ndarray
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-
         """
         Buffer protocol is called when numpy tries to make an array out of this
         """
-        # https://stackoverflow.com/questions/45133276/passing-c-vector-to-numpy-through-cython-without-copying-and-taking-care-of-me
-        # Memory is managed on the c++ side, so I assume this wrapper does not need to call free, or reference count
-        # cdef np.npy_intp shape[1]
-        # shape[0] = <np.npy_intp> self.thisptr.pixelMemory.size()
-        # ndarray = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT8, self.thisptr.pixelMemory.data())
-        # return ndarray
-
         cdef Py_ssize_t itemsize = sizeof(self.thisptr.pixelMemory[0])
         self.shape[0] = self.thisptr.pixelMemory.size()
         self.strides[0] = sizeof(char)
-
-        buffer.buf = <char *> &(self.thisptr.pixelMemory[0])
-        buffer.format = 'b'
+        buffer.buf = &(self.thisptr.pixelMemory[0])  # char *
+        buffer.format = 'B'
         buffer.internal = NULL
         buffer.itemsize = itemsize
-        buffer.len = self.shape[0] * itemsize  # product(shape) * itemsize
+        buffer.len = self.shape[0] * itemsize
         buffer.ndim = 1
         buffer.obj = self
         buffer.readonly = 0
@@ -265,3 +247,8 @@ cdef class Gw:
         """ Frees the array. This is called by Python when all the
         references to the object are gone. Freeing of the array is left to the c++ layer"""
         pass
+
+    def RGBA_array(self):
+        if not self.raster_surface_created:
+            return None
+        return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)

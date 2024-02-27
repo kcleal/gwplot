@@ -26,3 +26,6 @@ build_py="_custom_build.build_py"
 
 [project.urls]
 Repository="https://github.com/kcleal/gwplot"
+
+[project.optional-dependencies]
+test = ["numpy", "pillow"]

@@ -1,7 +1,7 @@
 /var/
 /gwplotinterface.cpp
 /gwplot/interface.cpython-310-darwin.so
-/gwplot/libgw.so
+/libgw/libgw.so
 /_gw/
 /venv/
 /libgw/
@@ -13,3 +13,11 @@
 /gwplot/__pycache__
 /gwplot/tests/__pycache__/
 /build/
+/out2.png
+/libdeflate/
+/htslib/
+/gwplot/libdeflate.a
+/gwplot/libhts.3.dylib
+/libgw/libgw.so
+/libgw/libhts.3.dylib
+/gwplot/libgw.so

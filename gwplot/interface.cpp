@@ -22,7 +22,7 @@
             "-std=c++17"
         ],
         "extra_objects": [
-            "./gwplot/libgw.so"
+            "./libgw/libgw.so"
         ],
         "include_dirs": [
             "/opt/homebrew/lib/python3.10/site-packages/numpy/core/include",
@@ -30,7 +30,8 @@
             "/Users/sbi8kc2/PycharmProjects/gwplot",
             "./_gw/libgw/include",
             "./_gw/lib/skia",
-            "./_gw/lib/libBigWig"
+            "./_gw/lib/libBigWig",
+            "./_gw/src"
         ],
         "language": "c++",
         "libraries": [
@@ -1256,7 +1257,6 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "themes.h"
 #include "include/core/SkCanvas.h"
 #include "plot_manager.h"
-#include <stdint.h>
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1794,7 +1794,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 
-/* "gwplot/interface.pxd":89
+/* "gwplot/interface.pxd":92
  * 
  * 
  * cdef class Gw:             # <<<<<<<<<<<<<<
@@ -2812,8 +2812,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy_7ndarray_4data_data(PyArrayObject *__p
 
 /* Module declarations from "numpy" */
 
-/* Module declarations from "libc.stdint" */
-
 /* Module declarations from "gwplot.interface" */
 static PyObject *__Pyx_OrderedDict = 0;
 static PyObject *__Pyx_EnumBase = 0;
@@ -2853,7 +2851,7 @@ static const char __pyx_k__3[] = ".";
 static const char __pyx_k_gc[] = "gc";
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k__22[] = "*";
-static const char __pyx_k__81[] = "?";
+static const char __pyx_k__82[] = "?";
 static const char __pyx_k_cls[] = "cls";
 static const char __pyx_k_dct[] = "dct";
 static const char __pyx_k_doc[] = "__doc__";
@@ -2886,6 +2884,7 @@ static const char __pyx_k_size[] = "size";
 static const char __pyx_k_spec[] = "__spec__";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_ylim[] = "ylim";
+static const char __pyx_k_array[] = "array";
 static const char __pyx_k_chrom[] = "chrom";
 static const char __pyx_k_class[] = "__class__";
 static const char __pyx_k_fcDel[] = "fcDel";
@@ -2934,6 +2933,7 @@ static const char __pyx_k_mate_fc[] = "mate_fc";
 static const char __pyx_k_members[] = "__members__";
 static const char __pyx_k_parents[] = "parents";
 static const char __pyx_k_prepare[] = "__prepare__";
+static const char __pyx_k_reshape[] = "reshape";
 static const char __pyx_k_set_pad[] = "set_pad";
 static const char __pyx_k_sv_arcs[] = "sv_arcs";
 static const char __pyx_k_threads[] = "threads";
@@ -2964,6 +2964,7 @@ static const char __pyx_k_reference[] = "reference";
 static const char __pyx_k_set_theme[] = "set_theme";
 static const char __pyx_k_Gw_add_bam[] = "Gw.add_bam";
 static const char __pyx_k_Gw_set_pad[] = "Gw.set_pad";
+static const char __pyx_k_RGBA_array[] = "RGBA_array";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_add_region[] = "add_region";
 static const char __pyx_k_ecSelected[] = "ecSelected";
@@ -2989,6 +2990,7 @@ static const char __pyx_k_tlen_yscale[] = "tlen_yscale";
 static const char __pyx_k_Gw_set_theme[] = "Gw.set_theme";
 static const char __pyx_k_Pyx_EnumBase[] = "__Pyx_EnumBase";
 static const char __pyx_k_Pyx_FlagBase[] = "__Pyx_FlagBase";
+static const char __pyx_k_canvas_width[] = "canvas_width";
 static const char __pyx_k_indel_length[] = "indel_length";
 static const char __pyx_k_initializing[] = "_initializing";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
@@ -3004,7 +3006,9 @@ static const char __pyx_k_set_max_tlen[] = "set_max_tlen";
 static const char __pyx_k_stringsource[] = "<stringsource>";
 static const char __pyx_k_tcBackground[] = "tcBackground";
 static const char __pyx_k_use_setstate[] = "use_setstate";
+static const char __pyx_k_Gw_RGBA_array[] = "Gw.RGBA_array";
 static const char __pyx_k_Gw_add_region[] = "Gw.add_region";
+static const char __pyx_k_canvas_height[] = "canvas_height";
 static const char __pyx_k_class_getitem[] = "__class_getitem__";
 static const char __pyx_k_expand_tracks[] = "expand_tracks";
 static const char __pyx_k_init_subclass[] = "__init_subclass__";
@@ -3151,8 +3155,9 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_56raster_to_png(struct __pyx_ob
 static PyObject *__pyx_pf_6gwplot_9interface_2Gw_58run_draw_no_buffer(struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self); /* proto */
 static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self, Py_buffer *__pyx_v_buffer, CYTHON_UNUSED int __pyx_v_flags); /* proto */
 static void __pyx_pf_6gwplot_9interface_2Gw_62__dealloc__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6gwplot_9interface_2Gw_64__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6gwplot_9interface_2Gw_66__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_6gwplot_9interface_2Gw_64RGBA_array(struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6gwplot_9interface_2Gw_66__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6gwplot_9interface_2Gw_68__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_6gwplot_9interface_Gw(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_get = {0, 0, 0, 0, 0};
 /* #### Code section: late_includes ### */
@@ -3221,8 +3226,6 @@ typedef struct {
   PyTypeObject *__pyx_ptype_5numpy_character;
   PyTypeObject *__pyx_ptype_5numpy_ufunc;
   #if CYTHON_USE_MODULE_STATE
-  #endif
-  #if CYTHON_USE_MODULE_STATE
   PyObject *__pyx_type_6gwplot_9interface_Gw;
   PyObject *__Pyx_EnumMeta;
   #endif
@@ -3234,6 +3237,7 @@ typedef struct {
   PyObject *__pyx_n_s_EnumType;
   PyObject *__pyx_n_s_Gw;
   PyObject *__pyx_n_s_GwPaint;
+  PyObject *__pyx_n_s_Gw_RGBA_array;
   PyObject *__pyx_n_s_Gw___reduce_cython;
   PyObject *__pyx_n_s_Gw___setstate_cython;
   PyObject *__pyx_n_s_Gw_add_bam;
@@ -3280,21 +3284,25 @@ typedef struct {
   PyObject *__pyx_n_s_Pyx_FlagBase___new;
   PyObject *__pyx_n_s_Pyx_FlagBase___repr;
   PyObject *__pyx_n_s_Pyx_FlagBase___str;
+  PyObject *__pyx_n_s_RGBA_array;
   PyObject *__pyx_kp_u_Theme_must_be_one_of_slate_dark;
   PyObject *__pyx_n_s_TypeError;
   PyObject *__pyx_kp_s_Unknown_enum_value_s;
   PyObject *__pyx_n_s_ValueError;
   PyObject *__pyx_n_s__22;
   PyObject *__pyx_kp_u__3;
-  PyObject *__pyx_n_s__81;
+  PyObject *__pyx_n_s__82;
   PyObject *__pyx_n_s_a;
   PyObject *__pyx_n_s_add_bam;
   PyObject *__pyx_n_s_add_region;
+  PyObject *__pyx_n_s_array;
   PyObject *__pyx_n_s_asyncio_coroutines;
   PyObject *__pyx_n_s_b;
   PyObject *__pyx_n_s_bam_path;
   PyObject *__pyx_n_s_bgPaint;
   PyObject *__pyx_n_s_c;
+  PyObject *__pyx_n_s_canvas_height;
+  PyObject *__pyx_n_s_canvas_width;
   PyObject *__pyx_n_s_chrom;
   PyObject *__pyx_n_s_class;
   PyObject *__pyx_n_s_class_getitem;
@@ -3406,6 +3414,7 @@ typedef struct {
   PyObject *__pyx_n_s_reg;
   PyObject *__pyx_n_s_repr;
   PyObject *__pyx_n_s_res;
+  PyObject *__pyx_n_s_reshape;
   PyObject *__pyx_n_s_run_draw_no_buffer;
   PyObject *__pyx_kp_s_s_s;
   PyObject *__pyx_kp_s_s_s_d;
@@ -3472,6 +3481,7 @@ typedef struct {
   PyObject *__pyx_n_s_x;
   PyObject *__pyx_n_s_y;
   PyObject *__pyx_n_s_ylim;
+  PyObject *__pyx_int_4;
   PyObject *__pyx_int_222419149;
   PyObject *__pyx_int_228825662;
   PyObject *__pyx_int_238750788;
@@ -3553,6 +3563,7 @@ typedef struct {
   PyObject *__pyx_codeobj__78;
   PyObject *__pyx_codeobj__79;
   PyObject *__pyx_codeobj__80;
+  PyObject *__pyx_codeobj__81;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -3621,6 +3632,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_EnumType);
   Py_CLEAR(clear_module_state->__pyx_n_s_Gw);
   Py_CLEAR(clear_module_state->__pyx_n_s_GwPaint);
+  Py_CLEAR(clear_module_state->__pyx_n_s_Gw_RGBA_array);
   Py_CLEAR(clear_module_state->__pyx_n_s_Gw___reduce_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_Gw___setstate_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_Gw_add_bam);
@@ -3667,21 +3679,25 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_Pyx_FlagBase___new);
   Py_CLEAR(clear_module_state->__pyx_n_s_Pyx_FlagBase___repr);
   Py_CLEAR(clear_module_state->__pyx_n_s_Pyx_FlagBase___str);
+  Py_CLEAR(clear_module_state->__pyx_n_s_RGBA_array);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Theme_must_be_one_of_slate_dark);
   Py_CLEAR(clear_module_state->__pyx_n_s_TypeError);
   Py_CLEAR(clear_module_state->__pyx_kp_s_Unknown_enum_value_s);
   Py_CLEAR(clear_module_state->__pyx_n_s_ValueError);
   Py_CLEAR(clear_module_state->__pyx_n_s__22);
   Py_CLEAR(clear_module_state->__pyx_kp_u__3);
-  Py_CLEAR(clear_module_state->__pyx_n_s__81);
+  Py_CLEAR(clear_module_state->__pyx_n_s__82);
   Py_CLEAR(clear_module_state->__pyx_n_s_a);
   Py_CLEAR(clear_module_state->__pyx_n_s_add_bam);
   Py_CLEAR(clear_module_state->__pyx_n_s_add_region);
+  Py_CLEAR(clear_module_state->__pyx_n_s_array);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
   Py_CLEAR(clear_module_state->__pyx_n_s_b);
   Py_CLEAR(clear_module_state->__pyx_n_s_bam_path);
   Py_CLEAR(clear_module_state->__pyx_n_s_bgPaint);
   Py_CLEAR(clear_module_state->__pyx_n_s_c);
+  Py_CLEAR(clear_module_state->__pyx_n_s_canvas_height);
+  Py_CLEAR(clear_module_state->__pyx_n_s_canvas_width);
   Py_CLEAR(clear_module_state->__pyx_n_s_chrom);
   Py_CLEAR(clear_module_state->__pyx_n_s_class);
   Py_CLEAR(clear_module_state->__pyx_n_s_class_getitem);
@@ -3793,6 +3809,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_reg);
   Py_CLEAR(clear_module_state->__pyx_n_s_repr);
   Py_CLEAR(clear_module_state->__pyx_n_s_res);
+  Py_CLEAR(clear_module_state->__pyx_n_s_reshape);
   Py_CLEAR(clear_module_state->__pyx_n_s_run_draw_no_buffer);
   Py_CLEAR(clear_module_state->__pyx_kp_s_s_s);
   Py_CLEAR(clear_module_state->__pyx_kp_s_s_s_d);
@@ -3859,6 +3876,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_x);
   Py_CLEAR(clear_module_state->__pyx_n_s_y);
   Py_CLEAR(clear_module_state->__pyx_n_s_ylim);
+  Py_CLEAR(clear_module_state->__pyx_int_4);
   Py_CLEAR(clear_module_state->__pyx_int_222419149);
   Py_CLEAR(clear_module_state->__pyx_int_228825662);
   Py_CLEAR(clear_module_state->__pyx_int_238750788);
@@ -3940,6 +3958,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_codeobj__78);
   Py_CLEAR(clear_module_state->__pyx_codeobj__79);
   Py_CLEAR(clear_module_state->__pyx_codeobj__80);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__81);
   return 0;
 }
 #endif
@@ -3986,6 +4005,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_EnumType);
   Py_VISIT(traverse_module_state->__pyx_n_s_Gw);
   Py_VISIT(traverse_module_state->__pyx_n_s_GwPaint);
+  Py_VISIT(traverse_module_state->__pyx_n_s_Gw_RGBA_array);
   Py_VISIT(traverse_module_state->__pyx_n_s_Gw___reduce_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_Gw___setstate_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_Gw_add_bam);
@@ -4032,21 +4052,25 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_Pyx_FlagBase___new);
   Py_VISIT(traverse_module_state->__pyx_n_s_Pyx_FlagBase___repr);
   Py_VISIT(traverse_module_state->__pyx_n_s_Pyx_FlagBase___str);
+  Py_VISIT(traverse_module_state->__pyx_n_s_RGBA_array);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Theme_must_be_one_of_slate_dark);
   Py_VISIT(traverse_module_state->__pyx_n_s_TypeError);
   Py_VISIT(traverse_module_state->__pyx_kp_s_Unknown_enum_value_s);
   Py_VISIT(traverse_module_state->__pyx_n_s_ValueError);
   Py_VISIT(traverse_module_state->__pyx_n_s__22);
   Py_VISIT(traverse_module_state->__pyx_kp_u__3);
-  Py_VISIT(traverse_module_state->__pyx_n_s__81);
+  Py_VISIT(traverse_module_state->__pyx_n_s__82);
   Py_VISIT(traverse_module_state->__pyx_n_s_a);
   Py_VISIT(traverse_module_state->__pyx_n_s_add_bam);
   Py_VISIT(traverse_module_state->__pyx_n_s_add_region);
+  Py_VISIT(traverse_module_state->__pyx_n_s_array);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
   Py_VISIT(traverse_module_state->__pyx_n_s_b);
   Py_VISIT(traverse_module_state->__pyx_n_s_bam_path);
   Py_VISIT(traverse_module_state->__pyx_n_s_bgPaint);
   Py_VISIT(traverse_module_state->__pyx_n_s_c);
+  Py_VISIT(traverse_module_state->__pyx_n_s_canvas_height);
+  Py_VISIT(traverse_module_state->__pyx_n_s_canvas_width);
   Py_VISIT(traverse_module_state->__pyx_n_s_chrom);
   Py_VISIT(traverse_module_state->__pyx_n_s_class);
   Py_VISIT(traverse_module_state->__pyx_n_s_class_getitem);
@@ -4158,6 +4182,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_reg);
   Py_VISIT(traverse_module_state->__pyx_n_s_repr);
   Py_VISIT(traverse_module_state->__pyx_n_s_res);
+  Py_VISIT(traverse_module_state->__pyx_n_s_reshape);
   Py_VISIT(traverse_module_state->__pyx_n_s_run_draw_no_buffer);
   Py_VISIT(traverse_module_state->__pyx_kp_s_s_s);
   Py_VISIT(traverse_module_state->__pyx_kp_s_s_s_d);
@@ -4224,6 +4249,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_x);
   Py_VISIT(traverse_module_state->__pyx_n_s_y);
   Py_VISIT(traverse_module_state->__pyx_n_s_ylim);
+  Py_VISIT(traverse_module_state->__pyx_int_4);
   Py_VISIT(traverse_module_state->__pyx_int_222419149);
   Py_VISIT(traverse_module_state->__pyx_int_228825662);
   Py_VISIT(traverse_module_state->__pyx_int_238750788);
@@ -4305,6 +4331,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_codeobj__78);
   Py_VISIT(traverse_module_state->__pyx_codeobj__79);
   Py_VISIT(traverse_module_state->__pyx_codeobj__80);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__81);
   return 0;
 }
 #endif
@@ -4372,8 +4399,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_ptype_5numpy_character __pyx_mstate_global->__pyx_ptype_5numpy_character
 #define __pyx_ptype_5numpy_ufunc __pyx_mstate_global->__pyx_ptype_5numpy_ufunc
 #if CYTHON_USE_MODULE_STATE
-#endif
-#if CYTHON_USE_MODULE_STATE
 #define __pyx_type_6gwplot_9interface_Gw __pyx_mstate_global->__pyx_type_6gwplot_9interface_Gw
 #define __Pyx_EnumMeta __pyx_mstate_global->__Pyx_EnumMeta
 #endif
@@ -4385,6 +4410,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_EnumType __pyx_mstate_global->__pyx_n_s_EnumType
 #define __pyx_n_s_Gw __pyx_mstate_global->__pyx_n_s_Gw
 #define __pyx_n_s_GwPaint __pyx_mstate_global->__pyx_n_s_GwPaint
+#define __pyx_n_s_Gw_RGBA_array __pyx_mstate_global->__pyx_n_s_Gw_RGBA_array
 #define __pyx_n_s_Gw___reduce_cython __pyx_mstate_global->__pyx_n_s_Gw___reduce_cython
 #define __pyx_n_s_Gw___setstate_cython __pyx_mstate_global->__pyx_n_s_Gw___setstate_cython
 #define __pyx_n_s_Gw_add_bam __pyx_mstate_global->__pyx_n_s_Gw_add_bam
@@ -4431,21 +4457,25 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_Pyx_FlagBase___new __pyx_mstate_global->__pyx_n_s_Pyx_FlagBase___new
 #define __pyx_n_s_Pyx_FlagBase___repr __pyx_mstate_global->__pyx_n_s_Pyx_FlagBase___repr
 #define __pyx_n_s_Pyx_FlagBase___str __pyx_mstate_global->__pyx_n_s_Pyx_FlagBase___str
+#define __pyx_n_s_RGBA_array __pyx_mstate_global->__pyx_n_s_RGBA_array
 #define __pyx_kp_u_Theme_must_be_one_of_slate_dark __pyx_mstate_global->__pyx_kp_u_Theme_must_be_one_of_slate_dark
 #define __pyx_n_s_TypeError __pyx_mstate_global->__pyx_n_s_TypeError
 #define __pyx_kp_s_Unknown_enum_value_s __pyx_mstate_global->__pyx_kp_s_Unknown_enum_value_s
 #define __pyx_n_s_ValueError __pyx_mstate_global->__pyx_n_s_ValueError
 #define __pyx_n_s__22 __pyx_mstate_global->__pyx_n_s__22
 #define __pyx_kp_u__3 __pyx_mstate_global->__pyx_kp_u__3
-#define __pyx_n_s__81 __pyx_mstate_global->__pyx_n_s__81
+#define __pyx_n_s__82 __pyx_mstate_global->__pyx_n_s__82
 #define __pyx_n_s_a __pyx_mstate_global->__pyx_n_s_a
 #define __pyx_n_s_add_bam __pyx_mstate_global->__pyx_n_s_add_bam
 #define __pyx_n_s_add_region __pyx_mstate_global->__pyx_n_s_add_region
+#define __pyx_n_s_array __pyx_mstate_global->__pyx_n_s_array
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
 #define __pyx_n_s_b __pyx_mstate_global->__pyx_n_s_b
 #define __pyx_n_s_bam_path __pyx_mstate_global->__pyx_n_s_bam_path
 #define __pyx_n_s_bgPaint __pyx_mstate_global->__pyx_n_s_bgPaint
 #define __pyx_n_s_c __pyx_mstate_global->__pyx_n_s_c
+#define __pyx_n_s_canvas_height __pyx_mstate_global->__pyx_n_s_canvas_height
+#define __pyx_n_s_canvas_width __pyx_mstate_global->__pyx_n_s_canvas_width
 #define __pyx_n_s_chrom __pyx_mstate_global->__pyx_n_s_chrom
 #define __pyx_n_s_class __pyx_mstate_global->__pyx_n_s_class
 #define __pyx_n_s_class_getitem __pyx_mstate_global->__pyx_n_s_class_getitem
@@ -4557,6 +4587,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_reg __pyx_mstate_global->__pyx_n_s_reg
 #define __pyx_n_s_repr __pyx_mstate_global->__pyx_n_s_repr
 #define __pyx_n_s_res __pyx_mstate_global->__pyx_n_s_res
+#define __pyx_n_s_reshape __pyx_mstate_global->__pyx_n_s_reshape
 #define __pyx_n_s_run_draw_no_buffer __pyx_mstate_global->__pyx_n_s_run_draw_no_buffer
 #define __pyx_kp_s_s_s __pyx_mstate_global->__pyx_kp_s_s_s
 #define __pyx_kp_s_s_s_d __pyx_mstate_global->__pyx_kp_s_s_s_d
@@ -4623,6 +4654,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_x __pyx_mstate_global->__pyx_n_s_x
 #define __pyx_n_s_y __pyx_mstate_global->__pyx_n_s_y
 #define __pyx_n_s_ylim __pyx_mstate_global->__pyx_n_s_ylim
+#define __pyx_int_4 __pyx_mstate_global->__pyx_int_4
 #define __pyx_int_222419149 __pyx_mstate_global->__pyx_int_222419149
 #define __pyx_int_228825662 __pyx_mstate_global->__pyx_int_228825662
 #define __pyx_int_238750788 __pyx_mstate_global->__pyx_int_238750788
@@ -4704,6 +4736,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_codeobj__78 __pyx_mstate_global->__pyx_codeobj__78
 #define __pyx_codeobj__79 __pyx_mstate_global->__pyx_codeobj__79
 #define __pyx_codeobj__80 __pyx_mstate_global->__pyx_codeobj__80
+#define __pyx_codeobj__81 __pyx_mstate_global->__pyx_codeobj__81
 /* #### Code section: module_code ### */
 
 /* "string.from_py":13
@@ -8943,7 +8976,7 @@ static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObjec
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":28
+/* "gwplot/interface.pyx":11
  * cdef class Gw:
  *     """Interface to GW"""
  *     def __cinit__(self, str reference, str theme="slate"):             # <<<<<<<<<<<<<<
@@ -8991,19 +9024,19 @@ static int __pyx_pw_6gwplot_9interface_2Gw_1__cinit__(PyObject *__pyx_v_self, Py
           (void)__Pyx_Arg_NewRef_VARARGS(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_VARARGS(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_theme);
           if (value) { values[1] = __Pyx_Arg_NewRef_VARARGS(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__cinit__") < 0)) __PYX_ERR(0, 28, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__cinit__") < 0)) __PYX_ERR(0, 11, __pyx_L3_error)
       }
     } else {
       switch (__pyx_nargs) {
@@ -9019,7 +9052,7 @@ static int __pyx_pw_6gwplot_9interface_2Gw_1__cinit__(PyObject *__pyx_v_self, Py
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 28, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 11, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9033,8 +9066,8 @@ static int __pyx_pw_6gwplot_9interface_2Gw_1__cinit__(PyObject *__pyx_v_self, Py
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_reference), (&PyUnicode_Type), 1, "reference", 1))) __PYX_ERR(0, 28, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_theme), (&PyUnicode_Type), 1, "theme", 1))) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_reference), (&PyUnicode_Type), 1, "reference", 1))) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_theme), (&PyUnicode_Type), 1, "theme", 1))) __PYX_ERR(0, 11, __pyx_L1_error)
   __pyx_r = __pyx_pf_6gwplot_9interface_2Gw___cinit__(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self), __pyx_v_reference, __pyx_v_theme);
 
   /* function exit code */
@@ -9067,7 +9100,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw___cinit__(struct __pyx_obj_6gwplot_9i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 1);
 
-  /* "gwplot/interface.pyx":29
+  /* "gwplot/interface.pyx":12
  *     """Interface to GW"""
  *     def __cinit__(self, str reference, str theme="slate"):
  *         cdef string ref = reference.encode("utf-8")             # <<<<<<<<<<<<<<
@@ -9076,15 +9109,15 @@ static int __pyx_pf_6gwplot_9interface_2Gw___cinit__(struct __pyx_obj_6gwplot_9i
  */
   if (unlikely(__pyx_v_reference == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 29, __pyx_L1_error)
+    __PYX_ERR(0, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_reference); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_reference); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_ref = __PYX_STD_MOVE_IF_SUPPORTED(__pyx_t_2);
 
-  /* "gwplot/interface.pyx":30
+  /* "gwplot/interface.pyx":13
  *     def __cinit__(self, str reference, str theme="slate"):
  *         cdef string ref = reference.encode("utf-8")
  *         cdef IniOptions opts = IniOptions()             # <<<<<<<<<<<<<<
@@ -9093,7 +9126,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw___cinit__(struct __pyx_obj_6gwplot_9i
  */
   __pyx_v_opts = Themes::IniOptions();
 
-  /* "gwplot/interface.pyx":31
+  /* "gwplot/interface.pyx":14
  *         cdef string ref = reference.encode("utf-8")
  *         cdef IniOptions opts = IniOptions()
  *         opts.threads = 1             # <<<<<<<<<<<<<<
@@ -9102,7 +9135,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw___cinit__(struct __pyx_obj_6gwplot_9i
  */
   __pyx_v_opts.threads = 1;
 
-  /* "gwplot/interface.pyx":34
+  /* "gwplot/interface.pyx":17
  *         cdef vector[string] bampaths, track_paths
  *         cdef vector[Region] regions
  *         self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)             # <<<<<<<<<<<<<<
@@ -9111,7 +9144,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw___cinit__(struct __pyx_obj_6gwplot_9i
  */
   __pyx_v_self->thisptr = new Manager::GwPlot(__pyx_v_ref, __pyx_v_bampaths, __pyx_v_opts, __pyx_v_regions, __pyx_v_track_paths);
 
-  /* "gwplot/interface.pyx":28
+  /* "gwplot/interface.pyx":11
  * cdef class Gw:
  *     """Interface to GW"""
  *     def __cinit__(self, str reference, str theme="slate"):             # <<<<<<<<<<<<<<
@@ -9131,7 +9164,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw___cinit__(struct __pyx_obj_6gwplot_9i
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":35
+/* "gwplot/interface.pyx":18
  *         cdef vector[Region] regions
  *         self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)
  *     def __init__(self, str reference, str theme="slate"):             # <<<<<<<<<<<<<<
@@ -9179,19 +9212,19 @@ static int __pyx_pw_6gwplot_9interface_2Gw_3__init__(PyObject *__pyx_v_self, PyO
           (void)__Pyx_Arg_NewRef_VARARGS(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_VARARGS(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_theme);
           if (value) { values[1] = __Pyx_Arg_NewRef_VARARGS(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 35, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 18, __pyx_L3_error)
       }
     } else {
       switch (__pyx_nargs) {
@@ -9207,7 +9240,7 @@ static int __pyx_pw_6gwplot_9interface_2Gw_3__init__(PyObject *__pyx_v_self, PyO
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 35, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 18, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9221,8 +9254,8 @@ static int __pyx_pw_6gwplot_9interface_2Gw_3__init__(PyObject *__pyx_v_self, PyO
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_reference), (&PyUnicode_Type), 1, "reference", 1))) __PYX_ERR(0, 35, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_theme), (&PyUnicode_Type), 1, "theme", 1))) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_reference), (&PyUnicode_Type), 1, "reference", 1))) __PYX_ERR(0, 18, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_theme), (&PyUnicode_Type), 1, "theme", 1))) __PYX_ERR(0, 18, __pyx_L1_error)
   __pyx_r = __pyx_pf_6gwplot_9interface_2Gw_2__init__(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self), __pyx_v_reference, __pyx_v_theme);
 
   /* function exit code */
@@ -9252,7 +9285,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw_2__init__(struct __pyx_obj_6gwplot_9i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 1);
 
-  /* "gwplot/interface.pyx":36
+  /* "gwplot/interface.pyx":19
  *         self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)
  *     def __init__(self, str reference, str theme="slate"):
  *         self.raster_surface_created = False             # <<<<<<<<<<<<<<
@@ -9261,14 +9294,14 @@ static int __pyx_pf_6gwplot_9interface_2Gw_2__init__(struct __pyx_obj_6gwplot_9i
  */
   __pyx_v_self->raster_surface_created = 0;
 
-  /* "gwplot/interface.pyx":37
+  /* "gwplot/interface.pyx":20
  *     def __init__(self, str reference, str theme="slate"):
  *         self.raster_surface_created = False
  *         self.set_theme(theme)             # <<<<<<<<<<<<<<
  *     @property
  *     def canvas_width(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_set_theme); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_set_theme); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -9288,13 +9321,13 @@ static int __pyx_pf_6gwplot_9interface_2Gw_2__init__(struct __pyx_obj_6gwplot_9i
     PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_theme};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "gwplot/interface.pyx":35
+  /* "gwplot/interface.pyx":18
  *         cdef vector[Region] regions
  *         self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)
  *     def __init__(self, str reference, str theme="slate"):             # <<<<<<<<<<<<<<
@@ -9316,7 +9349,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw_2__init__(struct __pyx_obj_6gwplot_9i
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":38
+/* "gwplot/interface.pyx":21
  *         self.raster_surface_created = False
  *         self.set_theme(theme)
  *     @property             # <<<<<<<<<<<<<<
@@ -9348,7 +9381,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12canvas_width___get__(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":40
+  /* "gwplot/interface.pyx":23
  *     @property
  *     def canvas_width(self):
  *         return self.thisptr.opts.dimensions.x             # <<<<<<<<<<<<<<
@@ -9356,13 +9389,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12canvas_width___get__(struct _
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.dimensions.x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.dimensions.x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":38
+  /* "gwplot/interface.pyx":21
  *         self.raster_surface_created = False
  *         self.set_theme(theme)
  *     @property             # <<<<<<<<<<<<<<
@@ -9381,7 +9414,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12canvas_width___get__(struct _
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":42
+/* "gwplot/interface.pyx":25
  *         return self.thisptr.opts.dimensions.x
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9413,7 +9446,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13canvas_height___get__(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":44
+  /* "gwplot/interface.pyx":27
  *     @property
  *     def canvas_height(self):
  *         return self.thisptr.opts.dimensions.y             # <<<<<<<<<<<<<<
@@ -9421,13 +9454,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13canvas_height___get__(struct 
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.dimensions.y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.dimensions.y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":42
+  /* "gwplot/interface.pyx":25
  *         return self.thisptr.opts.dimensions.x
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9446,7 +9479,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13canvas_height___get__(struct 
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":46
+/* "gwplot/interface.pyx":29
  *         return self.thisptr.opts.dimensions.y
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9478,7 +9511,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_5theme___get__(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":48
+  /* "gwplot/interface.pyx":31
  *     @property
  *     def theme(self):
  *         return self.thisptr.opts.theme.name             # <<<<<<<<<<<<<<
@@ -9486,13 +9519,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_5theme___get__(struct __pyx_obj
  *     def set_theme(self, theme_name):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_PyUnicode_string_to_py_std__in_string(__pyx_v_self->thisptr->opts.theme.name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_PyUnicode_string_to_py_std__in_string(__pyx_v_self->thisptr->opts.theme.name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":46
+  /* "gwplot/interface.pyx":29
  *         return self.thisptr.opts.dimensions.y
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9511,7 +9544,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_5theme___get__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":50
+/* "gwplot/interface.pyx":33
  *         return self.thisptr.opts.theme.name
  * 
  *     def set_theme(self, theme_name):             # <<<<<<<<<<<<<<
@@ -9572,12 +9605,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_theme") < 0)) __PYX_ERR(0, 50, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_theme") < 0)) __PYX_ERR(0, 33, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -9588,7 +9621,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_theme", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 50, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_theme", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 33, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9627,7 +9660,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4set_theme(struct __pyx_obj_6gw
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_theme", 1);
 
-  /* "gwplot/interface.pyx":51
+  /* "gwplot/interface.pyx":34
  * 
  *     def set_theme(self, theme_name):
  *         if theme_name not in ("slate", "dark", "igv"):             # <<<<<<<<<<<<<<
@@ -9636,39 +9669,39 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4set_theme(struct __pyx_obj_6gw
  */
   __Pyx_INCREF(__pyx_v_theme_name);
   __pyx_t_1 = __pyx_v_theme_name;
-  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_slate, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_slate, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 34, __pyx_L1_error)
   if (__pyx_t_3) {
   } else {
     __pyx_t_2 = __pyx_t_3;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_dark, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_dark, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 34, __pyx_L1_error)
   if (__pyx_t_3) {
   } else {
     __pyx_t_2 = __pyx_t_3;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_igv, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_igv, Py_NE)); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 34, __pyx_L1_error)
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = __pyx_t_2;
   if (unlikely(__pyx_t_3)) {
 
-    /* "gwplot/interface.pyx":52
+    /* "gwplot/interface.pyx":35
  *     def set_theme(self, theme_name):
  *         if theme_name not in ("slate", "dark", "igv"):
  *             raise ValueError("Theme must be one of slate, dark, igv")             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.setTheme(theme_name)
  *         self.thisptr.opts.theme.setAlphas()
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 52, __pyx_L1_error)
+    __PYX_ERR(0, 35, __pyx_L1_error)
 
-    /* "gwplot/interface.pyx":51
+    /* "gwplot/interface.pyx":34
  * 
  *     def set_theme(self, theme_name):
  *         if theme_name not in ("slate", "dark", "igv"):             # <<<<<<<<<<<<<<
@@ -9677,17 +9710,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4set_theme(struct __pyx_obj_6gw
  */
   }
 
-  /* "gwplot/interface.pyx":53
+  /* "gwplot/interface.pyx":36
  *         if theme_name not in ("slate", "dark", "igv"):
  *             raise ValueError("Theme must be one of slate, dark, igv")
  *         self.thisptr.opts.setTheme(theme_name)             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.theme.setAlphas()
  * 
  */
-  __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_v_theme_name); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_v_theme_name); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 36, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.setTheme(__pyx_t_4);
 
-  /* "gwplot/interface.pyx":54
+  /* "gwplot/interface.pyx":37
  *             raise ValueError("Theme must be one of slate, dark, igv")
  *         self.thisptr.opts.setTheme(theme_name)
  *         self.thisptr.opts.theme.setAlphas()             # <<<<<<<<<<<<<<
@@ -9696,7 +9729,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4set_theme(struct __pyx_obj_6gw
  */
   __pyx_v_self->thisptr->opts.theme.setAlphas();
 
-  /* "gwplot/interface.pyx":50
+  /* "gwplot/interface.pyx":33
  *         return self.thisptr.opts.theme.name
  * 
  *     def set_theme(self, theme_name):             # <<<<<<<<<<<<<<
@@ -9717,7 +9750,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4set_theme(struct __pyx_obj_6gw
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":56
+/* "gwplot/interface.pyx":39
  *         self.thisptr.opts.theme.setAlphas()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9749,7 +9782,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_7threads___get__(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":58
+  /* "gwplot/interface.pyx":41
  *     @property
  *     def threads(self):
  *         return self.thisptr.opts.threads             # <<<<<<<<<<<<<<
@@ -9757,13 +9790,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_7threads___get__(struct __pyx_o
  *     def set_threads(self, int threads):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.threads); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.threads); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":56
+  /* "gwplot/interface.pyx":39
  *         self.thisptr.opts.theme.setAlphas()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9782,7 +9815,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_7threads___get__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":60
+/* "gwplot/interface.pyx":43
  *         return self.thisptr.opts.threads
  * 
  *     def set_threads(self, int threads):             # <<<<<<<<<<<<<<
@@ -9843,23 +9876,23 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_threads") < 0)) __PYX_ERR(0, 60, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_threads") < 0)) __PYX_ERR(0, 43, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
     }
-    __pyx_v_threads = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_threads == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+    __pyx_v_threads = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_threads == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_threads", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 60, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_threads", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 43, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9891,7 +9924,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_6set_threads(struct __pyx_obj_6
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_threads", 1);
 
-  /* "gwplot/interface.pyx":61
+  /* "gwplot/interface.pyx":44
  * 
  *     def set_threads(self, int threads):
  *         self.thisptr.opts.threads = threads # if threads > 1 else 1             # <<<<<<<<<<<<<<
@@ -9900,7 +9933,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_6set_threads(struct __pyx_obj_6
  */
   __pyx_v_self->thisptr->opts.threads = __pyx_v_threads;
 
-  /* "gwplot/interface.pyx":60
+  /* "gwplot/interface.pyx":43
  *         return self.thisptr.opts.threads
  * 
  *     def set_threads(self, int threads):             # <<<<<<<<<<<<<<
@@ -9915,7 +9948,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_6set_threads(struct __pyx_obj_6
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":63
+/* "gwplot/interface.pyx":46
  *         self.thisptr.opts.threads = threads # if threads > 1 else 1
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9947,7 +9980,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12indel_length___get__(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":65
+  /* "gwplot/interface.pyx":48
  *     @property
  *     def indel_length(self):
  *         return self.thisptr.opts.indel_length             # <<<<<<<<<<<<<<
@@ -9955,13 +9988,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12indel_length___get__(struct _
  *     def set_indel_length(self, indel_length):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.indel_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.indel_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":63
+  /* "gwplot/interface.pyx":46
  *         self.thisptr.opts.threads = threads # if threads > 1 else 1
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -9980,7 +10013,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12indel_length___get__(struct _
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":67
+/* "gwplot/interface.pyx":50
  *         return self.thisptr.opts.indel_length
  * 
  *     def set_indel_length(self, indel_length):             # <<<<<<<<<<<<<<
@@ -10041,12 +10074,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_indel_length") < 0)) __PYX_ERR(0, 67, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_indel_length") < 0)) __PYX_ERR(0, 50, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -10057,7 +10090,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_indel_length", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 67, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_indel_length", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 50, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10093,17 +10126,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8set_indel_length(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_indel_length", 1);
 
-  /* "gwplot/interface.pyx":68
+  /* "gwplot/interface.pyx":51
  * 
  *     def set_indel_length(self, indel_length):
  *         self.thisptr.opts.indel_length = indel_length             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_indel_length); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_indel_length); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 51, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.indel_length = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":67
+  /* "gwplot/interface.pyx":50
  *         return self.thisptr.opts.indel_length
  * 
  *     def set_indel_length(self, indel_length):             # <<<<<<<<<<<<<<
@@ -10123,7 +10156,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8set_indel_length(struct __pyx_
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":70
+/* "gwplot/interface.pyx":53
  *         self.thisptr.opts.indel_length = indel_length
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10155,7 +10188,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4ylim___get__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":72
+  /* "gwplot/interface.pyx":55
  *     @property
  *     def ylim(self):
  *         return self.thisptr.opts.ylim             # <<<<<<<<<<<<<<
@@ -10163,13 +10196,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4ylim___get__(struct __pyx_obj_
  *     def set_ylim(self, ylim):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.ylim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.ylim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":70
+  /* "gwplot/interface.pyx":53
  *         self.thisptr.opts.indel_length = indel_length
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10188,7 +10221,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_4ylim___get__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":74
+/* "gwplot/interface.pyx":57
  *         return self.thisptr.opts.ylim
  * 
  *     def set_ylim(self, ylim):             # <<<<<<<<<<<<<<
@@ -10249,12 +10282,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 74, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_ylim") < 0)) __PYX_ERR(0, 74, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_ylim") < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -10265,7 +10298,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_ylim", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 74, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_ylim", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 57, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10301,17 +10334,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_10set_ylim(struct __pyx_obj_6gw
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_ylim", 1);
 
-  /* "gwplot/interface.pyx":75
+  /* "gwplot/interface.pyx":58
  * 
  *     def set_ylim(self, ylim):
  *         self.thisptr.opts.ylim = ylim             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ylim); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ylim); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.ylim = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":74
+  /* "gwplot/interface.pyx":57
  *         return self.thisptr.opts.ylim
  * 
  *     def set_ylim(self, ylim):             # <<<<<<<<<<<<<<
@@ -10331,7 +10364,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_10set_ylim(struct __pyx_obj_6gw
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":77
+/* "gwplot/interface.pyx":60
  *         self.thisptr.opts.ylim = ylim
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10363,7 +10396,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_15split_view_size___get__(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":79
+  /* "gwplot/interface.pyx":62
  *     @property
  *     def split_view_size(self):
  *         return self.thisptr.opts.split_view_size             # <<<<<<<<<<<<<<
@@ -10371,13 +10404,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_15split_view_size___get__(struc
  *     def set_split_view_size(self, split_view_size):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.split_view_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.split_view_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":77
+  /* "gwplot/interface.pyx":60
  *         self.thisptr.opts.ylim = ylim
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10396,7 +10429,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_15split_view_size___get__(struc
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":81
+/* "gwplot/interface.pyx":64
  *         return self.thisptr.opts.split_view_size
  * 
  *     def set_split_view_size(self, split_view_size):             # <<<<<<<<<<<<<<
@@ -10457,12 +10490,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_split_view_size") < 0)) __PYX_ERR(0, 81, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_split_view_size") < 0)) __PYX_ERR(0, 64, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -10473,7 +10506,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_split_view_size", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 81, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_split_view_size", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 64, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10509,17 +10542,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12set_split_view_size(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_split_view_size", 1);
 
-  /* "gwplot/interface.pyx":82
+  /* "gwplot/interface.pyx":65
  * 
  *     def set_split_view_size(self, split_view_size):
  *         self.thisptr.opts.split_view_size = split_view_size             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_split_view_size); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_split_view_size); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 65, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.split_view_size = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":81
+  /* "gwplot/interface.pyx":64
  *         return self.thisptr.opts.split_view_size
  * 
  *     def set_split_view_size(self, split_view_size):             # <<<<<<<<<<<<<<
@@ -10539,7 +10572,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12set_split_view_size(struct __
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":84
+/* "gwplot/interface.pyx":67
  *         self.thisptr.opts.split_view_size = split_view_size
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10571,7 +10604,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_3pad___get__(struct __pyx_obj_6
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":86
+  /* "gwplot/interface.pyx":69
  *     @property
  *     def pad(self):
  *         return self.thisptr.opts.pad             # <<<<<<<<<<<<<<
@@ -10579,13 +10612,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_3pad___get__(struct __pyx_obj_6
  *     def set_pad(self, pad):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.pad); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.pad); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":84
+  /* "gwplot/interface.pyx":67
  *         self.thisptr.opts.split_view_size = split_view_size
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10604,7 +10637,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_3pad___get__(struct __pyx_obj_6
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":88
+/* "gwplot/interface.pyx":71
  *         return self.thisptr.opts.pad
  * 
  *     def set_pad(self, pad):             # <<<<<<<<<<<<<<
@@ -10665,12 +10698,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_pad") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_pad") < 0)) __PYX_ERR(0, 71, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -10681,7 +10714,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_pad", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 88, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_pad", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 71, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10717,17 +10750,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_14set_pad(struct __pyx_obj_6gwp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_pad", 1);
 
-  /* "gwplot/interface.pyx":89
+  /* "gwplot/interface.pyx":72
  * 
  *     def set_pad(self, pad):
  *         self.thisptr.opts.pad = pad             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pad); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pad); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 72, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.pad = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":88
+  /* "gwplot/interface.pyx":71
  *         return self.thisptr.opts.pad
  * 
  *     def set_pad(self, pad):             # <<<<<<<<<<<<<<
@@ -10747,7 +10780,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_14set_pad(struct __pyx_obj_6gwp
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":91
+/* "gwplot/interface.pyx":74
  *         self.thisptr.opts.pad = pad
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10779,7 +10812,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12max_coverage___get__(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":93
+  /* "gwplot/interface.pyx":76
  *     @property
  *     def max_coverage(self):
  *         return self.thisptr.opts.max_coverage             # <<<<<<<<<<<<<<
@@ -10787,13 +10820,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12max_coverage___get__(struct _
  *     def set_max_coverage(self, max_coverage):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.max_coverage); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.max_coverage); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":91
+  /* "gwplot/interface.pyx":74
  *         self.thisptr.opts.pad = pad
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10812,7 +10845,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12max_coverage___get__(struct _
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":95
+/* "gwplot/interface.pyx":78
  *         return self.thisptr.opts.max_coverage
  * 
  *     def set_max_coverage(self, max_coverage):             # <<<<<<<<<<<<<<
@@ -10873,12 +10906,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 78, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_max_coverage") < 0)) __PYX_ERR(0, 95, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_max_coverage") < 0)) __PYX_ERR(0, 78, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -10889,7 +10922,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_max_coverage", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 95, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_max_coverage", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 78, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10925,17 +10958,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16set_max_coverage(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_max_coverage", 1);
 
-  /* "gwplot/interface.pyx":96
+  /* "gwplot/interface.pyx":79
  * 
  *     def set_max_coverage(self, max_coverage):
  *         self.thisptr.opts.max_coverage = max_coverage             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_max_coverage); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_max_coverage); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 79, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.max_coverage = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":95
+  /* "gwplot/interface.pyx":78
  *         return self.thisptr.opts.max_coverage
  * 
  *     def set_max_coverage(self, max_coverage):             # <<<<<<<<<<<<<<
@@ -10955,7 +10988,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16set_max_coverage(struct __pyx
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":98
+/* "gwplot/interface.pyx":81
  *         self.thisptr.opts.max_coverage = max_coverage
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -10987,7 +11020,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8max_tlen___get__(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":100
+  /* "gwplot/interface.pyx":83
  *     @property
  *     def max_tlen(self):
  *         return self.thisptr.opts.max_tlen             # <<<<<<<<<<<<<<
@@ -10995,13 +11028,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8max_tlen___get__(struct __pyx_
  *     def set_max_tlen(self, max_tlen):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.max_tlen); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.max_tlen); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":98
+  /* "gwplot/interface.pyx":81
  *         self.thisptr.opts.max_coverage = max_coverage
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11020,7 +11053,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8max_tlen___get__(struct __pyx_
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":102
+/* "gwplot/interface.pyx":85
  *         return self.thisptr.opts.max_tlen
  * 
  *     def set_max_tlen(self, max_tlen):             # <<<<<<<<<<<<<<
@@ -11081,12 +11114,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 102, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 85, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_max_tlen") < 0)) __PYX_ERR(0, 102, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_max_tlen") < 0)) __PYX_ERR(0, 85, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -11097,7 +11130,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_max_tlen", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 102, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_max_tlen", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 85, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11133,17 +11166,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_18set_max_tlen(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_max_tlen", 1);
 
-  /* "gwplot/interface.pyx":103
+  /* "gwplot/interface.pyx":86
  * 
  *     def set_max_tlen(self, max_tlen):
  *         self.thisptr.opts.max_tlen = max_tlen             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_max_tlen); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_max_tlen); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.max_tlen = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":102
+  /* "gwplot/interface.pyx":85
  *         return self.thisptr.opts.max_tlen
  * 
  *     def set_max_tlen(self, max_tlen):             # <<<<<<<<<<<<<<
@@ -11163,7 +11196,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_18set_max_tlen(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":105
+/* "gwplot/interface.pyx":88
  *         self.thisptr.opts.max_tlen = max_tlen
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11195,7 +11228,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8log2_cov___get__(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":107
+  /* "gwplot/interface.pyx":90
  *     @property
  *     def log2_cov(self):
  *         return self.thisptr.opts.log2_cov             # <<<<<<<<<<<<<<
@@ -11203,13 +11236,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8log2_cov___get__(struct __pyx_
  *     def set_log2_cov(self, log2_cov):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.log2_cov); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.log2_cov); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":105
+  /* "gwplot/interface.pyx":88
  *         self.thisptr.opts.max_tlen = max_tlen
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11228,7 +11261,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_8log2_cov___get__(struct __pyx_
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":109
+/* "gwplot/interface.pyx":92
  *         return self.thisptr.opts.log2_cov
  * 
  *     def set_log2_cov(self, log2_cov):             # <<<<<<<<<<<<<<
@@ -11289,12 +11322,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 109, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_log2_cov") < 0)) __PYX_ERR(0, 109, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_log2_cov") < 0)) __PYX_ERR(0, 92, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -11305,7 +11338,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_log2_cov", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 109, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_log2_cov", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 92, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11341,17 +11374,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_20set_log2_cov(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_log2_cov", 1);
 
-  /* "gwplot/interface.pyx":110
+  /* "gwplot/interface.pyx":93
  * 
  *     def set_log2_cov(self, log2_cov):
  *         self.thisptr.opts.log2_cov = log2_cov             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_log2_cov); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 110, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_log2_cov); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.log2_cov = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":109
+  /* "gwplot/interface.pyx":92
  *         return self.thisptr.opts.log2_cov
  * 
  *     def set_log2_cov(self, log2_cov):             # <<<<<<<<<<<<<<
@@ -11371,7 +11404,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_20set_log2_cov(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":112
+/* "gwplot/interface.pyx":95
  *         self.thisptr.opts.log2_cov = log2_cov
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11403,7 +11436,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_11tlen_yscale___get__(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":114
+  /* "gwplot/interface.pyx":97
  *     @property
  *     def tlen_yscale(self):
  *         return self.thisptr.opts.tlen_yscale             # <<<<<<<<<<<<<<
@@ -11411,13 +11444,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_11tlen_yscale___get__(struct __
  *     def set_tlen_yscale(self, tlen_yscale):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.tlen_yscale); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.tlen_yscale); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":112
+  /* "gwplot/interface.pyx":95
  *         self.thisptr.opts.log2_cov = log2_cov
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11436,7 +11469,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_11tlen_yscale___get__(struct __
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":116
+/* "gwplot/interface.pyx":99
  *         return self.thisptr.opts.tlen_yscale
  * 
  *     def set_tlen_yscale(self, tlen_yscale):             # <<<<<<<<<<<<<<
@@ -11497,12 +11530,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 116, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 99, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_tlen_yscale") < 0)) __PYX_ERR(0, 116, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_tlen_yscale") < 0)) __PYX_ERR(0, 99, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -11513,7 +11546,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_tlen_yscale", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 116, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_tlen_yscale", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 99, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11549,17 +11582,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_22set_tlen_yscale(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_tlen_yscale", 1);
 
-  /* "gwplot/interface.pyx":117
+  /* "gwplot/interface.pyx":100
  * 
  *     def set_tlen_yscale(self, tlen_yscale):
  *         self.thisptr.opts.tlen_yscale = tlen_yscale             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_tlen_yscale); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_tlen_yscale); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 100, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.tlen_yscale = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":116
+  /* "gwplot/interface.pyx":99
  *         return self.thisptr.opts.tlen_yscale
  * 
  *     def set_tlen_yscale(self, tlen_yscale):             # <<<<<<<<<<<<<<
@@ -11579,7 +11612,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_22set_tlen_yscale(struct __pyx_
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":119
+/* "gwplot/interface.pyx":102
  *         self.thisptr.opts.tlen_yscale = tlen_yscale
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11611,7 +11644,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13expand_tracks___get__(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":121
+  /* "gwplot/interface.pyx":104
  *     @property
  *     def expand_tracks(self):
  *         return self.thisptr.opts.expand_tracks             # <<<<<<<<<<<<<<
@@ -11619,13 +11652,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13expand_tracks___get__(struct 
  *     def set_expand_tracks(self, expand_tracks):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.expand_tracks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.expand_tracks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":119
+  /* "gwplot/interface.pyx":102
  *         self.thisptr.opts.tlen_yscale = tlen_yscale
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11644,7 +11677,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13expand_tracks___get__(struct 
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":123
+/* "gwplot/interface.pyx":106
  *         return self.thisptr.opts.expand_tracks
  * 
  *     def set_expand_tracks(self, expand_tracks):             # <<<<<<<<<<<<<<
@@ -11705,12 +11738,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_expand_tracks") < 0)) __PYX_ERR(0, 123, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_expand_tracks") < 0)) __PYX_ERR(0, 106, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -11721,7 +11754,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_expand_tracks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 123, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_expand_tracks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 106, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11757,17 +11790,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_24set_expand_tracks(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_expand_tracks", 1);
 
-  /* "gwplot/interface.pyx":124
+  /* "gwplot/interface.pyx":107
  * 
  *     def set_expand_tracks(self, expand_tracks):
  *         self.thisptr.opts.expand_tracks = expand_tracks             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_expand_tracks); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_expand_tracks); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.expand_tracks = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":123
+  /* "gwplot/interface.pyx":106
  *         return self.thisptr.opts.expand_tracks
  * 
  *     def set_expand_tracks(self, expand_tracks):             # <<<<<<<<<<<<<<
@@ -11787,7 +11820,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_24set_expand_tracks(struct __py
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":126
+/* "gwplot/interface.pyx":109
  *         self.thisptr.opts.expand_tracks = expand_tracks
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11819,7 +11852,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13vcf_as_tracks___get__(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":128
+  /* "gwplot/interface.pyx":111
  *     @property
  *     def vcf_as_tracks(self):
  *         return self.thisptr.opts.vcf_as_tracks             # <<<<<<<<<<<<<<
@@ -11827,13 +11860,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13vcf_as_tracks___get__(struct 
  *     def set_vcf_as_tracks(self, vcf_as_tracks):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.vcf_as_tracks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.vcf_as_tracks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":126
+  /* "gwplot/interface.pyx":109
  *         self.thisptr.opts.expand_tracks = expand_tracks
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -11852,7 +11885,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13vcf_as_tracks___get__(struct 
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":130
+/* "gwplot/interface.pyx":113
  *         return self.thisptr.opts.vcf_as_tracks
  * 
  *     def set_vcf_as_tracks(self, vcf_as_tracks):             # <<<<<<<<<<<<<<
@@ -11913,12 +11946,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 130, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_vcf_as_tracks") < 0)) __PYX_ERR(0, 130, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_vcf_as_tracks") < 0)) __PYX_ERR(0, 113, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -11929,7 +11962,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_vcf_as_tracks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 130, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_vcf_as_tracks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 113, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11965,17 +11998,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_26set_vcf_as_tracks(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_vcf_as_tracks", 1);
 
-  /* "gwplot/interface.pyx":131
+  /* "gwplot/interface.pyx":114
  * 
  *     def set_vcf_as_tracks(self, vcf_as_tracks):
  *         self.thisptr.opts.vcf_as_tracks = vcf_as_tracks             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_vcf_as_tracks); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_vcf_as_tracks); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.vcf_as_tracks = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":130
+  /* "gwplot/interface.pyx":113
  *         return self.thisptr.opts.vcf_as_tracks
  * 
  *     def set_vcf_as_tracks(self, vcf_as_tracks):             # <<<<<<<<<<<<<<
@@ -11995,7 +12028,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_26set_vcf_as_tracks(struct __py
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":133
+/* "gwplot/interface.pyx":116
  *         self.thisptr.opts.vcf_as_tracks = vcf_as_tracks
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12027,7 +12060,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_7sv_arcs___get__(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":135
+  /* "gwplot/interface.pyx":118
  *     @property
  *     def sv_arcs(self):
  *         return self.thisptr.opts.sv_arcs             # <<<<<<<<<<<<<<
@@ -12035,13 +12068,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_7sv_arcs___get__(struct __pyx_o
  *     def set_sv_arcs(self, sv_arcs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.sv_arcs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->opts.sv_arcs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":133
+  /* "gwplot/interface.pyx":116
  *         self.thisptr.opts.vcf_as_tracks = vcf_as_tracks
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12060,7 +12093,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_7sv_arcs___get__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":137
+/* "gwplot/interface.pyx":120
  *         return self.thisptr.opts.sv_arcs
  * 
  *     def set_sv_arcs(self, sv_arcs):             # <<<<<<<<<<<<<<
@@ -12121,12 +12154,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 137, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 120, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_sv_arcs") < 0)) __PYX_ERR(0, 137, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_sv_arcs") < 0)) __PYX_ERR(0, 120, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -12137,7 +12170,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_sv_arcs", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 137, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_sv_arcs", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 120, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12173,17 +12206,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_28set_sv_arcs(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_sv_arcs", 1);
 
-  /* "gwplot/interface.pyx":138
+  /* "gwplot/interface.pyx":121
  * 
  *     def set_sv_arcs(self, sv_arcs):
  *         self.thisptr.opts.sv_arcs = sv_arcs             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_sv_arcs); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_sv_arcs); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.sv_arcs = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":137
+  /* "gwplot/interface.pyx":120
  *         return self.thisptr.opts.sv_arcs
  * 
  *     def set_sv_arcs(self, sv_arcs):             # <<<<<<<<<<<<<<
@@ -12203,7 +12236,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_28set_sv_arcs(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":140
+/* "gwplot/interface.pyx":123
  *         self.thisptr.opts.sv_arcs = sv_arcs
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12235,7 +12268,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12scroll_speed___get__(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":142
+  /* "gwplot/interface.pyx":125
  *     @property
  *     def scroll_speed(self):
  *         return self.thisptr.opts.scroll_speed             # <<<<<<<<<<<<<<
@@ -12243,13 +12276,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12scroll_speed___get__(struct _
  *     def set_scroll_speed(self, scroll_speed):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->opts.scroll_speed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->opts.scroll_speed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":140
+  /* "gwplot/interface.pyx":123
  *         self.thisptr.opts.sv_arcs = sv_arcs
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12268,7 +12301,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_12scroll_speed___get__(struct _
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":144
+/* "gwplot/interface.pyx":127
  *         return self.thisptr.opts.scroll_speed
  * 
  *     def set_scroll_speed(self, scroll_speed):             # <<<<<<<<<<<<<<
@@ -12329,12 +12362,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_scroll_speed") < 0)) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_scroll_speed") < 0)) __PYX_ERR(0, 127, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -12345,7 +12378,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_scroll_speed", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 144, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_scroll_speed", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 127, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12381,17 +12414,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_30set_scroll_speed(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_scroll_speed", 1);
 
-  /* "gwplot/interface.pyx":145
+  /* "gwplot/interface.pyx":128
  * 
  *     def set_scroll_speed(self, scroll_speed):
  *         self.thisptr.opts.scroll_speed = scroll_speed             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_scroll_speed); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_scroll_speed); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.scroll_speed = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":144
+  /* "gwplot/interface.pyx":127
  *         return self.thisptr.opts.scroll_speed
  * 
  *     def set_scroll_speed(self, scroll_speed):             # <<<<<<<<<<<<<<
@@ -12411,7 +12444,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_30set_scroll_speed(struct __pyx
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":147
+/* "gwplot/interface.pyx":130
  *         self.thisptr.opts.scroll_speed = scroll_speed
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12443,7 +12476,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16tab_track_height___get__(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":149
+  /* "gwplot/interface.pyx":132
  *     @property
  *     def tab_track_height(self):
  *         return self.thisptr.opts.tab_track_height             # <<<<<<<<<<<<<<
@@ -12451,13 +12484,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16tab_track_height___get__(stru
  *     def set_tab_track_height(self, tab_track_height):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->opts.tab_track_height); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->opts.tab_track_height); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 132, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":147
+  /* "gwplot/interface.pyx":130
  *         self.thisptr.opts.scroll_speed = scroll_speed
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12476,7 +12509,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16tab_track_height___get__(stru
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":151
+/* "gwplot/interface.pyx":134
  *         return self.thisptr.opts.tab_track_height
  * 
  *     def set_tab_track_height(self, tab_track_height):             # <<<<<<<<<<<<<<
@@ -12537,12 +12570,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 134, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_tab_track_height") < 0)) __PYX_ERR(0, 151, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_tab_track_height") < 0)) __PYX_ERR(0, 134, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -12553,7 +12586,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_tab_track_height", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 151, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_tab_track_height", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 134, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12589,17 +12622,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_32set_tab_track_height(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_tab_track_height", 1);
 
-  /* "gwplot/interface.pyx":152
+  /* "gwplot/interface.pyx":135
  * 
  *     def set_tab_track_height(self, tab_track_height):
  *         self.thisptr.opts.tab_track_height = tab_track_height             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_tab_track_height); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_tab_track_height); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 135, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.tab_track_height = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":151
+  /* "gwplot/interface.pyx":134
  *         return self.thisptr.opts.tab_track_height
  * 
  *     def set_tab_track_height(self, tab_track_height):             # <<<<<<<<<<<<<<
@@ -12619,7 +12652,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_32set_tab_track_height(struct _
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":154
+/* "gwplot/interface.pyx":137
  *         self.thisptr.opts.tab_track_height = tab_track_height
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12651,7 +12684,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_11start_index___get__(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":156
+  /* "gwplot/interface.pyx":139
  *     @property
  *     def start_index(self):
  *         return self.thisptr.opts.start_index             # <<<<<<<<<<<<<<
@@ -12659,13 +12692,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_11start_index___get__(struct __
  *     def set_start_index(self, start_index):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.start_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.start_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":154
+  /* "gwplot/interface.pyx":137
  *         self.thisptr.opts.tab_track_height = tab_track_height
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12684,7 +12717,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_11start_index___get__(struct __
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":158
+/* "gwplot/interface.pyx":141
  *         return self.thisptr.opts.start_index
  * 
  *     def set_start_index(self, start_index):             # <<<<<<<<<<<<<<
@@ -12745,12 +12778,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 158, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 141, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_start_index") < 0)) __PYX_ERR(0, 158, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_start_index") < 0)) __PYX_ERR(0, 141, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -12761,7 +12794,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_start_index", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 158, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_start_index", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 141, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12797,17 +12830,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_34set_start_index(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_start_index", 1);
 
-  /* "gwplot/interface.pyx":159
+  /* "gwplot/interface.pyx":142
  * 
  *     def set_start_index(self, start_index):
  *         self.thisptr.opts.start_index = start_index             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_start_index); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_start_index); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 142, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.start_index = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":158
+  /* "gwplot/interface.pyx":141
  *         return self.thisptr.opts.start_index
  * 
  *     def set_start_index(self, start_index):             # <<<<<<<<<<<<<<
@@ -12827,7 +12860,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_34set_start_index(struct __pyx_
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":161
+/* "gwplot/interface.pyx":144
  *         self.thisptr.opts.start_index = start_index
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12859,7 +12892,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_19soft_clip_threshold___get__(s
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":163
+  /* "gwplot/interface.pyx":146
  *     @property
  *     def soft_clip_threshold(self):
  *         return self.thisptr.opts.soft_clip_threshold             # <<<<<<<<<<<<<<
@@ -12867,13 +12900,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_19soft_clip_threshold___get__(s
  *     def set_soft_clip_threshold(self, soft_clip_threshold):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.soft_clip_threshold); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.soft_clip_threshold); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":161
+  /* "gwplot/interface.pyx":144
  *         self.thisptr.opts.start_index = start_index
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -12892,7 +12925,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_19soft_clip_threshold___get__(s
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":165
+/* "gwplot/interface.pyx":148
  *         return self.thisptr.opts.soft_clip_threshold
  * 
  *     def set_soft_clip_threshold(self, soft_clip_threshold):             # <<<<<<<<<<<<<<
@@ -12953,12 +12986,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_soft_clip_threshold") < 0)) __PYX_ERR(0, 165, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_soft_clip_threshold") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -12969,7 +13002,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_soft_clip_threshold", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 165, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_soft_clip_threshold", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 148, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13005,17 +13038,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_36set_soft_clip_threshold(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_soft_clip_threshold", 1);
 
-  /* "gwplot/interface.pyx":166
+  /* "gwplot/interface.pyx":149
  * 
  *     def set_soft_clip_threshold(self, soft_clip_threshold):
  *         self.thisptr.opts.soft_clip_threshold = soft_clip_threshold             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_soft_clip_threshold); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_soft_clip_threshold); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 149, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.soft_clip_threshold = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":165
+  /* "gwplot/interface.pyx":148
  *         return self.thisptr.opts.soft_clip_threshold
  * 
  *     def set_soft_clip_threshold(self, soft_clip_threshold):             # <<<<<<<<<<<<<<
@@ -13035,7 +13068,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_36set_soft_clip_threshold(struc
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":168
+/* "gwplot/interface.pyx":151
  *         self.thisptr.opts.soft_clip_threshold = soft_clip_threshold
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13067,7 +13100,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_21small_indel_threshold___get__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":170
+  /* "gwplot/interface.pyx":153
  *     @property
  *     def small_indel_threshold(self):
  *         return self.thisptr.opts.small_indel_threshold             # <<<<<<<<<<<<<<
@@ -13075,13 +13108,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_21small_indel_threshold___get__
  *     def set_small_indel_threshold(self, small_indel_threshold):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.small_indel_threshold); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.small_indel_threshold); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":168
+  /* "gwplot/interface.pyx":151
  *         self.thisptr.opts.soft_clip_threshold = soft_clip_threshold
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13100,7 +13133,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_21small_indel_threshold___get__
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":172
+/* "gwplot/interface.pyx":155
  *         return self.thisptr.opts.small_indel_threshold
  * 
  *     def set_small_indel_threshold(self, small_indel_threshold):             # <<<<<<<<<<<<<<
@@ -13161,12 +13194,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 172, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 155, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_small_indel_threshold") < 0)) __PYX_ERR(0, 172, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_small_indel_threshold") < 0)) __PYX_ERR(0, 155, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -13177,7 +13210,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_small_indel_threshold", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 172, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_small_indel_threshold", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 155, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13213,17 +13246,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_38set_small_indel_threshold(str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_small_indel_threshold", 1);
 
-  /* "gwplot/interface.pyx":173
+  /* "gwplot/interface.pyx":156
  * 
  *     def set_small_indel_threshold(self, small_indel_threshold):
  *         self.thisptr.opts.small_indel_threshold = small_indel_threshold             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_small_indel_threshold); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_small_indel_threshold); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.small_indel_threshold = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":172
+  /* "gwplot/interface.pyx":155
  *         return self.thisptr.opts.small_indel_threshold
  * 
  *     def set_small_indel_threshold(self, small_indel_threshold):             # <<<<<<<<<<<<<<
@@ -13243,7 +13276,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_38set_small_indel_threshold(str
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":175
+/* "gwplot/interface.pyx":158
  *         self.thisptr.opts.small_indel_threshold = small_indel_threshold
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13275,7 +13308,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13snp_threshold___get__(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":177
+  /* "gwplot/interface.pyx":160
  *     @property
  *     def snp_threshold(self):
  *         return self.thisptr.opts.snp_threshold             # <<<<<<<<<<<<<<
@@ -13283,13 +13316,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13snp_threshold___get__(struct 
  *     def set_snp_threshold(self, snp_threshold):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.snp_threshold); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.snp_threshold); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":175
+  /* "gwplot/interface.pyx":158
  *         self.thisptr.opts.small_indel_threshold = small_indel_threshold
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13308,7 +13341,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_13snp_threshold___get__(struct 
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":179
+/* "gwplot/interface.pyx":162
  *         return self.thisptr.opts.snp_threshold
  * 
  *     def set_snp_threshold(self, snp_threshold):             # <<<<<<<<<<<<<<
@@ -13369,12 +13402,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 162, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_snp_threshold") < 0)) __PYX_ERR(0, 179, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_snp_threshold") < 0)) __PYX_ERR(0, 162, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -13385,7 +13418,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_snp_threshold", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 179, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_snp_threshold", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 162, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13421,17 +13454,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_40set_snp_threshold(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_snp_threshold", 1);
 
-  /* "gwplot/interface.pyx":180
+  /* "gwplot/interface.pyx":163
  * 
  *     def set_snp_threshold(self, snp_threshold):
  *         self.thisptr.opts.snp_threshold = snp_threshold             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_snp_threshold); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_snp_threshold); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 163, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.snp_threshold = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":179
+  /* "gwplot/interface.pyx":162
  *         return self.thisptr.opts.snp_threshold
  * 
  *     def set_snp_threshold(self, snp_threshold):             # <<<<<<<<<<<<<<
@@ -13451,7 +13484,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_40set_snp_threshold(struct __py
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":182
+/* "gwplot/interface.pyx":165
  *         self.thisptr.opts.snp_threshold = snp_threshold
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13483,7 +13516,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16variant_distance___get__(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":184
+  /* "gwplot/interface.pyx":167
  *     @property
  *     def variant_distance(self):
  *         return self.thisptr.opts.variant_distance             # <<<<<<<<<<<<<<
@@ -13491,13 +13524,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16variant_distance___get__(stru
  *     def set_variant_distance(self, variant_distance):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.variant_distance); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.variant_distance); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":182
+  /* "gwplot/interface.pyx":165
  *         self.thisptr.opts.snp_threshold = snp_threshold
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13516,7 +13549,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_16variant_distance___get__(stru
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":186
+/* "gwplot/interface.pyx":169
  *         return self.thisptr.opts.variant_distance
  * 
  *     def set_variant_distance(self, variant_distance):             # <<<<<<<<<<<<<<
@@ -13577,12 +13610,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 186, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_variant_distance") < 0)) __PYX_ERR(0, 186, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_variant_distance") < 0)) __PYX_ERR(0, 169, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -13593,7 +13626,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_variant_distance", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 186, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_variant_distance", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 169, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13629,17 +13662,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_42set_variant_distance(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_variant_distance", 1);
 
-  /* "gwplot/interface.pyx":187
+  /* "gwplot/interface.pyx":170
  * 
  *     def set_variant_distance(self, variant_distance):
  *         self.thisptr.opts.variant_distance = variant_distance             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_variant_distance); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_variant_distance); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.variant_distance = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":186
+  /* "gwplot/interface.pyx":169
  *         return self.thisptr.opts.variant_distance
  * 
  *     def set_variant_distance(self, variant_distance):             # <<<<<<<<<<<<<<
@@ -13659,7 +13692,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_42set_variant_distance(struct _
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":189
+/* "gwplot/interface.pyx":172
  *         self.thisptr.opts.variant_distance = variant_distance
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13691,7 +13724,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_10low_memory___get__(struct __p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 1);
 
-  /* "gwplot/interface.pyx":191
+  /* "gwplot/interface.pyx":174
  *     @property
  *     def low_memory(self):
  *         return self.thisptr.opts.low_memory             # <<<<<<<<<<<<<<
@@ -13699,13 +13732,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_10low_memory___get__(struct __p
  *     def set_low_memory(self, low_memory):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.low_memory); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->opts.low_memory); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":189
+  /* "gwplot/interface.pyx":172
  *         self.thisptr.opts.variant_distance = variant_distance
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -13724,7 +13757,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_10low_memory___get__(struct __p
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":193
+/* "gwplot/interface.pyx":176
  *         return self.thisptr.opts.low_memory
  * 
  *     def set_low_memory(self, low_memory):             # <<<<<<<<<<<<<<
@@ -13785,12 +13818,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_low_memory") < 0)) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_low_memory") < 0)) __PYX_ERR(0, 176, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -13801,7 +13834,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_low_memory", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 193, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_low_memory", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 176, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13837,17 +13870,17 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_44set_low_memory(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_low_memory", 1);
 
-  /* "gwplot/interface.pyx":194
+  /* "gwplot/interface.pyx":177
  * 
  *     def set_low_memory(self, low_memory):
  *         self.thisptr.opts.low_memory = low_memory             # <<<<<<<<<<<<<<
  * 
  *     def set_image_number(self, int x, int y):
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_low_memory); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_low_memory); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 177, __pyx_L1_error)
   __pyx_v_self->thisptr->opts.low_memory = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":193
+  /* "gwplot/interface.pyx":176
  *         return self.thisptr.opts.low_memory
  * 
  *     def set_low_memory(self, low_memory):             # <<<<<<<<<<<<<<
@@ -13867,7 +13900,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_44set_low_memory(struct __pyx_o
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":196
+/* "gwplot/interface.pyx":179
  *         self.thisptr.opts.low_memory = low_memory
  * 
  *     def set_image_number(self, int x, int y):             # <<<<<<<<<<<<<<
@@ -13931,7 +13964,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -13939,14 +13972,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("set_image_number", 1, 2, 2, 1); __PYX_ERR(0, 196, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_image_number", 1, 2, 2, 1); __PYX_ERR(0, 179, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_image_number") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_image_number") < 0)) __PYX_ERR(0, 179, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -13954,12 +13987,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_image_number", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 196, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_image_number", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 179, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13991,7 +14024,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_46set_image_number(struct __pyx
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_image_number", 1);
 
-  /* "gwplot/interface.pyx":197
+  /* "gwplot/interface.pyx":180
  * 
  *     def set_image_number(self, int x, int y):
  *         self.thisptr.opts.number.x = x             # <<<<<<<<<<<<<<
@@ -14000,7 +14033,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_46set_image_number(struct __pyx
  */
   __pyx_v_self->thisptr->opts.number.x = __pyx_v_x;
 
-  /* "gwplot/interface.pyx":198
+  /* "gwplot/interface.pyx":181
  *     def set_image_number(self, int x, int y):
  *         self.thisptr.opts.number.x = x
  *         self.thisptr.opts.number.y = y             # <<<<<<<<<<<<<<
@@ -14009,7 +14042,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_46set_image_number(struct __pyx
  */
   __pyx_v_self->thisptr->opts.number.y = __pyx_v_y;
 
-  /* "gwplot/interface.pyx":196
+  /* "gwplot/interface.pyx":179
  *         self.thisptr.opts.low_memory = low_memory
  * 
  *     def set_image_number(self, int x, int y):             # <<<<<<<<<<<<<<
@@ -14024,7 +14057,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_46set_image_number(struct __pyx
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":200
+/* "gwplot/interface.pyx":183
  *         self.thisptr.opts.number.y = y
  * 
  *     def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):             # <<<<<<<<<<<<<<
@@ -14097,7 +14130,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -14105,9 +14138,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 1); __PYX_ERR(0, 200, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 1); __PYX_ERR(0, 183, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -14115,9 +14148,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 2); __PYX_ERR(0, 200, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 2); __PYX_ERR(0, 183, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -14125,9 +14158,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[3]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 3); __PYX_ERR(0, 200, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 3); __PYX_ERR(0, 183, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
@@ -14135,14 +14168,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[4]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 4); __PYX_ERR(0, 200, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, 4); __PYX_ERR(0, 183, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_paint_ARBG") < 0)) __PYX_ERR(0, 200, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "set_paint_ARBG") < 0)) __PYX_ERR(0, 183, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 5)) {
       goto __pyx_L5_argtuple_error;
@@ -14153,15 +14186,15 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[3] = __Pyx_Arg_FASTCALL(__pyx_args, 3);
       values[4] = __Pyx_Arg_FASTCALL(__pyx_args, 4);
     }
-    __pyx_v_paint_enum = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_paint_enum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
-    __pyx_v_a = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_a == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
-    __pyx_v_r = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_r == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
-    __pyx_v_g = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_g == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
-    __pyx_v_b = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_b == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
+    __pyx_v_paint_enum = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_paint_enum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
+    __pyx_v_a = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_a == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_r == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
+    __pyx_v_g = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_g == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
+    __pyx_v_b = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_b == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 200, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_paint_ARBG", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 183, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14193,7 +14226,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_48set_paint_ARBG(struct __pyx_o
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_paint_ARBG", 1);
 
-  /* "gwplot/interface.pyx":201
+  /* "gwplot/interface.pyx":184
  * 
  *     def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):
  *         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)             # <<<<<<<<<<<<<<
@@ -14202,7 +14235,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_48set_paint_ARBG(struct __pyx_o
  */
   __pyx_v_self->thisptr->opts.theme.setPaintARGB(__pyx_v_paint_enum, __pyx_v_a, __pyx_v_r, __pyx_v_g, __pyx_v_b);
 
-  /* "gwplot/interface.pyx":200
+  /* "gwplot/interface.pyx":183
  *         self.thisptr.opts.number.y = y
  * 
  *     def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):             # <<<<<<<<<<<<<<
@@ -14217,7 +14250,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_48set_paint_ARBG(struct __pyx_o
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":203
+/* "gwplot/interface.pyx":186
  *         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
  * 
  *     def add_bam(self, str bam_path):             # <<<<<<<<<<<<<<
@@ -14278,12 +14311,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 203, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 186, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "add_bam") < 0)) __PYX_ERR(0, 203, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "add_bam") < 0)) __PYX_ERR(0, 186, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -14294,7 +14327,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("add_bam", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 203, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("add_bam", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 186, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14308,7 +14341,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_bam_path), (&PyUnicode_Type), 1, "bam_path", 1))) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_bam_path), (&PyUnicode_Type), 1, "bam_path", 1))) __PYX_ERR(0, 186, __pyx_L1_error)
   __pyx_r = __pyx_pf_6gwplot_9interface_2Gw_50add_bam(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self), __pyx_v_bam_path);
 
   /* function exit code */
@@ -14337,7 +14370,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_50add_bam(struct __pyx_obj_6gwp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("add_bam", 1);
 
-  /* "gwplot/interface.pyx":204
+  /* "gwplot/interface.pyx":187
  * 
  *     def add_bam(self, str bam_path):
  *         cdef string b = bam_path.encode("utf-8")             # <<<<<<<<<<<<<<
@@ -14346,15 +14379,15 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_50add_bam(struct __pyx_obj_6gwp
  */
   if (unlikely(__pyx_v_bam_path == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 204, __pyx_L1_error)
+    __PYX_ERR(0, 187, __pyx_L1_error)
   }
-  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_bam_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_bam_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_b = __PYX_STD_MOVE_IF_SUPPORTED(__pyx_t_2);
 
-  /* "gwplot/interface.pyx":205
+  /* "gwplot/interface.pyx":188
  *     def add_bam(self, str bam_path):
  *         cdef string b = bam_path.encode("utf-8")
  *         self.thisptr.addBam(b)             # <<<<<<<<<<<<<<
@@ -14363,7 +14396,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_50add_bam(struct __pyx_obj_6gwp
  */
   __pyx_v_self->thisptr->addBam(__pyx_v_b);
 
-  /* "gwplot/interface.pyx":203
+  /* "gwplot/interface.pyx":186
  *         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
  * 
  *     def add_bam(self, str bam_path):             # <<<<<<<<<<<<<<
@@ -14384,7 +14417,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_50add_bam(struct __pyx_obj_6gwp
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":207
+/* "gwplot/interface.pyx":190
  *         self.thisptr.addBam(b)
  * 
  *     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):             # <<<<<<<<<<<<<<
@@ -14457,7 +14490,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -14465,9 +14498,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("add_region", 0, 3, 5, 1); __PYX_ERR(0, 207, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_region", 0, 3, 5, 1); __PYX_ERR(0, 190, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -14475,28 +14508,28 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("add_region", 0, 3, 5, 2); __PYX_ERR(0, 207, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_region", 0, 3, 5, 2); __PYX_ERR(0, 190, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_marker_start);
           if (value) { values[3] = __Pyx_Arg_NewRef_FASTCALL(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_marker_end);
           if (value) { values[4] = __Pyx_Arg_NewRef_FASTCALL(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "add_region") < 0)) __PYX_ERR(0, 207, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "add_region") < 0)) __PYX_ERR(0, 190, __pyx_L3_error)
       }
     } else {
       switch (__pyx_nargs) {
@@ -14512,22 +14545,22 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       }
     }
     __pyx_v_chrom = values[0];
-    __pyx_v_start = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
-    __pyx_v_end = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+    __pyx_v_start = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
+    __pyx_v_end = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
     if (values[3]) {
-      __pyx_v_marker_start = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_marker_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+      __pyx_v_marker_start = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_marker_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
     } else {
       __pyx_v_marker_start = ((int)-1);
     }
     if (values[4]) {
-      __pyx_v_marker_end = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_marker_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L3_error)
+      __pyx_v_marker_end = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_marker_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
     } else {
       __pyx_v_marker_end = ((int)-1);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("add_region", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 207, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("add_region", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 190, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14569,14 +14602,14 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("add_region", 1);
 
-  /* "gwplot/interface.pyx":208
+  /* "gwplot/interface.pyx":191
  * 
  *     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):
  *         cdef string c = chrom.encode("utf-8")             # <<<<<<<<<<<<<<
  *         cdef Region reg = Region()
  *         reg.chrom = c
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_chrom, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_chrom, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -14596,15 +14629,15 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
     PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_kp_u_utf_8};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 208, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
-  __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_c = __PYX_STD_MOVE_IF_SUPPORTED(__pyx_t_5);
 
-  /* "gwplot/interface.pyx":209
+  /* "gwplot/interface.pyx":192
  *     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):
  *         cdef string c = chrom.encode("utf-8")
  *         cdef Region reg = Region()             # <<<<<<<<<<<<<<
@@ -14613,7 +14646,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
  */
   __pyx_v_reg = Utils::Region();
 
-  /* "gwplot/interface.pyx":210
+  /* "gwplot/interface.pyx":193
  *         cdef string c = chrom.encode("utf-8")
  *         cdef Region reg = Region()
  *         reg.chrom = c             # <<<<<<<<<<<<<<
@@ -14622,7 +14655,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
  */
   __pyx_v_reg.chrom = __pyx_v_c;
 
-  /* "gwplot/interface.pyx":211
+  /* "gwplot/interface.pyx":194
  *         cdef Region reg = Region()
  *         reg.chrom = c
  *         reg.start = start             # <<<<<<<<<<<<<<
@@ -14631,7 +14664,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
  */
   __pyx_v_reg.start = __pyx_v_start;
 
-  /* "gwplot/interface.pyx":212
+  /* "gwplot/interface.pyx":195
  *         reg.chrom = c
  *         reg.start = start
  *         reg.end = end             # <<<<<<<<<<<<<<
@@ -14640,7 +14673,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
  */
   __pyx_v_reg.end = __pyx_v_end;
 
-  /* "gwplot/interface.pyx":213
+  /* "gwplot/interface.pyx":196
  *         reg.start = start
  *         reg.end = end
  *         reg.markerPos = marker_start             # <<<<<<<<<<<<<<
@@ -14649,7 +14682,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
  */
   __pyx_v_reg.markerPos = __pyx_v_marker_start;
 
-  /* "gwplot/interface.pyx":214
+  /* "gwplot/interface.pyx":197
  *         reg.end = end
  *         reg.markerPos = marker_start
  *         reg.markerPosEnd = marker_end             # <<<<<<<<<<<<<<
@@ -14658,7 +14691,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
  */
   __pyx_v_reg.markerPosEnd = __pyx_v_marker_end;
 
-  /* "gwplot/interface.pyx":215
+  /* "gwplot/interface.pyx":198
  *         reg.markerPos = marker_start
  *         reg.markerPosEnd = marker_end
  *         self.thisptr.regions.push_back(reg)             # <<<<<<<<<<<<<<
@@ -14669,10 +14702,10 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
     __pyx_v_self->thisptr->regions.push_back(__pyx_v_reg);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 215, __pyx_L1_error)
+    __PYX_ERR(0, 198, __pyx_L1_error)
   }
 
-  /* "gwplot/interface.pyx":207
+  /* "gwplot/interface.pyx":190
  *         self.thisptr.addBam(b)
  * 
  *     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):             # <<<<<<<<<<<<<<
@@ -14695,7 +14728,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_52add_region(struct __pyx_obj_6
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":219
+/* "gwplot/interface.pyx":202
  *     # def update_region(self, str chrom, int start, int end, int marker_start=-1, int marker_end=-1, int index=0):
  * 
  *     def make_raster_surface(self):             # <<<<<<<<<<<<<<
@@ -14755,7 +14788,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_54make_raster_surface(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("make_raster_surface", 1);
 
-  /* "gwplot/interface.pyx":220
+  /* "gwplot/interface.pyx":203
  * 
  *     def make_raster_surface(self):
  *         size = self.thisptr.makeRasterSurface()             # <<<<<<<<<<<<<<
@@ -14764,7 +14797,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_54make_raster_surface(struct __
  */
   __pyx_v_size = __pyx_v_self->thisptr->makeRasterSurface();
 
-  /* "gwplot/interface.pyx":221
+  /* "gwplot/interface.pyx":204
  *     def make_raster_surface(self):
  *         size = self.thisptr.makeRasterSurface()
  *         self.thisptr.fb_width = self.thisptr.opts.dimensions.x             # <<<<<<<<<<<<<<
@@ -14774,7 +14807,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_54make_raster_surface(struct __
   __pyx_t_1 = __pyx_v_self->thisptr->opts.dimensions.x;
   __pyx_v_self->thisptr->fb_width = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":222
+  /* "gwplot/interface.pyx":205
  *         size = self.thisptr.makeRasterSurface()
  *         self.thisptr.fb_width = self.thisptr.opts.dimensions.x
  *         self.thisptr.fb_height = self.thisptr.opts.dimensions.y             # <<<<<<<<<<<<<<
@@ -14784,7 +14817,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_54make_raster_surface(struct __
   __pyx_t_1 = __pyx_v_self->thisptr->opts.dimensions.y;
   __pyx_v_self->thisptr->fb_height = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":223
+  /* "gwplot/interface.pyx":206
  *         self.thisptr.fb_width = self.thisptr.opts.dimensions.x
  *         self.thisptr.fb_height = self.thisptr.opts.dimensions.y
  *         self.raster_surface_created = True             # <<<<<<<<<<<<<<
@@ -14793,7 +14826,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_54make_raster_surface(struct __
  */
   __pyx_v_self->raster_surface_created = 1;
 
-  /* "gwplot/interface.pyx":224
+  /* "gwplot/interface.pyx":207
  *         self.thisptr.fb_height = self.thisptr.opts.dimensions.y
  *         self.raster_surface_created = True
  *         return size             # <<<<<<<<<<<<<<
@@ -14801,13 +14834,13 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_54make_raster_surface(struct __
  *     def raster_to_png(self, path):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "gwplot/interface.pyx":219
+  /* "gwplot/interface.pyx":202
  *     # def update_region(self, str chrom, int start, int end, int marker_start=-1, int marker_end=-1, int index=0):
  * 
  *     def make_raster_surface(self):             # <<<<<<<<<<<<<<
@@ -14826,7 +14859,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_54make_raster_surface(struct __
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":226
+/* "gwplot/interface.pyx":209
  *         return size
  * 
  *     def raster_to_png(self, path):             # <<<<<<<<<<<<<<
@@ -14887,12 +14920,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "raster_to_png") < 0)) __PYX_ERR(0, 226, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "raster_to_png") < 0)) __PYX_ERR(0, 209, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -14903,7 +14936,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("raster_to_png", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 226, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("raster_to_png", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 209, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14944,14 +14977,14 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_56raster_to_png(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("raster_to_png", 1);
 
-  /* "gwplot/interface.pyx":227
+  /* "gwplot/interface.pyx":210
  * 
  *     def raster_to_png(self, path):
  *         cdef string c = path.encode("utf-8")             # <<<<<<<<<<<<<<
  *         self.thisptr.rasterToPng(c.c_str())
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_path, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_path, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -14971,15 +15004,15 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_56raster_to_png(struct __pyx_ob
     PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_kp_u_utf_8};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
-  __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_c = __PYX_STD_MOVE_IF_SUPPORTED(__pyx_t_5);
 
-  /* "gwplot/interface.pyx":228
+  /* "gwplot/interface.pyx":211
  *     def raster_to_png(self, path):
  *         cdef string c = path.encode("utf-8")
  *         self.thisptr.rasterToPng(c.c_str())             # <<<<<<<<<<<<<<
@@ -14988,7 +15021,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_56raster_to_png(struct __pyx_ob
  */
   __pyx_v_self->thisptr->rasterToPng(__pyx_v_c.c_str());
 
-  /* "gwplot/interface.pyx":226
+  /* "gwplot/interface.pyx":209
  *         return size
  * 
  *     def raster_to_png(self, path):             # <<<<<<<<<<<<<<
@@ -15011,7 +15044,7 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_56raster_to_png(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":230
+/* "gwplot/interface.pyx":213
  *         self.thisptr.rasterToPng(c.c_str())
  * 
  *     def run_draw_no_buffer(self):             # <<<<<<<<<<<<<<
@@ -15073,26 +15106,26 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_58run_draw_no_buffer(struct __p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run_draw_no_buffer", 1);
 
-  /* "gwplot/interface.pyx":231
+  /* "gwplot/interface.pyx":214
  * 
  *     def run_draw_no_buffer(self):
  *         if not self.raster_surface_created:             # <<<<<<<<<<<<<<
  *             assert self.make_raster_surface()
- *         self.thisptr.runDrawNoBuffer()
+ *         self.thisptr.processed = False
  */
   __pyx_t_1 = (!__pyx_v_self->raster_surface_created);
   if (__pyx_t_1) {
 
-    /* "gwplot/interface.pyx":232
+    /* "gwplot/interface.pyx":215
  *     def run_draw_no_buffer(self):
  *         if not self.raster_surface_created:
  *             assert self.make_raster_surface()             # <<<<<<<<<<<<<<
+ *         self.thisptr.processed = False
  *         self.thisptr.runDrawNoBuffer()
- * 
  */
     #ifndef CYTHON_WITHOUT_ASSERTIONS
     if (unlikely(__pyx_assertions_enabled())) {
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_make_raster_surface); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_make_raster_surface); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = NULL;
       __pyx_t_5 = 0;
@@ -15112,40 +15145,49 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_58run_draw_no_buffer(struct __p
         PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
         __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 0+__pyx_t_5);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 232, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       }
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 232, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 215, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(!__pyx_t_1)) {
         __Pyx_Raise(__pyx_builtin_AssertionError, 0, 0, 0);
-        __PYX_ERR(0, 232, __pyx_L1_error)
+        __PYX_ERR(0, 215, __pyx_L1_error)
       }
     }
     #else
-    if ((1)); else __PYX_ERR(0, 232, __pyx_L1_error)
+    if ((1)); else __PYX_ERR(0, 215, __pyx_L1_error)
     #endif
 
-    /* "gwplot/interface.pyx":231
+    /* "gwplot/interface.pyx":214
  * 
  *     def run_draw_no_buffer(self):
  *         if not self.raster_surface_created:             # <<<<<<<<<<<<<<
  *             assert self.make_raster_surface()
- *         self.thisptr.runDrawNoBuffer()
+ *         self.thisptr.processed = False
  */
   }
 
-  /* "gwplot/interface.pyx":233
+  /* "gwplot/interface.pyx":216
  *         if not self.raster_surface_created:
  *             assert self.make_raster_surface()
+ *         self.thisptr.processed = False             # <<<<<<<<<<<<<<
+ *         self.thisptr.runDrawNoBuffer()
+ * 
+ */
+  __pyx_v_self->thisptr->processed = 0;
+
+  /* "gwplot/interface.pyx":217
+ *             assert self.make_raster_surface()
+ *         self.thisptr.processed = False
  *         self.thisptr.runDrawNoBuffer()             # <<<<<<<<<<<<<<
  * 
  *     # def __array__(self):
  */
   __pyx_v_self->thisptr->runDrawNoBuffer();
 
-  /* "gwplot/interface.pyx":230
+  /* "gwplot/interface.pyx":213
  *         self.thisptr.rasterToPng(c.c_str())
  * 
  *     def run_draw_no_buffer(self):             # <<<<<<<<<<<<<<
@@ -15168,12 +15210,12 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_58run_draw_no_buffer(struct __p
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":236
- * 
- *     # def __array__(self):
+/* "gwplot/interface.pyx":227
+ *     #     ndarray = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT8, self.thisptr.pixelMemory.data())
+ *     #     return ndarray
  *     def __getbuffer__(self, Py_buffer *buffer, int flags):             # <<<<<<<<<<<<<<
- * 
  *         """
+ *         Buffer protocol is called when numpy tries to make an array out of this
  */
 
 /* Python wrapper */
@@ -15207,89 +15249,89 @@ static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwp
   __pyx_v_buffer->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_buffer->obj);
 
-  /* "gwplot/interface.pyx":248
- *         # return ndarray
- * 
+  /* "gwplot/interface.pyx":231
+ *         Buffer protocol is called when numpy tries to make an array out of this
+ *         """
  *         cdef Py_ssize_t itemsize = sizeof(self.thisptr.pixelMemory[0])             # <<<<<<<<<<<<<<
  *         self.shape[0] = self.thisptr.pixelMemory.size()
  *         self.strides[0] = sizeof(char)
  */
   __pyx_v_itemsize = (sizeof((__pyx_v_self->thisptr->pixelMemory[0])));
 
-  /* "gwplot/interface.pyx":249
- * 
+  /* "gwplot/interface.pyx":232
+ *         """
  *         cdef Py_ssize_t itemsize = sizeof(self.thisptr.pixelMemory[0])
  *         self.shape[0] = self.thisptr.pixelMemory.size()             # <<<<<<<<<<<<<<
  *         self.strides[0] = sizeof(char)
- * 
+ *         buffer.buf = &(self.thisptr.pixelMemory[0])  # char *
  */
   (__pyx_v_self->shape[0]) = __pyx_v_self->thisptr->pixelMemory.size();
 
-  /* "gwplot/interface.pyx":250
+  /* "gwplot/interface.pyx":233
  *         cdef Py_ssize_t itemsize = sizeof(self.thisptr.pixelMemory[0])
  *         self.shape[0] = self.thisptr.pixelMemory.size()
  *         self.strides[0] = sizeof(char)             # <<<<<<<<<<<<<<
- * 
- *         buffer.buf = <char *> &(self.thisptr.pixelMemory[0])
+ *         buffer.buf = &(self.thisptr.pixelMemory[0])  # char *
+ *         buffer.format = 'B'
  */
   (__pyx_v_self->strides[0]) = (sizeof(char));
 
-  /* "gwplot/interface.pyx":252
+  /* "gwplot/interface.pyx":234
+ *         self.shape[0] = self.thisptr.pixelMemory.size()
  *         self.strides[0] = sizeof(char)
- * 
- *         buffer.buf = <char *> &(self.thisptr.pixelMemory[0])             # <<<<<<<<<<<<<<
- *         buffer.format = 'b'
+ *         buffer.buf = &(self.thisptr.pixelMemory[0])  # char *             # <<<<<<<<<<<<<<
+ *         buffer.format = 'B'
  *         buffer.internal = NULL
  */
-  __pyx_v_buffer->buf = ((char *)(&(__pyx_v_self->thisptr->pixelMemory[0])));
+  __pyx_v_buffer->buf = (&(__pyx_v_self->thisptr->pixelMemory[0]));
 
-  /* "gwplot/interface.pyx":253
- * 
- *         buffer.buf = <char *> &(self.thisptr.pixelMemory[0])
- *         buffer.format = 'b'             # <<<<<<<<<<<<<<
+  /* "gwplot/interface.pyx":235
+ *         self.strides[0] = sizeof(char)
+ *         buffer.buf = &(self.thisptr.pixelMemory[0])  # char *
+ *         buffer.format = 'B'             # <<<<<<<<<<<<<<
  *         buffer.internal = NULL
  *         buffer.itemsize = itemsize
  */
-  __pyx_v_buffer->format = ((char *)"b");
+  __pyx_v_buffer->format = ((char *)"B");
 
-  /* "gwplot/interface.pyx":254
- *         buffer.buf = <char *> &(self.thisptr.pixelMemory[0])
- *         buffer.format = 'b'
+  /* "gwplot/interface.pyx":236
+ *         buffer.buf = &(self.thisptr.pixelMemory[0])  # char *
+ *         buffer.format = 'B'
  *         buffer.internal = NULL             # <<<<<<<<<<<<<<
  *         buffer.itemsize = itemsize
- *         buffer.len = self.shape[0] * itemsize  # product(shape) * itemsize
+ *         buffer.len = self.shape[0] * itemsize
  */
   __pyx_v_buffer->internal = NULL;
 
-  /* "gwplot/interface.pyx":255
- *         buffer.format = 'b'
+  /* "gwplot/interface.pyx":237
+ *         buffer.format = 'B'
  *         buffer.internal = NULL
  *         buffer.itemsize = itemsize             # <<<<<<<<<<<<<<
- *         buffer.len = self.shape[0] * itemsize  # product(shape) * itemsize
+ *         buffer.len = self.shape[0] * itemsize
  *         buffer.ndim = 1
  */
   __pyx_v_buffer->itemsize = __pyx_v_itemsize;
 
-  /* "gwplot/interface.pyx":256
+  /* "gwplot/interface.pyx":238
  *         buffer.internal = NULL
  *         buffer.itemsize = itemsize
- *         buffer.len = self.shape[0] * itemsize  # product(shape) * itemsize             # <<<<<<<<<<<<<<
+ *         buffer.len = self.shape[0] * itemsize             # <<<<<<<<<<<<<<
  *         buffer.ndim = 1
  *         buffer.obj = self
  */
   __pyx_v_buffer->len = ((__pyx_v_self->shape[0]) * __pyx_v_itemsize);
 
-  /* "gwplot/interface.pyx":257
+  /* "gwplot/interface.pyx":239
  *         buffer.itemsize = itemsize
- *         buffer.len = self.shape[0] * itemsize  # product(shape) * itemsize
+ *         buffer.len = self.shape[0] * itemsize
  *         buffer.ndim = 1             # <<<<<<<<<<<<<<
  *         buffer.obj = self
  *         buffer.readonly = 0
  */
   __pyx_v_buffer->ndim = 1;
 
-  /* "gwplot/interface.pyx":258
- *         buffer.len = self.shape[0] * itemsize  # product(shape) * itemsize
+  /* "gwplot/interface.pyx":240
+ *         buffer.len = self.shape[0] * itemsize
  *         buffer.ndim = 1
  *         buffer.obj = self             # <<<<<<<<<<<<<<
  *         buffer.readonly = 0
@@ -15301,7 +15343,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwp
   __Pyx_DECREF(__pyx_v_buffer->obj);
   __pyx_v_buffer->obj = ((PyObject *)__pyx_v_self);
 
-  /* "gwplot/interface.pyx":259
+  /* "gwplot/interface.pyx":241
  *         buffer.ndim = 1
  *         buffer.obj = self
  *         buffer.readonly = 0             # <<<<<<<<<<<<<<
@@ -15310,7 +15352,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwp
  */
   __pyx_v_buffer->readonly = 0;
 
-  /* "gwplot/interface.pyx":260
+  /* "gwplot/interface.pyx":242
  *         buffer.obj = self
  *         buffer.readonly = 0
  *         buffer.shape = self.shape             # <<<<<<<<<<<<<<
@@ -15320,7 +15362,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwp
   __pyx_t_1 = __pyx_v_self->shape;
   __pyx_v_buffer->shape = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":261
+  /* "gwplot/interface.pyx":243
  *         buffer.readonly = 0
  *         buffer.shape = self.shape
  *         buffer.strides = self.strides             # <<<<<<<<<<<<<<
@@ -15330,7 +15372,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwp
   __pyx_t_1 = __pyx_v_self->strides;
   __pyx_v_buffer->strides = __pyx_t_1;
 
-  /* "gwplot/interface.pyx":262
+  /* "gwplot/interface.pyx":244
  *         buffer.shape = self.shape
  *         buffer.strides = self.strides
  *         buffer.suboffsets = NULL             # <<<<<<<<<<<<<<
@@ -15339,12 +15381,12 @@ static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwp
  */
   __pyx_v_buffer->suboffsets = NULL;
 
-  /* "gwplot/interface.pyx":236
- * 
- *     # def __array__(self):
+  /* "gwplot/interface.pyx":227
+ *     #     ndarray = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT8, self.thisptr.pixelMemory.data())
+ *     #     return ndarray
  *     def __getbuffer__(self, Py_buffer *buffer, int flags):             # <<<<<<<<<<<<<<
- * 
  *         """
+ *         Buffer protocol is called when numpy tries to make an array out of this
  */
 
   /* function exit code */
@@ -15357,7 +15399,7 @@ static int __pyx_pf_6gwplot_9interface_2Gw_60__getbuffer__(struct __pyx_obj_6gwp
   return __pyx_r;
 }
 
-/* "gwplot/interface.pyx":264
+/* "gwplot/interface.pyx":246
  *         buffer.suboffsets = NULL
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -15383,6 +15425,190 @@ static void __pyx_pf_6gwplot_9interface_2Gw_62__dealloc__(CYTHON_UNUSED struct _
   /* function exit code */
 }
 
+/* "gwplot/interface.pyx":251
+ *         pass
+ * 
+ *     def RGBA_array(self):             # <<<<<<<<<<<<<<
+ *         if not self.raster_surface_created:
+ *             return None
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_6gwplot_9interface_2Gw_65RGBA_array(PyObject *__pyx_v_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static PyMethodDef __pyx_mdef_6gwplot_9interface_2Gw_65RGBA_array = {"RGBA_array", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_65RGBA_array, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_6gwplot_9interface_2Gw_65RGBA_array(PyObject *__pyx_v_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("RGBA_array (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_MACROS
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  if (unlikely(__pyx_nargs > 0)) {
+    __Pyx_RaiseArgtupleInvalid("RGBA_array", 1, 0, 0, __pyx_nargs); return NULL;}
+  if (unlikely(__pyx_kwds) && __Pyx_NumKwargs_FASTCALL(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "RGBA_array", 0))) return NULL;
+  __pyx_r = __pyx_pf_6gwplot_9interface_2Gw_64RGBA_array(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6gwplot_9interface_2Gw_64RGBA_array(struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("RGBA_array", 1);
+
+  /* "gwplot/interface.pyx":252
+ * 
+ *     def RGBA_array(self):
+ *         if not self.raster_surface_created:             # <<<<<<<<<<<<<<
+ *             return None
+ *         return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)
+ */
+  __pyx_t_1 = (!__pyx_v_self->raster_surface_created);
+  if (__pyx_t_1) {
+
+    /* "gwplot/interface.pyx":253
+ *     def RGBA_array(self):
+ *         if not self.raster_surface_created:
+ *             return None             # <<<<<<<<<<<<<<
+ *         return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+    goto __pyx_L0;
+
+    /* "gwplot/interface.pyx":252
+ * 
+ *     def RGBA_array(self):
+ *         if not self.raster_surface_created:             # <<<<<<<<<<<<<<
+ *             return None
+ *         return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)
+ */
+  }
+
+  /* "gwplot/interface.pyx":254
+ *         if not self.raster_surface_created:
+ *             return None
+ *         return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = NULL;
+  __pyx_t_6 = 0;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+      __pyx_t_6 = 1;
+    }
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_4, ((PyObject *)__pyx_v_self)};
+    __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_6, 1+__pyx_t_6);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  }
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_reshape); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_canvas_height); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_canvas_width); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_7 = NULL;
+  __pyx_t_6 = 0;
+  #if CYTHON_UNPACK_METHODS
+  if (likely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+      __pyx_t_6 = 1;
+    }
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[4] = {__pyx_t_7, __pyx_t_3, __pyx_t_4, __pyx_int_4};
+    __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_6, 3+__pyx_t_6);
+    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 254, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  }
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "gwplot/interface.pyx":251
+ *         pass
+ * 
+ *     def RGBA_array(self):             # <<<<<<<<<<<<<<
+ *         if not self.raster_surface_created:
+ *             return None
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("gwplot.interface.Gw.RGBA_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
@@ -15390,15 +15616,15 @@ static void __pyx_pf_6gwplot_9interface_2Gw_62__dealloc__(CYTHON_UNUSED struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6gwplot_9interface_2Gw_65__reduce_cython__(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6gwplot_9interface_2Gw_67__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_6gwplot_9interface_2Gw_65__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_65__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_6gwplot_9interface_2Gw_65__reduce_cython__(PyObject *__pyx_v_self, 
+static PyMethodDef __pyx_mdef_6gwplot_9interface_2Gw_67__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_67__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_6gwplot_9interface_2Gw_67__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15423,14 +15649,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   if (unlikely(__pyx_nargs > 0)) {
     __Pyx_RaiseArgtupleInvalid("__reduce_cython__", 1, 0, 0, __pyx_nargs); return NULL;}
   if (unlikely(__pyx_kwds) && __Pyx_NumKwargs_FASTCALL(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__reduce_cython__", 0))) return NULL;
-  __pyx_r = __pyx_pf_6gwplot_9interface_2Gw_64__reduce_cython__(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6gwplot_9interface_2Gw_66__reduce_cython__(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6gwplot_9interface_2Gw_64__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self) {
+static PyObject *__pyx_pf_6gwplot_9interface_2Gw_66__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
@@ -15470,15 +15696,15 @@ static PyObject *__pyx_pf_6gwplot_9interface_2Gw_64__reduce_cython__(CYTHON_UNUS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6gwplot_9interface_2Gw_67__setstate_cython__(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6gwplot_9interface_2Gw_69__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_6gwplot_9interface_2Gw_67__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_67__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_6gwplot_9interface_2Gw_67__setstate_cython__(PyObject *__pyx_v_self, 
+static PyMethodDef __pyx_mdef_6gwplot_9interface_2Gw_69__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_69__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_6gwplot_9interface_2Gw_69__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15552,7 +15778,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6gwplot_9interface_2Gw_66__setstate_cython__(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self), __pyx_v___pyx_state);
+  __pyx_r = __pyx_pf_6gwplot_9interface_2Gw_68__setstate_cython__(((struct __pyx_obj_6gwplot_9interface_Gw *)__pyx_v_self), __pyx_v___pyx_state);
 
   /* function exit code */
   {
@@ -15565,7 +15791,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6gwplot_9interface_2Gw_66__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_6gwplot_9interface_2Gw_68__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6gwplot_9interface_Gw *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
@@ -15764,8 +15990,9 @@ static PyMethodDef __pyx_methods_6gwplot_9interface_Gw[] = {
   {"make_raster_surface", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_55make_raster_surface, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
   {"raster_to_png", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_57raster_to_png, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
   {"run_draw_no_buffer", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_59run_draw_no_buffer, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
-  {"__reduce_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_65__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
-  {"__setstate_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_67__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
+  {"RGBA_array", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_65RGBA_array, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
+  {"__reduce_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_67__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
+  {"__setstate_cython__", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6gwplot_9interface_2Gw_69__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -16101,6 +16328,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_EnumType, __pyx_k_EnumType, sizeof(__pyx_k_EnumType), 0, 0, 1, 1},
     {&__pyx_n_s_Gw, __pyx_k_Gw, sizeof(__pyx_k_Gw), 0, 0, 1, 1},
     {&__pyx_n_s_GwPaint, __pyx_k_GwPaint, sizeof(__pyx_k_GwPaint), 0, 0, 1, 1},
+    {&__pyx_n_s_Gw_RGBA_array, __pyx_k_Gw_RGBA_array, sizeof(__pyx_k_Gw_RGBA_array), 0, 0, 1, 1},
     {&__pyx_n_s_Gw___reduce_cython, __pyx_k_Gw___reduce_cython, sizeof(__pyx_k_Gw___reduce_cython), 0, 0, 1, 1},
     {&__pyx_n_s_Gw___setstate_cython, __pyx_k_Gw___setstate_cython, sizeof(__pyx_k_Gw___setstate_cython), 0, 0, 1, 1},
     {&__pyx_n_s_Gw_add_bam, __pyx_k_Gw_add_bam, sizeof(__pyx_k_Gw_add_bam), 0, 0, 1, 1},
@@ -16147,21 +16375,25 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_Pyx_FlagBase___new, __pyx_k_Pyx_FlagBase___new, sizeof(__pyx_k_Pyx_FlagBase___new), 0, 0, 1, 1},
     {&__pyx_n_s_Pyx_FlagBase___repr, __pyx_k_Pyx_FlagBase___repr, sizeof(__pyx_k_Pyx_FlagBase___repr), 0, 0, 1, 1},
     {&__pyx_n_s_Pyx_FlagBase___str, __pyx_k_Pyx_FlagBase___str, sizeof(__pyx_k_Pyx_FlagBase___str), 0, 0, 1, 1},
+    {&__pyx_n_s_RGBA_array, __pyx_k_RGBA_array, sizeof(__pyx_k_RGBA_array), 0, 0, 1, 1},
     {&__pyx_kp_u_Theme_must_be_one_of_slate_dark, __pyx_k_Theme_must_be_one_of_slate_dark, sizeof(__pyx_k_Theme_must_be_one_of_slate_dark), 0, 1, 0, 0},
     {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
     {&__pyx_kp_s_Unknown_enum_value_s, __pyx_k_Unknown_enum_value_s, sizeof(__pyx_k_Unknown_enum_value_s), 0, 0, 1, 0},
     {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
     {&__pyx_n_s__22, __pyx_k__22, sizeof(__pyx_k__22), 0, 0, 1, 1},
     {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
-    {&__pyx_n_s__81, __pyx_k__81, sizeof(__pyx_k__81), 0, 0, 1, 1},
+    {&__pyx_n_s__82, __pyx_k__82, sizeof(__pyx_k__82), 0, 0, 1, 1},
     {&__pyx_n_s_a, __pyx_k_a, sizeof(__pyx_k_a), 0, 0, 1, 1},
     {&__pyx_n_s_add_bam, __pyx_k_add_bam, sizeof(__pyx_k_add_bam), 0, 0, 1, 1},
     {&__pyx_n_s_add_region, __pyx_k_add_region, sizeof(__pyx_k_add_region), 0, 0, 1, 1},
+    {&__pyx_n_s_array, __pyx_k_array, sizeof(__pyx_k_array), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
     {&__pyx_n_s_b, __pyx_k_b, sizeof(__pyx_k_b), 0, 0, 1, 1},
     {&__pyx_n_s_bam_path, __pyx_k_bam_path, sizeof(__pyx_k_bam_path), 0, 0, 1, 1},
     {&__pyx_n_s_bgPaint, __pyx_k_bgPaint, sizeof(__pyx_k_bgPaint), 0, 0, 1, 1},
     {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
+    {&__pyx_n_s_canvas_height, __pyx_k_canvas_height, sizeof(__pyx_k_canvas_height), 0, 0, 1, 1},
+    {&__pyx_n_s_canvas_width, __pyx_k_canvas_width, sizeof(__pyx_k_canvas_width), 0, 0, 1, 1},
     {&__pyx_n_s_chrom, __pyx_k_chrom, sizeof(__pyx_k_chrom), 0, 0, 1, 1},
     {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
     {&__pyx_n_s_class_getitem, __pyx_k_class_getitem, sizeof(__pyx_k_class_getitem), 0, 0, 1, 1},
@@ -16273,6 +16505,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_reg, __pyx_k_reg, sizeof(__pyx_k_reg), 0, 0, 1, 1},
     {&__pyx_n_s_repr, __pyx_k_repr, sizeof(__pyx_k_repr), 0, 0, 1, 1},
     {&__pyx_n_s_res, __pyx_k_res, sizeof(__pyx_k_res), 0, 0, 1, 1},
+    {&__pyx_n_s_reshape, __pyx_k_reshape, sizeof(__pyx_k_reshape), 0, 0, 1, 1},
     {&__pyx_n_s_run_draw_no_buffer, __pyx_k_run_draw_no_buffer, sizeof(__pyx_k_run_draw_no_buffer), 0, 0, 1, 1},
     {&__pyx_kp_s_s_s, __pyx_k_s_s, sizeof(__pyx_k_s_s), 0, 0, 1, 0},
     {&__pyx_kp_s_s_s_d, __pyx_k_s_s_d, sizeof(__pyx_k_s_s_d), 0, 0, 1, 0},
@@ -16345,8 +16578,8 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 52, __pyx_L1_error)
-  __pyx_builtin_AssertionError = __Pyx_GetBuiltinName(__pyx_n_s_AssertionError); if (!__pyx_builtin_AssertionError) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_builtin_AssertionError = __Pyx_GetBuiltinName(__pyx_n_s_AssertionError); if (!__pyx_builtin_AssertionError) __PYX_ERR(0, 215, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(2, 983, __pyx_L1_error)
   return 0;
@@ -16392,14 +16625,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "gwplot/interface.pyx":52
+  /* "gwplot/interface.pyx":35
  *     def set_theme(self, theme_name):
  *         if theme_name not in ("slate", "dark", "igv"):
  *             raise ValueError("Theme must be one of slate, dark, igv")             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.setTheme(theme_name)
  *         self.thisptr.opts.theme.setAlphas()
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Theme_must_be_one_of_slate_dark); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Theme_must_be_one_of_slate_dark); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
@@ -16497,348 +16730,357 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__20);
   __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle___Pyx_EnumMeta, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(1, 1, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":50
+  /* "gwplot/interface.pyx":33
  *         return self.thisptr.opts.theme.name
  * 
  *     def set_theme(self, theme_name):             # <<<<<<<<<<<<<<
  *         if theme_name not in ("slate", "dark", "igv"):
  *             raise ValueError("Theme must be one of slate, dark, igv")
  */
-  __pyx_tuple__23 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_theme_name); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_theme_name); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_theme, 50, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_theme, 33, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 33, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":60
+  /* "gwplot/interface.pyx":43
  *         return self.thisptr.opts.threads
  * 
  *     def set_threads(self, int threads):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.threads = threads # if threads > 1 else 1
  * 
  */
-  __pyx_tuple__25 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_threads); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_threads); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_threads, 60, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_threads, 43, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 43, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":67
+  /* "gwplot/interface.pyx":50
  *         return self.thisptr.opts.indel_length
  * 
  *     def set_indel_length(self, indel_length):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.indel_length = indel_length
  * 
  */
-  __pyx_tuple__27 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_indel_length); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_indel_length); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_indel_length, 67, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_indel_length, 50, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 50, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":74
+  /* "gwplot/interface.pyx":57
  *         return self.thisptr.opts.ylim
  * 
  *     def set_ylim(self, ylim):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.ylim = ylim
  * 
  */
-  __pyx_tuple__29 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_ylim); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_tuple__29 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_ylim); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
-  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_ylim, 74, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_ylim, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 57, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":81
+  /* "gwplot/interface.pyx":64
  *         return self.thisptr.opts.split_view_size
  * 
  *     def set_split_view_size(self, split_view_size):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.split_view_size = split_view_size
  * 
  */
-  __pyx_tuple__31 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_split_view_size); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_tuple__31 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_split_view_size); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__31);
   __Pyx_GIVEREF(__pyx_tuple__31);
-  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_split_view_size, 81, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_split_view_size, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) __PYX_ERR(0, 64, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":88
+  /* "gwplot/interface.pyx":71
  *         return self.thisptr.opts.pad
  * 
  *     def set_pad(self, pad):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.pad = pad
  * 
  */
-  __pyx_tuple__33 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pad); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_tuple__33 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pad); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__33);
   __Pyx_GIVEREF(__pyx_tuple__33);
-  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_pad, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_pad, 71, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 71, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":95
+  /* "gwplot/interface.pyx":78
  *         return self.thisptr.opts.max_coverage
  * 
  *     def set_max_coverage(self, max_coverage):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.max_coverage = max_coverage
  * 
  */
-  __pyx_tuple__35 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_max_coverage); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_tuple__35 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_max_coverage); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__35);
   __Pyx_GIVEREF(__pyx_tuple__35);
-  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_max_coverage, 95, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_max_coverage, 78, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 78, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":102
+  /* "gwplot/interface.pyx":85
  *         return self.thisptr.opts.max_tlen
  * 
  *     def set_max_tlen(self, max_tlen):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.max_tlen = max_tlen
  * 
  */
-  __pyx_tuple__37 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_max_tlen); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_tuple__37 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_max_tlen); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__37);
   __Pyx_GIVEREF(__pyx_tuple__37);
-  __pyx_codeobj__38 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__37, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_max_tlen, 102, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__38)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_codeobj__38 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__37, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_max_tlen, 85, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__38)) __PYX_ERR(0, 85, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":109
+  /* "gwplot/interface.pyx":92
  *         return self.thisptr.opts.log2_cov
  * 
  *     def set_log2_cov(self, log2_cov):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.log2_cov = log2_cov
  * 
  */
-  __pyx_tuple__39 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_log2_cov); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_tuple__39 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_log2_cov); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__39);
   __Pyx_GIVEREF(__pyx_tuple__39);
-  __pyx_codeobj__40 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__39, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_log2_cov, 109, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__40)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_codeobj__40 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__39, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_log2_cov, 92, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__40)) __PYX_ERR(0, 92, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":116
+  /* "gwplot/interface.pyx":99
  *         return self.thisptr.opts.tlen_yscale
  * 
  *     def set_tlen_yscale(self, tlen_yscale):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.tlen_yscale = tlen_yscale
  * 
  */
-  __pyx_tuple__41 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tlen_yscale); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_tuple__41 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tlen_yscale); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__41);
   __Pyx_GIVEREF(__pyx_tuple__41);
-  __pyx_codeobj__42 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__41, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_tlen_yscale, 116, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__42)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_codeobj__42 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__41, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_tlen_yscale, 99, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__42)) __PYX_ERR(0, 99, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":123
+  /* "gwplot/interface.pyx":106
  *         return self.thisptr.opts.expand_tracks
  * 
  *     def set_expand_tracks(self, expand_tracks):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.expand_tracks = expand_tracks
  * 
  */
-  __pyx_tuple__43 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_expand_tracks); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_tuple__43 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_expand_tracks); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__43);
   __Pyx_GIVEREF(__pyx_tuple__43);
-  __pyx_codeobj__44 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__43, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_expand_tracks, 123, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__44)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_codeobj__44 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__43, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_expand_tracks, 106, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__44)) __PYX_ERR(0, 106, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":130
+  /* "gwplot/interface.pyx":113
  *         return self.thisptr.opts.vcf_as_tracks
  * 
  *     def set_vcf_as_tracks(self, vcf_as_tracks):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.vcf_as_tracks = vcf_as_tracks
  * 
  */
-  __pyx_tuple__45 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_vcf_as_tracks); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_tuple__45 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_vcf_as_tracks); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__45);
   __Pyx_GIVEREF(__pyx_tuple__45);
-  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_vcf_as_tracks, 130, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_vcf_as_tracks, 113, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(0, 113, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":137
+  /* "gwplot/interface.pyx":120
  *         return self.thisptr.opts.sv_arcs
  * 
  *     def set_sv_arcs(self, sv_arcs):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.sv_arcs = sv_arcs
  * 
  */
-  __pyx_tuple__47 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_sv_arcs); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_tuple__47 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_sv_arcs); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__47);
   __Pyx_GIVEREF(__pyx_tuple__47);
-  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_sv_arcs, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_sv_arcs, 120, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 120, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":144
+  /* "gwplot/interface.pyx":127
  *         return self.thisptr.opts.scroll_speed
  * 
  *     def set_scroll_speed(self, scroll_speed):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.scroll_speed = scroll_speed
  * 
  */
-  __pyx_tuple__49 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_scroll_speed); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_tuple__49 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_scroll_speed); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__49);
   __Pyx_GIVEREF(__pyx_tuple__49);
-  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_scroll_speed, 144, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_scroll_speed, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 127, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":151
+  /* "gwplot/interface.pyx":134
  *         return self.thisptr.opts.tab_track_height
  * 
  *     def set_tab_track_height(self, tab_track_height):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.tab_track_height = tab_track_height
  * 
  */
-  __pyx_tuple__51 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tab_track_height); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_tuple__51 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tab_track_height); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__51);
   __Pyx_GIVEREF(__pyx_tuple__51);
-  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_tab_track_height, 151, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_tab_track_height, 134, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 134, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":158
+  /* "gwplot/interface.pyx":141
  *         return self.thisptr.opts.start_index
  * 
  *     def set_start_index(self, start_index):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.start_index = start_index
  * 
  */
-  __pyx_tuple__53 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_start_index); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_tuple__53 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_start_index); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__53);
   __Pyx_GIVEREF(__pyx_tuple__53);
-  __pyx_codeobj__54 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__53, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_start_index, 158, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__54)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_codeobj__54 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__53, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_start_index, 141, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__54)) __PYX_ERR(0, 141, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":165
+  /* "gwplot/interface.pyx":148
  *         return self.thisptr.opts.soft_clip_threshold
  * 
  *     def set_soft_clip_threshold(self, soft_clip_threshold):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.soft_clip_threshold = soft_clip_threshold
  * 
  */
-  __pyx_tuple__55 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_soft_clip_threshold); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_tuple__55 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_soft_clip_threshold); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__55);
   __Pyx_GIVEREF(__pyx_tuple__55);
-  __pyx_codeobj__56 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__55, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_soft_clip_threshold, 165, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__56)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_codeobj__56 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__55, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_soft_clip_threshold, 148, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__56)) __PYX_ERR(0, 148, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":172
+  /* "gwplot/interface.pyx":155
  *         return self.thisptr.opts.small_indel_threshold
  * 
  *     def set_small_indel_threshold(self, small_indel_threshold):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.small_indel_threshold = small_indel_threshold
  * 
  */
-  __pyx_tuple__57 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_small_indel_threshold); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_tuple__57 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_small_indel_threshold); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__57);
   __Pyx_GIVEREF(__pyx_tuple__57);
-  __pyx_codeobj__58 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__57, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_small_indel_threshold, 172, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__58)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_codeobj__58 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__57, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_small_indel_threshold, 155, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__58)) __PYX_ERR(0, 155, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":179
+  /* "gwplot/interface.pyx":162
  *         return self.thisptr.opts.snp_threshold
  * 
  *     def set_snp_threshold(self, snp_threshold):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.snp_threshold = snp_threshold
  * 
  */
-  __pyx_tuple__59 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_snp_threshold); if (unlikely(!__pyx_tuple__59)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_tuple__59 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_snp_threshold); if (unlikely(!__pyx_tuple__59)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__59);
   __Pyx_GIVEREF(__pyx_tuple__59);
-  __pyx_codeobj__60 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__59, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_snp_threshold, 179, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__60)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_codeobj__60 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__59, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_snp_threshold, 162, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__60)) __PYX_ERR(0, 162, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":186
+  /* "gwplot/interface.pyx":169
  *         return self.thisptr.opts.variant_distance
  * 
  *     def set_variant_distance(self, variant_distance):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.variant_distance = variant_distance
  * 
  */
-  __pyx_tuple__61 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_variant_distance); if (unlikely(!__pyx_tuple__61)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_tuple__61 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_variant_distance); if (unlikely(!__pyx_tuple__61)) __PYX_ERR(0, 169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__61);
   __Pyx_GIVEREF(__pyx_tuple__61);
-  __pyx_codeobj__62 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__61, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_variant_distance, 186, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__62)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_codeobj__62 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__61, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_variant_distance, 169, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__62)) __PYX_ERR(0, 169, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":193
+  /* "gwplot/interface.pyx":176
  *         return self.thisptr.opts.low_memory
  * 
  *     def set_low_memory(self, low_memory):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.low_memory = low_memory
  * 
  */
-  __pyx_tuple__63 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_low_memory); if (unlikely(!__pyx_tuple__63)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_tuple__63 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_low_memory); if (unlikely(!__pyx_tuple__63)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__63);
   __Pyx_GIVEREF(__pyx_tuple__63);
-  __pyx_codeobj__64 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__63, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_low_memory, 193, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__64)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_codeobj__64 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__63, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_low_memory, 176, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__64)) __PYX_ERR(0, 176, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":196
+  /* "gwplot/interface.pyx":179
  *         self.thisptr.opts.low_memory = low_memory
  * 
  *     def set_image_number(self, int x, int y):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.number.x = x
  *         self.thisptr.opts.number.y = y
  */
-  __pyx_tuple__65 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_x, __pyx_n_s_y); if (unlikely(!__pyx_tuple__65)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_tuple__65 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_x, __pyx_n_s_y); if (unlikely(!__pyx_tuple__65)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__65);
   __Pyx_GIVEREF(__pyx_tuple__65);
-  __pyx_codeobj__66 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__65, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_image_number, 196, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__66)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_codeobj__66 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__65, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_image_number, 179, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__66)) __PYX_ERR(0, 179, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":200
+  /* "gwplot/interface.pyx":183
  *         self.thisptr.opts.number.y = y
  * 
  *     def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
  * 
  */
-  __pyx_tuple__67 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_paint_enum, __pyx_n_s_a, __pyx_n_s_r, __pyx_n_s_g, __pyx_n_s_b); if (unlikely(!__pyx_tuple__67)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_tuple__67 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_paint_enum, __pyx_n_s_a, __pyx_n_s_r, __pyx_n_s_g, __pyx_n_s_b); if (unlikely(!__pyx_tuple__67)) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__67);
   __Pyx_GIVEREF(__pyx_tuple__67);
-  __pyx_codeobj__68 = (PyObject*)__Pyx_PyCode_New(6, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__67, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_paint_ARBG, 200, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__68)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_codeobj__68 = (PyObject*)__Pyx_PyCode_New(6, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__67, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_set_paint_ARBG, 183, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__68)) __PYX_ERR(0, 183, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":203
+  /* "gwplot/interface.pyx":186
  *         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
  * 
  *     def add_bam(self, str bam_path):             # <<<<<<<<<<<<<<
  *         cdef string b = bam_path.encode("utf-8")
  *         self.thisptr.addBam(b)
  */
-  __pyx_tuple__69 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_bam_path, __pyx_n_s_b); if (unlikely(!__pyx_tuple__69)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_tuple__69 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_bam_path, __pyx_n_s_b); if (unlikely(!__pyx_tuple__69)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__69);
   __Pyx_GIVEREF(__pyx_tuple__69);
-  __pyx_codeobj__70 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__69, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_add_bam, 203, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__70)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_codeobj__70 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__69, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_add_bam, 186, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__70)) __PYX_ERR(0, 186, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":207
+  /* "gwplot/interface.pyx":190
  *         self.thisptr.addBam(b)
  * 
  *     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):             # <<<<<<<<<<<<<<
  *         cdef string c = chrom.encode("utf-8")
  *         cdef Region reg = Region()
  */
-  __pyx_tuple__71 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_chrom, __pyx_n_s_start, __pyx_n_s_end, __pyx_n_s_marker_start, __pyx_n_s_marker_end, __pyx_n_s_c, __pyx_n_s_reg); if (unlikely(!__pyx_tuple__71)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_tuple__71 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_chrom, __pyx_n_s_start, __pyx_n_s_end, __pyx_n_s_marker_start, __pyx_n_s_marker_end, __pyx_n_s_c, __pyx_n_s_reg); if (unlikely(!__pyx_tuple__71)) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__71);
   __Pyx_GIVEREF(__pyx_tuple__71);
-  __pyx_codeobj__72 = (PyObject*)__Pyx_PyCode_New(6, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__71, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_add_region, 207, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__72)) __PYX_ERR(0, 207, __pyx_L1_error)
-  __pyx_tuple__73 = PyTuple_Pack(2, __pyx_int_neg_1, __pyx_int_neg_1); if (unlikely(!__pyx_tuple__73)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_codeobj__72 = (PyObject*)__Pyx_PyCode_New(6, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__71, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_add_region, 190, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__72)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_tuple__73 = PyTuple_Pack(2, __pyx_int_neg_1, __pyx_int_neg_1); if (unlikely(!__pyx_tuple__73)) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__73);
   __Pyx_GIVEREF(__pyx_tuple__73);
 
-  /* "gwplot/interface.pyx":219
+  /* "gwplot/interface.pyx":202
  *     # def update_region(self, str chrom, int start, int end, int marker_start=-1, int marker_end=-1, int index=0):
  * 
  *     def make_raster_surface(self):             # <<<<<<<<<<<<<<
  *         size = self.thisptr.makeRasterSurface()
  *         self.thisptr.fb_width = self.thisptr.opts.dimensions.x
  */
-  __pyx_tuple__74 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_size); if (unlikely(!__pyx_tuple__74)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_tuple__74 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_size); if (unlikely(!__pyx_tuple__74)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__74);
   __Pyx_GIVEREF(__pyx_tuple__74);
-  __pyx_codeobj__75 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__74, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_make_raster_surface, 219, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__75)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_codeobj__75 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__74, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_make_raster_surface, 202, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__75)) __PYX_ERR(0, 202, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":226
+  /* "gwplot/interface.pyx":209
  *         return size
  * 
  *     def raster_to_png(self, path):             # <<<<<<<<<<<<<<
  *         cdef string c = path.encode("utf-8")
  *         self.thisptr.rasterToPng(c.c_str())
  */
-  __pyx_tuple__76 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_c); if (unlikely(!__pyx_tuple__76)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_tuple__76 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_c); if (unlikely(!__pyx_tuple__76)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__76);
   __Pyx_GIVEREF(__pyx_tuple__76);
-  __pyx_codeobj__77 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__76, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_raster_to_png, 226, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__77)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_codeobj__77 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__76, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_raster_to_png, 209, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__77)) __PYX_ERR(0, 209, __pyx_L1_error)
 
-  /* "gwplot/interface.pyx":230
+  /* "gwplot/interface.pyx":213
  *         self.thisptr.rasterToPng(c.c_str())
  * 
  *     def run_draw_no_buffer(self):             # <<<<<<<<<<<<<<
  *         if not self.raster_surface_created:
  *             assert self.make_raster_surface()
  */
-  __pyx_codeobj__78 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_run_draw_no_buffer, 230, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__78)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_codeobj__78 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_run_draw_no_buffer, 213, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__78)) __PYX_ERR(0, 213, __pyx_L1_error)
+
+  /* "gwplot/interface.pyx":251
+ *         pass
+ * 
+ *     def RGBA_array(self):             # <<<<<<<<<<<<<<
+ *         if not self.raster_surface_created:
+ *             return None
+ */
+  __pyx_codeobj__79 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_gwplot_interface_pyx, __pyx_n_s_RGBA_array, 251, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__79)) __PYX_ERR(0, 251, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
  * def __setstate_cython__(self, __pyx_state):
  */
-  __pyx_codeobj__79 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_reduce_cython, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__79)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_codeobj__80 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_reduce_cython, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__80)) __PYX_ERR(1, 1, __pyx_L1_error)
 
   /* "(tree fragment)":3
  * def __reduce_cython__(self):
@@ -16846,7 +17088,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
  */
-  __pyx_codeobj__80 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 3, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__80)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_codeobj__81 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 3, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__81)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -16859,6 +17101,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
   __pyx_umethod_PyDict_Type_get.type = (PyObject*)&PyDict_Type;
   __pyx_umethod_PyDict_Type_get.method_name = &__pyx_n_s_get;
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_int_4 = PyInt_FromLong(4); if (unlikely(!__pyx_int_4)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_222419149 = PyInt_FromLong(222419149L); if (unlikely(!__pyx_int_222419149)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_228825662 = PyInt_FromLong(228825662L); if (unlikely(!__pyx_int_228825662)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_238750788 = PyInt_FromLong(238750788L); if (unlikely(!__pyx_int_238750788)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -16945,7 +17188,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_6gwplot_9interface_Gw = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_6gwplot_9interface_Gw_spec, NULL); if (unlikely(!__pyx_ptype_6gwplot_9interface_Gw)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_ptype_6gwplot_9interface_Gw = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_6gwplot_9interface_Gw_spec, NULL); if (unlikely(!__pyx_ptype_6gwplot_9interface_Gw)) __PYX_ERR(0, 9, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
   __pyx_ptype_6gwplot_9interface_Gw->tp_as_buffer = &__pyx_tp_as_buffer_Gw;
   if (!__pyx_ptype_6gwplot_9interface_Gw->tp_as_buffer->bf_releasebuffer && __pyx_ptype_6gwplot_9interface_Gw->tp_base->tp_as_buffer && __pyx_ptype_6gwplot_9interface_Gw->tp_base->tp_as_buffer->bf_releasebuffer) {
@@ -16958,14 +17201,14 @@ static int __Pyx_modinit_type_init_code(void) {
   #else
   #warning "The buffer protocol is not supported in the Limited C-API < 3.11."
   #endif
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_6gwplot_9interface_Gw_spec, __pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_6gwplot_9interface_Gw_spec, __pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   #else
   __pyx_ptype_6gwplot_9interface_Gw = &__pyx_type_6gwplot_9interface_Gw;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_6gwplot_9interface_Gw->tp_print = 0;
@@ -16975,9 +17218,9 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_ptype_6gwplot_9interface_Gw->tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Gw, (PyObject *) __pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Gw, (PyObject *) __pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_6gwplot_9interface_Gw) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   #endif
   #if CYTHON_USE_TYPE_SPECS
   __pyx_t_1 = PyTuple_Pack(1, (PyObject *)(&PyType_Type)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 16, __pyx_L1_error)
@@ -20758,380 +21001,393 @@ if (!__Pyx_RefNanny) {
   }
   __pyx_L5:;
 
-  /* "gwplot/interface.pyx":6
+  /* "gwplot/interface.pyx":5
+ * from libcpp.string cimport string
  * from libcpp.vector cimport vector
- * from libc.stdint cimport uint8_t
  * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as np
  * 
  */
-  __pyx_t_42 = __Pyx_ImportDottedModule(__pyx_n_s_numpy, NULL); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_ImportDottedModule(__pyx_n_s_numpy, NULL); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_42) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_42) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
 
-  /* "gwplot/interface.pyx":50
+  /* "gwplot/interface.pyx":33
  *         return self.thisptr.opts.theme.name
  * 
  *     def set_theme(self, theme_name):             # <<<<<<<<<<<<<<
  *         if theme_name not in ("slate", "dark", "igv"):
  *             raise ValueError("Theme must be one of slate, dark, igv")
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_5set_theme, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_theme, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_5set_theme, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_theme, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_theme, __pyx_t_42) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_theme, __pyx_t_42) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":60
+  /* "gwplot/interface.pyx":43
  *         return self.thisptr.opts.threads
  * 
  *     def set_threads(self, int threads):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.threads = threads # if threads > 1 else 1
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_7set_threads, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_threads, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_7set_threads, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_threads, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_threads, __pyx_t_42) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_threads, __pyx_t_42) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":67
+  /* "gwplot/interface.pyx":50
  *         return self.thisptr.opts.indel_length
  * 
  *     def set_indel_length(self, indel_length):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.indel_length = indel_length
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_9set_indel_length, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_indel_length, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_9set_indel_length, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_indel_length, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_indel_length, __pyx_t_42) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_indel_length, __pyx_t_42) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":74
+  /* "gwplot/interface.pyx":57
  *         return self.thisptr.opts.ylim
  * 
  *     def set_ylim(self, ylim):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.ylim = ylim
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_11set_ylim, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_ylim, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_11set_ylim, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_ylim, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_ylim, __pyx_t_42) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_ylim, __pyx_t_42) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":81
+  /* "gwplot/interface.pyx":64
  *         return self.thisptr.opts.split_view_size
  * 
  *     def set_split_view_size(self, split_view_size):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.split_view_size = split_view_size
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_13set_split_view_size, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_split_view_size, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__32)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_13set_split_view_size, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_split_view_size, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__32)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_split_view_size, __pyx_t_42) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_split_view_size, __pyx_t_42) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":88
+  /* "gwplot/interface.pyx":71
  *         return self.thisptr.opts.pad
  * 
  *     def set_pad(self, pad):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.pad = pad
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_15set_pad, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_pad, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__34)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_15set_pad, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_pad, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__34)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_pad, __pyx_t_42) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_pad, __pyx_t_42) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":95
+  /* "gwplot/interface.pyx":78
  *         return self.thisptr.opts.max_coverage
  * 
  *     def set_max_coverage(self, max_coverage):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.max_coverage = max_coverage
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_17set_max_coverage, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_max_coverage, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__36)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_17set_max_coverage, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_max_coverage, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__36)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_max_coverage, __pyx_t_42) < 0) __PYX_ERR(0, 95, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_max_coverage, __pyx_t_42) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":102
+  /* "gwplot/interface.pyx":85
  *         return self.thisptr.opts.max_tlen
  * 
  *     def set_max_tlen(self, max_tlen):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.max_tlen = max_tlen
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_19set_max_tlen, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_max_tlen, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_19set_max_tlen, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_max_tlen, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_max_tlen, __pyx_t_42) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_max_tlen, __pyx_t_42) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":109
+  /* "gwplot/interface.pyx":92
  *         return self.thisptr.opts.log2_cov
  * 
  *     def set_log2_cov(self, log2_cov):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.log2_cov = log2_cov
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_21set_log2_cov, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_log2_cov, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__40)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_21set_log2_cov, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_log2_cov, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__40)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_log2_cov, __pyx_t_42) < 0) __PYX_ERR(0, 109, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_log2_cov, __pyx_t_42) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":116
+  /* "gwplot/interface.pyx":99
  *         return self.thisptr.opts.tlen_yscale
  * 
  *     def set_tlen_yscale(self, tlen_yscale):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.tlen_yscale = tlen_yscale
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_23set_tlen_yscale, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_tlen_yscale, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__42)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_23set_tlen_yscale, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_tlen_yscale, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__42)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_tlen_yscale, __pyx_t_42) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_tlen_yscale, __pyx_t_42) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":123
+  /* "gwplot/interface.pyx":106
  *         return self.thisptr.opts.expand_tracks
  * 
  *     def set_expand_tracks(self, expand_tracks):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.expand_tracks = expand_tracks
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_25set_expand_tracks, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_expand_tracks, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__44)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_25set_expand_tracks, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_expand_tracks, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__44)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_expand_tracks, __pyx_t_42) < 0) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_expand_tracks, __pyx_t_42) < 0) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":130
+  /* "gwplot/interface.pyx":113
  *         return self.thisptr.opts.vcf_as_tracks
  * 
  *     def set_vcf_as_tracks(self, vcf_as_tracks):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.vcf_as_tracks = vcf_as_tracks
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_27set_vcf_as_tracks, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_vcf_as_tracks, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__46)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_27set_vcf_as_tracks, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_vcf_as_tracks, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__46)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_vcf_as_tracks, __pyx_t_42) < 0) __PYX_ERR(0, 130, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_vcf_as_tracks, __pyx_t_42) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":137
+  /* "gwplot/interface.pyx":120
  *         return self.thisptr.opts.sv_arcs
  * 
  *     def set_sv_arcs(self, sv_arcs):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.sv_arcs = sv_arcs
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_29set_sv_arcs, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_sv_arcs, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__48)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_29set_sv_arcs, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_sv_arcs, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__48)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_sv_arcs, __pyx_t_42) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_sv_arcs, __pyx_t_42) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":144
+  /* "gwplot/interface.pyx":127
  *         return self.thisptr.opts.scroll_speed
  * 
  *     def set_scroll_speed(self, scroll_speed):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.scroll_speed = scroll_speed
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_31set_scroll_speed, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_scroll_speed, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_31set_scroll_speed, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_scroll_speed, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_scroll_speed, __pyx_t_42) < 0) __PYX_ERR(0, 144, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_scroll_speed, __pyx_t_42) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":151
+  /* "gwplot/interface.pyx":134
  *         return self.thisptr.opts.tab_track_height
  * 
  *     def set_tab_track_height(self, tab_track_height):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.tab_track_height = tab_track_height
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_33set_tab_track_height, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_tab_track_height, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__52)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_33set_tab_track_height, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_tab_track_height, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__52)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_tab_track_height, __pyx_t_42) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_tab_track_height, __pyx_t_42) < 0) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":158
+  /* "gwplot/interface.pyx":141
  *         return self.thisptr.opts.start_index
  * 
  *     def set_start_index(self, start_index):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.start_index = start_index
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_35set_start_index, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_start_index, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__54)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_35set_start_index, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_start_index, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__54)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_start_index, __pyx_t_42) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_start_index, __pyx_t_42) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":165
+  /* "gwplot/interface.pyx":148
  *         return self.thisptr.opts.soft_clip_threshold
  * 
  *     def set_soft_clip_threshold(self, soft_clip_threshold):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.soft_clip_threshold = soft_clip_threshold
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_37set_soft_clip_threshold, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_soft_clip_threshold, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__56)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_37set_soft_clip_threshold, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_soft_clip_threshold, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__56)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_soft_clip_threshold, __pyx_t_42) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_soft_clip_threshold, __pyx_t_42) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":172
+  /* "gwplot/interface.pyx":155
  *         return self.thisptr.opts.small_indel_threshold
  * 
  *     def set_small_indel_threshold(self, small_indel_threshold):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.small_indel_threshold = small_indel_threshold
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_39set_small_indel_threshold, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_small_indel_threshold, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__58)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_39set_small_indel_threshold, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_small_indel_threshold, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__58)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_small_indel_threshold, __pyx_t_42) < 0) __PYX_ERR(0, 172, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_small_indel_threshold, __pyx_t_42) < 0) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":179
+  /* "gwplot/interface.pyx":162
  *         return self.thisptr.opts.snp_threshold
  * 
  *     def set_snp_threshold(self, snp_threshold):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.snp_threshold = snp_threshold
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_41set_snp_threshold, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_snp_threshold, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__60)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_41set_snp_threshold, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_snp_threshold, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__60)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_snp_threshold, __pyx_t_42) < 0) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_snp_threshold, __pyx_t_42) < 0) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":186
+  /* "gwplot/interface.pyx":169
  *         return self.thisptr.opts.variant_distance
  * 
  *     def set_variant_distance(self, variant_distance):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.variant_distance = variant_distance
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_43set_variant_distance, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_variant_distance, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__62)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_43set_variant_distance, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_variant_distance, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__62)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_variant_distance, __pyx_t_42) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_variant_distance, __pyx_t_42) < 0) __PYX_ERR(0, 169, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":193
+  /* "gwplot/interface.pyx":176
  *         return self.thisptr.opts.low_memory
  * 
  *     def set_low_memory(self, low_memory):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.low_memory = low_memory
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_45set_low_memory, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_low_memory, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__64)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_45set_low_memory, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_low_memory, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__64)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_low_memory, __pyx_t_42) < 0) __PYX_ERR(0, 193, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_low_memory, __pyx_t_42) < 0) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":196
+  /* "gwplot/interface.pyx":179
  *         self.thisptr.opts.low_memory = low_memory
  * 
  *     def set_image_number(self, int x, int y):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.number.x = x
  *         self.thisptr.opts.number.y = y
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_47set_image_number, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_image_number, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__66)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_47set_image_number, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_image_number, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__66)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_image_number, __pyx_t_42) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_image_number, __pyx_t_42) < 0) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":200
+  /* "gwplot/interface.pyx":183
  *         self.thisptr.opts.number.y = y
  * 
  *     def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):             # <<<<<<<<<<<<<<
  *         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
  * 
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_49set_paint_ARBG, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_paint_ARBG, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__68)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_49set_paint_ARBG, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_set_paint_ARBG, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__68)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_paint_ARBG, __pyx_t_42) < 0) __PYX_ERR(0, 200, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_set_paint_ARBG, __pyx_t_42) < 0) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":203
+  /* "gwplot/interface.pyx":186
  *         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
  * 
  *     def add_bam(self, str bam_path):             # <<<<<<<<<<<<<<
  *         cdef string b = bam_path.encode("utf-8")
  *         self.thisptr.addBam(b)
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_51add_bam, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_add_bam, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__70)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_51add_bam, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_add_bam, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__70)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_add_bam, __pyx_t_42) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_add_bam, __pyx_t_42) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":207
+  /* "gwplot/interface.pyx":190
  *         self.thisptr.addBam(b)
  * 
  *     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):             # <<<<<<<<<<<<<<
  *         cdef string c = chrom.encode("utf-8")
  *         cdef Region reg = Region()
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_53add_region, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_add_region, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__72)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_53add_region, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_add_region, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__72)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_42, __pyx_tuple__73);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_add_region, __pyx_t_42) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_add_region, __pyx_t_42) < 0) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":219
+  /* "gwplot/interface.pyx":202
  *     # def update_region(self, str chrom, int start, int end, int marker_start=-1, int marker_end=-1, int index=0):
  * 
  *     def make_raster_surface(self):             # <<<<<<<<<<<<<<
  *         size = self.thisptr.makeRasterSurface()
  *         self.thisptr.fb_width = self.thisptr.opts.dimensions.x
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_55make_raster_surface, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_make_raster_surface, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__75)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_55make_raster_surface, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_make_raster_surface, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__75)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_make_raster_surface, __pyx_t_42) < 0) __PYX_ERR(0, 219, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_make_raster_surface, __pyx_t_42) < 0) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":226
+  /* "gwplot/interface.pyx":209
  *         return size
  * 
  *     def raster_to_png(self, path):             # <<<<<<<<<<<<<<
  *         cdef string c = path.encode("utf-8")
  *         self.thisptr.rasterToPng(c.c_str())
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_57raster_to_png, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_raster_to_png, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__77)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_57raster_to_png, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_raster_to_png, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__77)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_raster_to_png, __pyx_t_42) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_raster_to_png, __pyx_t_42) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
-  /* "gwplot/interface.pyx":230
+  /* "gwplot/interface.pyx":213
  *         self.thisptr.rasterToPng(c.c_str())
  * 
  *     def run_draw_no_buffer(self):             # <<<<<<<<<<<<<<
  *         if not self.raster_surface_created:
  *             assert self.make_raster_surface()
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_59run_draw_no_buffer, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_run_draw_no_buffer, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__78)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_59run_draw_no_buffer, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_run_draw_no_buffer, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__78)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_run_draw_no_buffer, __pyx_t_42) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_run_draw_no_buffer, __pyx_t_42) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
+  PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
+
+  /* "gwplot/interface.pyx":251
+ *         pass
+ * 
+ *     def RGBA_array(self):             # <<<<<<<<<<<<<<
+ *         if not self.raster_surface_created:
+ *             return None
+ */
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_65RGBA_array, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw_RGBA_array, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__79)); if (unlikely(!__pyx_t_42)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_42);
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_6gwplot_9interface_Gw, __pyx_n_s_RGBA_array, __pyx_t_42) < 0) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
   PyType_Modified(__pyx_ptype_6gwplot_9interface_Gw);
 
@@ -21140,7 +21396,7 @@ if (!__Pyx_RefNanny) {
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
  * def __setstate_cython__(self, __pyx_state):
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_65__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw___reduce_cython, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__79)); if (unlikely(!__pyx_t_42)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_67__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw___reduce_cython, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__80)); if (unlikely(!__pyx_t_42)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_reduce_cython, __pyx_t_42) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
@@ -21151,7 +21407,7 @@ if (!__Pyx_RefNanny) {
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
  */
-  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_67__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw___setstate_cython, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__80)); if (unlikely(!__pyx_t_42)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_42 = __Pyx_CyFunction_New(&__pyx_mdef_6gwplot_9interface_2Gw_69__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Gw___setstate_cython, NULL, __pyx_kp_s_gwplot_interface, __pyx_d, ((PyObject *)__pyx_codeobj__81)); if (unlikely(!__pyx_t_42)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_42);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_setstate_cython, __pyx_t_42) < 0) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_42); __pyx_t_42 = 0;
@@ -26779,7 +27035,7 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
         Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__81);
+        name = __Pyx_NewRef(__pyx_n_s__82);
     }
     return name;
 }

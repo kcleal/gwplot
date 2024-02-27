@@ -2,7 +2,6 @@
 /gwplotinterface.cpp
 /gwplot/interface.cpython-310-darwin.so
 /libgw/libgw.so
-/_gw/
 /venv/
 /libgw/
 /gwplot.egg-info/
@@ -21,3 +20,4 @@
 /libgw/libgw.so
 /libgw/libhts.3.dylib
 /gwplot/libgw.so
+/gw/

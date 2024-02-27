@@ -64,9 +64,9 @@ extras_args = get_extra_args(extras) + ["-std=c++17"]
 print("Extra compile args:",  extras_args)
 print("*"*80)
 
-# ret = run(f"cd _gw; make shared; cp -rf libgw ..", shell=True)
-ret = run(f"cd _gw; make shared; cp -rf libgw/include ../; cp libgw.* ../gwplot", shell=True)
-# ret = run(f"cd _gw; make clean; make prep; make shared; cp -rf libgw ..", shell=True)
+# ret = run(f"cd gw; make shared; cp -rf libgw ..", shell=True)
+ret = run(f"cd gw; make shared; cp -rf libgw/include ../; cp libgw.* ../gwplot", shell=True)
+# ret = run(f"cd gw; make clean; make prep; make shared; cp -rf libgw ..", shell=True)
 if ret.returncode != 0:
     print("Unable to build gw")
     print(ret)
@@ -76,8 +76,8 @@ if ret.returncode != 0:
 root = os.path.abspath(os.path.dirname(__file__))
 libraries = ["hts", "skia", "gw"]
 
-library_dirs = [numpy.get_include(), glob.glob("./_gw/lib/skia/out/Release*")[0], "./gwplot"]
-include_dirs = [numpy.get_include(), "./include", "./_gw/lib/skia", "./_gw/lib/libBigWig", "./_gw/src"]
+library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0], "./gwplot"]
+include_dirs = [numpy.get_include(), "./include", "./gw/lib/skia", "./gw/lib/libBigWig", "./gw/src"]
 print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)

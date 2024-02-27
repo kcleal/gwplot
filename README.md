@@ -29,20 +29,23 @@ Test using:
 Demo
 ----
 
-Depends on numpy. Recommended to have Pillow and matplotlib
-
 ```python
 from gwplot import Gw
 import time
+import resource
 
 t0 = time.time()
 plot = Gw('/Users/sbi8kc2/Documents/data/db/hg19/ucsc.hg19.fa')
 plot.add_bam('/Users/sbi8kc2/Desktop/HG002.bam')
 plot.add_region('chr1', 1, 1000000)
-plot.draw()
+plot.draw()  # Reads are streamed
 plot.raster_to_png("out.png")
 
-print(time.time() - t0)  # 0.255 seconds
+print('Time (s):', time.time() - t0)  # 0.21 seconds
+print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)  # 94 Mb
+
+plot.draw_buffer_reads()  # Reads are held in memory
+print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)  # 304 Mb
 
 print(plot.RGBA_array())  # Raw pixel array image
 

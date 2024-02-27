@@ -249,6 +249,12 @@ cdef class Gw:
         self.thisptr.processed = False
         self.thisptr.runDrawNoBuffer()
 
+    def draw_buffer_reads(self):
+        if not self.raster_surface_created:
+            self.make_raster_surface()
+        self.thisptr.processed = False
+        self.thisptr.runDraw()
+
     # def __array__(self):
     #     print("In array")
     #     # https://stackoverflow.com/questions/45133276/passing-c-vector-to-numpy-through-cython-without-copying-and-taking-care-of-me

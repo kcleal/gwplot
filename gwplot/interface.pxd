@@ -86,6 +86,8 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void runDrawNoBuffer()
 
+        void runDraw()
+
         void rasterToPng(const char * path);
 
 

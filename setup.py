@@ -63,9 +63,9 @@ print("*"*80)
 
 
 root = os.path.abspath(os.path.dirname(__file__))
-libraries = ["skia", "gw"]
+libraries = ["hts", "skia", "gw"]
 
-library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0], "./gwplot"]
+library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0]]  #, "./gwplot"]
 include_dirs = [numpy.get_include(), "./include", "./gw/lib/skia", "./gw/lib/libBigWig", "./gw/src"]
 print("Libs", libraries)
 print("Library dirs", library_dirs)

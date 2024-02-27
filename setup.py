@@ -6,7 +6,6 @@ import numpy
 from distutils import ccompiler
 import os
 import glob
-import sys
 import sysconfig
 
 
@@ -43,6 +42,7 @@ def has_flag(compiler, flagname):
             return False
     return True
 
+
 def get_extra_args(flags):
     compiler = ccompiler.new_compiler()
     extra_compile_args = []
@@ -51,9 +51,7 @@ def get_extra_args(flags):
             extra_compile_args.append(f)
     return extra_compile_args
 
-###############
-# gwplot build #
-###############
+
 extras = ["-Wno-unused-function", "-Wno-unused-result",
           "-Wno-ignored-qualifiers", "-Wno-deprecated-declarations"]
 extras_args = get_extra_args(extras) + ["-std=c++17"]
@@ -65,20 +63,12 @@ print("*"*80)
 root = os.path.abspath(os.path.dirname(__file__))
 libraries = ["hts", "skia", "gw"]
 
-library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0]]  #, "./gwplot"]
+library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0], "/usr/local/lib"]  #, "./gwplot"]
 include_dirs = [numpy.get_include(), "./include", "./gw/lib/skia", "./gw/lib/libBigWig", "./gw/src"]
 print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)
 
-# link_args = []
-# if sys.platform == "darwin":
-#     link_args = ["-Wl,-rpath,@loader_path", "-lhts", "-Wl,-rpath,@loader_path", "-lgw"]
-# else:
-#     link_args = ["-Wl,-rpath,$ORIGIN", "-lhts", "-Wl,-rpath,$ORIGIN", "-lgw"]
-##################
-# bindings build #
-##################
 ext_module = cythonize(Extension("gwplot.interface",
                         ["gwplot/interface.pyx"],
                                 libraries=libraries,
@@ -86,32 +76,11 @@ ext_module = cythonize(Extension("gwplot.interface",
                                 include_dirs=include_dirs,
                                 extra_compile_args=extras_args,
                                 language="c++",
-                                # extra_link_args=link_args,
-                                    ), **cy_options)
-
+                                ), **cy_options)
 
 
 print("Found packages", find_packages(where="."))
 setup(
     name="gwplot",
-    # author="Kez Cleal",
-    # author_email="clealk@cardiff.ac.uk",
-    # url="https://github.com/kcleal/dysgu",
-    # description="Plot genomics data fast",
-    # version='0.0.1',
-    # python_requires='>=3.8',
-    # install_requires=[  # runtime requires
-    #         'setuptools>=61.0',
-    #         'cython',
-    #         'numpy',
-    #     ],
-    # setup_requires=[
-    #         'setuptools>=61.0',
-    #         'cython',
-    #         'numpy',
-    #     ],
-    packages=["gwplot"],
     ext_modules=cythonize(ext_module),
-    include_package_data=True,
-    zip_safe=True,
 )

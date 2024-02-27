@@ -8,7 +8,7 @@ If it is, download the artifact and install one of the wheel files using pip. Ot
 Building from source
 --------------------
 
-Install the prerequisites (htslib, glfw3) using either:
+Install the prerequisites (htslib, glfw3, libgw) using either:
     
     bash ci/osx-deps
     bash ci/manylinux-deps
@@ -18,9 +18,9 @@ Then use:
     pip install -r requirements
     pip install .
 
-If you want to do development, use this, which will prevent skia being downloaded every time:
+If you want to do development, use this:
 
-    SKIP_PREP=1 pip install . --no-build-isolation -v
+    pip install . --no-build-isolation -v
 
 Test using:
 
@@ -58,3 +58,14 @@ plt.imshow(img)
 plt.show()
 ```
 
+Functionality to add
+---------------------
+
+- Remove bam
+- Remove region
+- Add track BED, GFF3, GTF, VCF/BCF
+- Image grid view
+- Toggle Image grid view and alignment-view
+- Scroll and zoom in/out functions
+- Simulate a mouse click (provide x, y pixel coordinates)
+- Apply commands

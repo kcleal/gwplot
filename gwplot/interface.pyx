@@ -22,9 +22,11 @@ cdef class Gw:
             assert isinstance(height, int)
             opts.dimensions.y = height
         self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)
-    def __init__(self, str reference, str theme="slate"):
+
+    def __init__(self, str reference, str theme="slate", width=None, height=None):
         self.raster_surface_created = False
         self.set_theme(theme)
+
     @property
     def canvas_width(self):
         return self.thisptr.opts.dimensions.x
@@ -191,9 +193,10 @@ cdef class Gw:
         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
 
     def add_bam(self, bam_path):
-        if isinstance(bam_path, "str"):
+        cdef string b
+        if isinstance(bam_path, str):
             assert os.path.exists(bam_path)
-            cdef string b = bam_path.encode("utf-8")
+            b = bam_path.encode("utf-8")
             self.thisptr.addBam(b)
         else:
             try:
@@ -203,9 +206,8 @@ cdef class Gw:
             else:
                 for p in bam_path:
                     assert os.path.exists(p)
-                    cdef string b = p.encode("utf-8")
-                    self.thisptr.addBam(p)
-        # iterable
+                    b = p.encode("utf-8")
+                    self.thisptr.addBam(b)
 
     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):
         cdef string c = chrom.encode("utf-8")
@@ -220,10 +222,10 @@ cdef class Gw:
     # def update_region(self, str chrom, int start, int end, int marker_start=-1, int marker_end=-1, int index=0):
 
     def make_raster_surface(self, width=None, height=None):
-        if x is not None:
+        if width is not None:
             assert isinstance(width, int)
             self.thisptr.opts.dimensions.x = width
-        if y is not None:
+        if height is not None:
             assert isinstance(height, int)
             self.thisptr.opts.dimensions.y = height
         size = self.thisptr.makeRasterSurface()

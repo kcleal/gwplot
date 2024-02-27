@@ -11,7 +11,7 @@ yum -y install gcc gcc-c++ wget autoconf openssl-devel libffi libffi-devel zlib-
 
 wget https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip && unzip glfw-3.4.zip && cd glfw-3.4
 cmake -S . -B build && cd build && make
-ls && cp libglfw*a /usr/local/lib
+ls && cp libglfw3.a /usr/local/lib && cp libglfw3.a /usr/local/lib/libglfw.a
 cd ../ && cp -rf include/GLFW3 /usr/local/include
 
 

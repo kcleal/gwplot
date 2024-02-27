@@ -22,13 +22,15 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.0
         env:
-          CIBW_ENVIRONMENT: PATH=$PATH:/usr/local/lib
           CIBW_PROJECT_REQUIRES_PYTHON: ">=3.8"
           CIBW_SKIP: "*-win32 *-manylinux_i686 pp* *musl* "
           CIBW_ARCHS_MACOS: "x86_64 arm64"
-          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0
+          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0 PATH=$PATH:/usr/local/lib LD_LIBRARY_PATH=/usr/local/lib
           CIBW_ARCHS_LINUX: "auto"
-          CIBW_BEFORE_ALL_MACOS: bash ci/osx-build-deps
+          CIBW_BEFORE_ALL_MACOS: |
+            echo "PATH " $PATH
+            echo "LD_LIBRARY_PATH " $LD_LIBRARY_PATH
+            bash ci/osx-build-deps
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
 #          CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""

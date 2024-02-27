@@ -1,6 +1,7 @@
 import os
 import sys
 import glob
+import shutil
 import sysconfig
 import setuptools
 import numpy
@@ -64,8 +65,11 @@ extras_args = get_extra_args(extras) + ["-std=c++17"]
 print("Extra compile args:",  extras_args)
 print("*"*80)
 
-# ret = run(f"cd gw; make shared; cp -rf libgw ..", shell=True)
-ret = run(f"cd gw; make prep; make shared; cp -rf libgw/include ../; cp libgw.* ../gwplot", shell=True)
+if os.getenv('SKIP_PREP') is not None:
+    ret = run(f"cd gw; make shared; cp -rf libgw/include ../; cp libgw.* ../gwplot", shell=True)
+else:
+    ret = run(f"cd gw; make prep; make shared; cp -rf libgw/include ../; cp libgw.* ../gwplot", shell=True)
+
 # ret = run(f"cd gw; make clean; make prep; make shared; cp -rf libgw ..", shell=True)
 if ret.returncode != 0:
     print("Unable to build gw")
@@ -74,7 +78,7 @@ if ret.returncode != 0:
 
 
 root = os.path.abspath(os.path.dirname(__file__))
-libraries = ["skia"]
+libraries = ["skia", "gw"]
 
 library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0], "./gwplot"]
 include_dirs = [numpy.get_include(), "./include", "./gw/lib/skia", "./gw/lib/libBigWig", "./gw/src"]
@@ -97,7 +101,7 @@ m_ext_module = cythonize(Extension("gwplot.interface",
                                 include_dirs=include_dirs,
                                 extra_compile_args=extras_args,
                                 language="c++",
-                                extra_link_args=link_args,
+                                # extra_link_args=link_args,
                                     ), **cy_options)
 
 
@@ -114,6 +118,11 @@ class build_py(_build_py):
         else:
             run("readelf -d {dest}/interface.cpython-310-linux-gnu.so", shell=True)
             run("patchelf --replace-needed libgw.so $ORIGIN/libgw.so {dest}/interface.cpython-310-linux-gnu.so", shell=True)
+        # Copy .so just for unit tests
+        source = glob.glob(f'{dest}/interface.cpyth*.so')[0]
+        destination = f'{root}/gwplot/'
+        shutil.copy(source, destination)
+
         return super().run()
 
     def initialize_options(self):

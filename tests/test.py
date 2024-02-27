@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
+
 root = os.path.abspath(os.path.dirname(__file__))
 fa = root + "/ref.fa"
 plot = Gw(fa)
@@ -29,7 +30,7 @@ class TestConstruct(unittest.TestCase):
         plot.add_region("chr1", 1, 20000)
 
     def test_run_save_png(self):
-        plot.run_draw_no_buffer()
+        plot.draw()
         plot.raster_to_png("out.png")
 
     def test_to_ndarray(self):
@@ -37,7 +38,7 @@ class TestConstruct(unittest.TestCase):
         assert arr.shape[0] > 0
 
     def test_run_draw_no_buffer(self):
-        plot.run_draw_no_buffer()
+        plot.draw()
         img = Image.fromarray(plot.RGBA_array())
         plt.figure()
         plt.imshow(img)
@@ -48,7 +49,7 @@ class TestConstruct(unittest.TestCase):
 
     def test_set_repaint(self):
         plot.set_paint_ARBG(GwPaint.bgPaint, 55, 255, 0, 0)
-        plot.run_draw_no_buffer()
+        plot.draw()
         plot.raster_to_png("out2.png")
 
 

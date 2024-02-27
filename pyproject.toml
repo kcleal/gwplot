@@ -19,7 +19,7 @@ classifiers=[
 
 [tool.setuptools]
 py-modules=["_custom_build"]
-packages=["gwplot", "gwplot.tests"]
+packages=["gwplot", "tests"]
 
 [tool.setuptools.cmdclass]
 build_py="_custom_build.build_py"

@@ -20,3 +20,4 @@
 /libgw/libgw.so
 /libgw/libhts.3.dylib
 /gwplot/libgw.so
+/gwplot/interface.cpp

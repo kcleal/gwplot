@@ -210,9 +210,9 @@ cdef class Gw:
         cdef string c = path.encode("utf-8")
         self.thisptr.rasterToPng(c.c_str())
 
-    def run_draw_no_buffer(self):
+    def draw(self):
         if not self.raster_surface_created:
-            assert self.make_raster_surface()
+            self.make_raster_surface()
         self.thisptr.processed = False
         self.thisptr.runDrawNoBuffer()
 

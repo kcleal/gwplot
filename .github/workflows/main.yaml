@@ -27,8 +27,8 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=11.0 CIBW_BUILD_VERBOSITY=1
           CIBW_ARCHS_LINUX: "auto"
-          CIBW_BEFORE_ALL_MACOS: pip install -r requirements.txt; bash ci/osx-deps; pwd; ls
-          CIBW_BEFORE_ALL_LINUX: pip install -r requirements.txt; bash ci/manylinux-deps
+          CIBW_BEFORE_ALL_MACOS: bash ci/osx-deps; pwd; ls
+          CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-deps
           CIBW_TEST_COMMAND: python -m unittest
 
       - uses: actions/upload-artifact@v3

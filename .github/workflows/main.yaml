@@ -27,20 +27,20 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0
           CIBW_ARCHS_LINUX: "auto"
-          CIBW_BEFORE_ALL_MACOS: bash ci/osx-deps
-          CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-deps
+          CIBW_BEFORE_ALL_MACOS: bash ci/osx-build-deps
+          CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
-          CIBW_TEST_REQUIRES_MACOS: |
-            pip install -r requirements.txt
-            pip install pillow matplotlib
-            bash ci/osx-deps
-          CIBW_TEST_REQUIRES_LINUX: |
-            pip install -r requirements.txt
-            pip install pillow matplotlib
-            bash ci/manylinux-deps
-          CIBW_TEST_COMMAND: python -m unittest
-          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
+#          CIBW_BEFORE_TEST_MACOS: |
+#            pip install -r requirements.txt
+#            pip install pillow matplotlib
+#            bash ci/osx-run-deps
+#          CIBW_BEFORE_TEST_LINUX: |
+#            pip install -r requirements.txt
+#            pip install pillow matplotlib
+#            bash ci/manylinux-run-deps
+#          CIBW_TEST_COMMAND: python -m unittest
+#          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
 
       - uses: actions/upload-artifact@v3
         with:

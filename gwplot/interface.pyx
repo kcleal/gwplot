@@ -1,4 +1,5 @@
 # cython: c_string_type=unicode, c_string_encoding=utf8
+import os.path
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -8,12 +9,18 @@ cimport numpy as np
 
 cdef class Gw:
     """Interface to GW"""
-    def __cinit__(self, str reference, str theme="slate"):
+    def __cinit__(self, str reference, str theme="slate", width=None, height=None):
         cdef string ref = reference.encode("utf-8")
         cdef IniOptions opts = IniOptions()
         opts.threads = 1
         cdef vector[string] bampaths, track_paths
         cdef vector[Region] regions
+        if width is not None:
+            assert isinstance(width, int)
+            opts.dimensions.x = width
+        if height is not None:
+            assert isinstance(height, int)
+            opts.dimensions.y = height
         self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)
     def __init__(self, str reference, str theme="slate"):
         self.raster_surface_created = False
@@ -183,9 +190,22 @@ cdef class Gw:
     def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):
         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
 
-    def add_bam(self, str bam_path):
-        cdef string b = bam_path.encode("utf-8")
-        self.thisptr.addBam(b)
+    def add_bam(self, bam_path):
+        if isinstance(bam_path, "str"):
+            assert os.path.exists(bam_path)
+            cdef string b = bam_path.encode("utf-8")
+            self.thisptr.addBam(b)
+        else:
+            try:
+                iterator = iter(bam_path)
+            except TypeError:
+                raise TypeError("bam_path is not iterable")
+            else:
+                for p in bam_path:
+                    assert os.path.exists(p)
+                    cdef string b = p.encode("utf-8")
+                    self.thisptr.addBam(p)
+        # iterable
 
     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):
         cdef string c = chrom.encode("utf-8")
@@ -199,12 +219,19 @@ cdef class Gw:
 
     # def update_region(self, str chrom, int start, int end, int marker_start=-1, int marker_end=-1, int index=0):
 
-    def make_raster_surface(self):
+    def make_raster_surface(self, width=None, height=None):
+        if x is not None:
+            assert isinstance(width, int)
+            self.thisptr.opts.dimensions.x = width
+        if y is not None:
+            assert isinstance(height, int)
+            self.thisptr.opts.dimensions.y = height
         size = self.thisptr.makeRasterSurface()
+        assert size
         self.thisptr.fb_width = self.thisptr.opts.dimensions.x
         self.thisptr.fb_height = self.thisptr.opts.dimensions.y
         self.raster_surface_created = True
-        return size
+        return self
 
     def raster_to_png(self, path):
         cdef string c = path.encode("utf-8")

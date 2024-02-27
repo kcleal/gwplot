@@ -65,7 +65,7 @@ print("Extra compile args:",  extras_args)
 print("*"*80)
 
 # ret = run(f"cd gw; make shared; cp -rf libgw ..", shell=True)
-ret = run(f"cd gw; make shared; cp -rf libgw/include ../; cp libgw.* ../gwplot", shell=True)
+ret = run(f"cd gw; make prep; make shared; cp -rf libgw/include ../; cp libgw.* ../gwplot", shell=True)
 # ret = run(f"cd gw; make clean; make prep; make shared; cp -rf libgw ..", shell=True)
 if ret.returncode != 0:
     print("Unable to build gw")

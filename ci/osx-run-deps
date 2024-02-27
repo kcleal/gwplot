@@ -10,9 +10,9 @@ wget -O htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.17
 ls -lh
 tar -xvf htslib.tar.bz2
 mv htslib-1.17 htslib && rm htslib.tar.bz2
-cd htslib
 
-CPPFLAGS+="-I./include" LDFLAGS+="-L." ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
+cd htslib
+CPPFLAGS+="-I./include" ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
 make && make install && cd ../
 
 echo "OSX-RUN-DEPS DONE"

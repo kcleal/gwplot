@@ -2,11 +2,13 @@
 # Install build dependencies. Run from inside dysgu folder
 
 echo "STARTING MANYLINUX-DEPS"
-
+yum groupinstall "Development Tools"
+yum install glibc-devel
 yum -y install gcc gcc-c++ wget autoconf openssl-devel libffi libffi-devel zlib-devel \
     bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel libssh2 curl-devel curl \
     cmake libs3 xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
-    wayland-devel libxkbcommon-devel wayland-protocols-devel extra-cmake-modules libXrandr-devel boost-devel
+    wayland-devel libxkbcommon-devel wayland-protocols-devel extra-cmake-modules libXrandr-devel
+
 
 
 wget https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip && unzip glfw-3.4.zip && cd glfw-3.4

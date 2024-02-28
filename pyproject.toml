@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name="gwplot"
 version='0.0.1'
 description="Visualise genomics data fast"
-requires-python='>=3.8'
+requires-python='>=3.9'
 readme="README.md"
 authors=[
     { name = "Kez Cleal", email = "clealk@cardiff.ac.uk" }

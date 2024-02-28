@@ -6,6 +6,7 @@ from libcpp.vector cimport vector
 import numpy as np
 cimport numpy as np
 
+np.import_array()
 
 cdef class Gw:
     """Interface to GW"""

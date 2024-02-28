@@ -42,7 +42,7 @@ jobs:
 #            pip install -r requirements.txt
 #            pip install pillow matplotlib
 #            bash ci/manylinux-run-deps
-          CIBW_TEST_COMMAND: cd {project} && python -m unittest
+          CIBW_TEST_COMMAND:  python -m unittest {project}/tests/test.py
           CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
 
       - uses: actions/upload-artifact@v3

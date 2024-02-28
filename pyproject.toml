@@ -19,7 +19,7 @@ classifiers=[
 ]
 
 [tool.setuptools]
-packages=["gwplot", "tests"]
+packages=["gwplot"]
 
 [project.urls]
 Repository="https://github.com/kcleal/gwplot"

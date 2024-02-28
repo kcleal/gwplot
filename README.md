@@ -20,7 +20,8 @@ Then use:
 
 If you want to do development, use this:
 
-    pip install . --no-build-isolation -v
+    pip install -e . --no-build-isolation; pip install . --no-build-isolation -v;
+    python -m unittest discover -s ./tests 
 
 Test using:
 

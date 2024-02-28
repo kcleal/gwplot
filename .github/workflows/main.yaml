@@ -27,10 +27,7 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64"  # arm64
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0 REPAIR_LIBRARY_PATH=/usr/local/lib
           CIBW_ARCHS_LINUX: "auto"
-          CIBW_BEFORE_ALL_MACOS: |
-            echo "PATH " $PATH
-            echo "LD_LIBRARY_PATH " $LD_LIBRARY_PATH
-            bash ci/osx-build-deps
+          CIBW_BEFORE_ALL_MACOS: bash ci/osx-build-deps
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: DYLD_LIBRARY_PATH=$REPAIR_LIBRARY_PATH delocate-wheel --require-archs x86_64 -w {dest_dir} -v {wheel}
           #CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
@@ -42,7 +39,7 @@ jobs:
 #            pip install -r requirements.txt
 #            pip install pillow matplotlib
 #            bash ci/manylinux-run-deps
-          CIBW_TEST_COMMAND:  python -m unittest gwplot.tests
+          CIBW_TEST_COMMAND:  python -m unittest discover -s ./tests
           CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
 
       - uses: actions/upload-artifact@v3

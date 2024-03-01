@@ -40,7 +40,7 @@ rm -rf htslib-1.17
 #build GW
 cd ../../gw
 make prep
-CPPFLAGS+="-I../ci/buid_gwplot/" LFDLAGS+="-L../ci/buid_gwplot/ -L../gwplot" make shared -j3
+CPPFLAGS+="-I../ci/build_gwplot/" LFDLAGS+="-L../ci/build_gwplot/ -L../gwplot" make shared -j3
 cp lib/libgw/out/* ../gwplot
 
 

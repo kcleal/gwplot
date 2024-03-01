@@ -31,6 +31,7 @@ rm htslib.tar.bz2
 cd htslib-1.17
 CPPFLAGS+="-I../" LFDLAGS+="-L../" ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
 make -j3
+makes install
 cp libhts.* ${D}
 #cp libhts.dylib libhts.so ../../../gwplot  # package shared lib
 cp -rf htslib ${D}

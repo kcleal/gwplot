@@ -71,7 +71,7 @@ cd ../
 cd ./gw
 make prep
 CPPFLAGS+="-I/usr/local/include" LDFLAGS+="-L/usr/local/lib" make shared -j3
-cp lib/libgw/out/* ../gwplot
+cp lib/libgw/out/* /usr/local/lib/
 
 
 echo "OSX-DEPS DONE"

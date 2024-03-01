@@ -29,7 +29,9 @@ jobs:
           CIBW_BEFORE_ALL_MACOS: |
             bash ci/osx-build-deps
             pip install -e . 
-            install_name_tool -change libgw.dylib @loader_path/libgw.dylib gwplot/interface.cpython-*.so;
+            otool -L gwplot/interface.cpython-*.so
+            install_name_tool -change libgw.dylib @loader_path/libgw.dylib gwplot/interface.cpython-*.so
+#            otool -L gwplot/interface.cpython-*.so
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: DYLD_LIBRARY_PATH=$REPAIR_LIBRARY_PATH delocate-wheel -w {dest_dir} -v {wheel} # --require-archs x86_64
           #CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""

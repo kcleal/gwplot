@@ -31,7 +31,7 @@ rm htslib.tar.bz2
 cd htslib-1.17
 CPPFLAGS+="-I../" LFDLAGS+="-L../" ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
 make -j3
-cp libhts.dylib libhts.so ${D}
+cp libhts.* ${D}
 #cp libhts.dylib libhts.so ../../../gwplot  # package shared lib
 cp -rf htslib ${D}
 cp -rf cram ${D}
@@ -41,7 +41,7 @@ rm -rf htslib-1.17
 #build GW
 cd ../../gw
 make prep
-CPPFLAGS+="-I../ci/build_gwplot/" LDFLAGS+="-L../ci/build_gwplot/ -L../gwplot" make shared -j3
+CPPFLAGS+="-I${D}" LDFLAGS+="-L${D} -L../gwplot" make shared -j3
 cp lib/libgw/out/* ../gwplot
 
 

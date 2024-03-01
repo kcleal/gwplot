@@ -1,5 +1,3 @@
 include _custom_build.py
 include gwplot/*
-include gwplot/
 include tests/*
-include tests/

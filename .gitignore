@@ -23,3 +23,10 @@
 /gwplot/interface.cpp
 /old/
 /dist/
+/ci/build_gwplot/
+/gwplot/libgw.dylib
+/fixed_wheels/
+/gwplot/libskia.a
+/gw/libgwplot/include/
+/gw/libgwplot/out/
+/gwplot/libhts.dylib

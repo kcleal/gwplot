@@ -7,6 +7,16 @@ from distutils import ccompiler
 import os
 import glob
 import sysconfig
+import sys
+
+
+def path_to_build_folder():
+    """Returns the name of a distutils build directory"""
+    # lib.macosx-13-arm64-cpython-310
+    f = "{dirname}.{platform}-cpython-{version[0]}{version[1]}"
+    dir_name = f.format(dirname='lib', platform=sysconfig.get_platform(), version=sys.version_info)
+    return os.path.join('build', dir_name, 'gwplot')
+
 
 
 debug = False
@@ -63,8 +73,12 @@ print("*"*80)
 root = os.path.abspath(os.path.dirname(__file__))
 libraries = ["hts", "skia", "gw"]
 
-library_dirs = [numpy.get_include(), glob.glob("./gw/lib/skia/out/Release*")[0], "/usr/local/lib", "./gwplot"]
-include_dirs = [numpy.get_include(), "./include", "./gw/lib/skia", "./gw/lib/libBigWig", "./gw/src"]
+
+include_dirs = [numpy.get_include(),"./gw/lib/libgw/include", "./gw/lib/skia", "./gw/lib/libBigWig", "./ci/build_gwplot"]
+
+library_dirs = [numpy.get_include(), "./gwplot", "./ci/build_gwplot"]
+
+
 print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)
@@ -75,12 +89,14 @@ ext_module = cythonize(Extension("gwplot.interface",
                                 library_dirs=library_dirs,
                                 include_dirs=include_dirs,
                                 extra_compile_args=extras_args,
+                                runtime_library_dirs=["/opt/homebrew/lib/python3.10/site-packages/gwplot"],
+                                extra_link_args=["-Wl,-rpath,@loader_path/."],
                                 language="c++",
                                 ), **cy_options)
-
 
 print("Found packages", find_packages(where="."))
 setup(
     name="gwplot",
     ext_modules=cythonize(ext_module),
+    include_package_data=True,
 )

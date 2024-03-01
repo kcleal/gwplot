@@ -8,24 +8,29 @@ If it is, download the artifact and install one of the wheel files using pip. Ot
 Building from source
 --------------------
 
-Install the prerequisites (htslib, glfw3, libgw) using either:
+On mac use brew to get library dependencies:
+
+        brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
+
+Then use:
+    
+    bash ci/osx-deps
+    pip install -r requirements
+    pip install -e . ; install_name_tool -change libgw.dylib @loader_path/libgw.dylib gwplot/interface.cpython-310-darwin.so; pip install . --no-build-isolation -v;
+    
+
+Test using:
+
+   python -m unittest discover -s ./tests 
+
+Continuous integration
+----------------------
+
+Build GW the prerequisites (htslib, glfw3, libgw) using either:
     
     bash ci/osx-deps
     bash ci/manylinux-deps
 
-Then use:
-
-    pip install -r requirements
-    pip install .
-
-If you want to do development, use this:
-
-    pip install -e . --no-build-isolation; pip install . --no-build-isolation -v;
-    python -m unittest discover -s ./tests 
-
-Test using:
-
-    python -m unittest
 
 Demo
 ----

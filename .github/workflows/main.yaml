@@ -10,33 +10,25 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macOS-14] #ubuntu-20.04
+        os: [macOS-11] #ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v4  # checkout gwplot
         with:
           fetch-depth: 0
           submodules: recursive
-      - run: |
-          cd gw; git branch; git remote show origin; git fetch origin; git switch gw_dev; cd ../  # checkout gw_dev
-      -   if: runner.os == 'macOS'
-          run: |
-            system_profiler SPSoftwareDataType SPHardwareDataType
-            brew install pipx
-            pipx ensurepath
-            bash ci/osx-build-deps
+      - run: cd gw; git branch; git remote show origin; git fetch origin; git switch gw_dev; cd ../  # checkout gw_dev
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.0
         env:
-          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.10"
+          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.10 <3.11"
           CIBW_SKIP: "*-win32 *-manylinux_i686 pp* *musl* "
-          CIBW_ARCHS_MACOS: "arm64"  # x86_64 arm64
-          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0 REPAIR_LIBRARY_PATH=/usr/local/lib
+          CIBW_ARCHS_MACOS: "x86_64"  # x86_64 arm64
+          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=11.0 REPAIR_LIBRARY_PATH=/usr/local/lib
           CIBW_ARCHS_LINUX: "auto"
-          #CIBW_BEFORE_ALL_MACOS: |
-          #  bash ci/osx-build-deps
-#         CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: DYLD_LIBRARY_PATH=$REPAIR_LIBRARY_PATH delocate-wheel --require-archs x86_64,arm64 -w {dest_dir} -v {wheel}
+          CIBW_BEFORE_ALL_MACOS: bash ci/osx-build-deps
+          CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: DYLD_LIBRARY_PATH=$REPAIR_LIBRARY_PATH delocate-wheel -w {dest_dir} -v {wheel} # --require-archs x86_64
           #CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
 #          CIBW_BEFORE_TEST_MACOS: |
 #            pip install -r requirements.txt
@@ -47,7 +39,7 @@ jobs:
 #            pip install pillow matplotlib
 #            bash ci/manylinux-run-deps
           CIBW_TEST_COMMAND:  pip install -U numpy; python -c 'import gwplot'
-          #CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
+          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
 
       - uses: actions/upload-artifact@v3
         with:

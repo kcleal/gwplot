@@ -28,10 +28,7 @@ jobs:
 
     - name: Checkout gw submodule at gw_dev branch
       run: |
-        cd gw
-        git fetch origin
-        git switch gw_dev
-        cd ..
+        cd gw; git branch; git remote show origin; git fetch origin; git switch gw_dev; cd ../  # checkout gw_dev
 
     - name: Build gw submodule
       run: |

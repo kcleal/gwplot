@@ -30,8 +30,8 @@ jobs:
           git submodule update
           pwd
           cd gw
-          git fetch origin
-          git checkout -b gw_dev origin/gw_dev
+          git fetch origin gw_dev:gw_dev
+          git checkout gw_dev
           git branch
           cd ../
 

@@ -26,12 +26,13 @@ jobs:
 
       - name: Checkout gw submodule at gw_dev branch
         run: |
+          git submodule init
+          git submodule update
           pwd
           cd gw
-          git branch
-          git remote show origin
           git fetch origin
-          git switch gw_dev
+          git checkout -b gw_dev origin/gw_dev
+          git branch
           cd ../
 
       - name: Build gw submodule

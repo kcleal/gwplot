@@ -17,7 +17,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-      - run: cd gw; git branch; git remote show origin; git fetch origin; git switch gw_dev; cd ../  # checkout gw_dev
+      - run: |
+          cd gw; git branch; git remote show origin; git fetch origin; git switch gw_dev; cd ../  # checkout gw_dev
+      -   if: runner.os == 'macOS'
+          run: |
+            brew install pipx
+            pipx ensurepath
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.0
         env:

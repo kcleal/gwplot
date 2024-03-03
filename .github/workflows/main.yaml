@@ -7,9 +7,9 @@ jobs:
   build_arm64:
     runs-on: macos-14
     env:
-      _PYTHON_HOST_PLATFORM: "macosx-14.0-arm64"
+      _PYTHON_HOST_PLATFORM: "macosx-11.0-arm64"
       ARCHFLAGS: "-arch arm64"
-      MACOSX_DEPLOYMENT_TARGET: "10.15"
+      MACOSX_DEPLOYMENT_TARGET: "11.0"
       CPPFLAGS: "-I/usr/local/include"
       LDFLAGS: "-L/usr/local/lib"
     strategy:
@@ -57,7 +57,7 @@ jobs:
 
       - name: Build wheel file
         run: |
-          CPPFLAGS+="-I$(brew --Cellar)/../include" LDFLAGS+="-L$(brew --Cellar)/../lib" python setup.py bdist_wheel
+          CPPFLAGS+="-I$(brew --Cellar)/../include" LDFLAGS+="-L$(brew --Cellar)/../lib" pip wheel . --wheel-dir dist
 
       - name: Delocate wheel file
         run: |
@@ -69,10 +69,11 @@ jobs:
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
           echo $PYTHON_VERSION $PYTHON_VERSION_NO_DOT
           ls dist
-          
+          python --version
+          python -m site
           python -m pip install dist/*cp${PYTHON_VERSION_NO_DOT}*.whl
           python -m pip install -U numpy
-#          python -c "import gwplot"
+          python -c "import gwplot"
 
       - name: Archive wheel files
         uses: actions/upload-artifact@v3

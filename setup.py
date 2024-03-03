@@ -5,18 +5,7 @@ from Cython.Build import cythonize
 import numpy
 from distutils import ccompiler
 import os
-import glob
 import sysconfig
-import sys
-
-
-def path_to_build_folder():
-    """Returns the name of a distutils build directory"""
-    # lib.macosx-13-arm64-cpython-310
-    f = "{dirname}.{platform}-cpython-{version[0]}{version[1]}"
-    dir_name = f.format(dirname='lib', platform=sysconfig.get_platform(), version=sys.version_info)
-    return os.path.join('build', dir_name, 'gwplot')
-
 
 
 debug = False

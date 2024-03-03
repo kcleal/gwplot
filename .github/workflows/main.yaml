@@ -51,6 +51,8 @@ jobs:
 
       - name: Build wheel file
         run: |
+          export _PYTHON_HOST_PLATFORM="macosx-14.0-arm64"
+          export ARCHFLAGS="-arch arm64"
           CPPFLAGS+="-I/usr/local/include -I$(brew --Cellar)/../include" LDFLAGS+="-L/usr/local/lib -L$(brew --Cellar)/../lib" python setup.py bdist_wheel
 
       - name: Delocate wheel file

@@ -78,9 +78,21 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         bint processed
 
+        string inputText
+
         void clearCollections()
 
-        void addBam(string bam_path)
+        void addBam(string &bam_path)
+
+        void removeBam(int index)
+
+        void addTrack(string &track_path, bint print_message)
+
+        void removeTrack(int index)
+
+        void removeRegion(int index)
+
+        void commandProcessed()
 
         int makeRasterSurface()
 

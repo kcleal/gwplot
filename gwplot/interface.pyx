@@ -208,6 +208,27 @@ cdef class Gw:
             for p in paths:
                 self.add_bam(p)
 
+    def remove_bam(self, int index):
+        self.thisptr.removeBam(index)
+
+    def add_track(self, path):
+        cdef string b
+        assert os.path.exists(path)
+        b = path.encode("utf-8")
+        self.thisptr.addTrack(b, False)
+
+    def add_tracks_from_iter(self, paths):
+        try:
+            iterator = iter(paths)
+        except TypeError:
+            raise TypeError("bam_path is not iterable")
+        else:
+            for p in paths:
+                self.add_track(p)
+
+    def remove_track(self, int index):
+        self.thisptr.removeTrack(index)
+
     def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):
         cdef string c = chrom.encode("utf-8")
         cdef Region reg = Region()
@@ -226,6 +247,15 @@ cdef class Gw:
         else:
             for item in regions:
                 self.add_region(*item)
+
+    def remove_region(self, int index):
+        self.thisptr.removeRegion(index)
+
+    def apply_command(self, str command):
+        cdef string c = command.encode("utf-8")
+        self.thisptr.inputText = c
+        self.thisptr.commandProcessed()
+
     def make_raster_surface(self, width=None, height=None):
         if width is not None:
             assert isinstance(width, int)

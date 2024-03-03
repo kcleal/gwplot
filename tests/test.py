@@ -26,8 +26,20 @@ class TestConstruct(unittest.TestCase):
     def test_add_bam(self):
         plot.add_bams_from_iter((root + "/small.bam", ))
 
+    def test_remove_bam(self):
+        plot.remove_bam(0)
+        plot.add_bam(root + "/small.bam")
+
+    def test_add_remove_track(self):
+        plot.add_track(root + "/test.gff3")
+        plot.remove_track(0)
+
     def test_add_region(self):
         plot.add_regions_from_iter((("chr1", 1, 20000),))
+
+    def test_remove_region(self):
+        plot.remove_region(0)
+        plot.add_region("chr1", 1, 20000)
 
     def test_run_save_png(self):
         plot.draw()

@@ -39,8 +39,8 @@ jobs:
         run: |
           cd ./gw
           make prep
-          CPPFLAGS+="-I/usr/local/include" LDFLAGS+="-L/usr/local/lib" make shared -j3
-          cp lib/libgw/out/* /usr/local/lib/
+          CPPFLAGS+="-I/usr/local/include -I$(brew --Cellar)/../include" LDFLAGS+="-L/usr/local/lib -L$(brew --Cellar)/../lib" make shared -j3
+          cp lib/libgw/out/* $(brew --Cellar)/../lib
           cd ..
 
       - name: Install Python dependencies
@@ -55,7 +55,7 @@ jobs:
 
       - name: Delocate wheel file
         run: |
-          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
+          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --Cellar)/../lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
       - name: Install and test wheel
         run: |

@@ -51,7 +51,7 @@ jobs:
 
       - name: Build wheel file
         run: |
-          python setup.py bdist_wheel
+          CPPFLAGS+="-I/usr/local/include -I$(brew --Cellar)/../include" LDFLAGS+="-L/usr/local/lib -L$(brew --Cellar)/../lib" python setup.py bdist_wheel
 
       - name: Delocate wheel file
         run: |

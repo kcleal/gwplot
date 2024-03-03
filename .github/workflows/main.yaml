@@ -6,6 +6,12 @@ on: [push, pull_request]
 jobs:
   build_arm64:
     runs-on: macos-14
+    env:
+      _PYTHON_HOST_PLATFORM: "macosx-14.0-arm64"
+      ARCHFLAGS: "-arch arm64"
+      MACOSX_DEPLOYMENT_TARGET: "10.15"
+      CPPFLAGS: "-I/usr/local/include"
+      LDFLAGS: "-L/usr/local/lib"
     strategy:
       matrix:
         python-version: [ '3.10' ] #[3.8, 3.9, 3.10, 3.11, 3.12]
@@ -39,7 +45,7 @@ jobs:
         run: |
           cd ./gw
           make prep
-          CPPFLAGS+="-I/usr/local/include -I$(brew --Cellar)/../include" LDFLAGS+="-L/usr/local/lib -L$(brew --Cellar)/../lib" make shared -j3
+          CPPFLAGS+="-I$(brew --Cellar)/../include" LDFLAGS+="-L$(brew --Cellar)/../lib" make shared -j3
           cp lib/libgw/out/* $(brew --Cellar)/../lib
           cd ..
 
@@ -51,9 +57,7 @@ jobs:
 
       - name: Build wheel file
         run: |
-          export _PYTHON_HOST_PLATFORM="macosx-14.0-arm64"
-          export ARCHFLAGS="-arch arm64"
-          CPPFLAGS+="-I/usr/local/include -I$(brew --Cellar)/../include" LDFLAGS+="-L/usr/local/lib -L$(brew --Cellar)/../lib" python setup.py bdist_wheel
+          CPPFLAGS+="-I$(brew --Cellar)/../include" LDFLAGS+="-L$(brew --Cellar)/../lib" python setup.py bdist_wheel
 
       - name: Delocate wheel file
         run: |

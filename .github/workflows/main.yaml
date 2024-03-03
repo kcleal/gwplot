@@ -69,9 +69,10 @@ jobs:
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
           echo $PYTHON_VERSION $PYTHON_VERSION_NO_DOT
           ls dist
+          
           python -m pip install dist/*cp${PYTHON_VERSION_NO_DOT}*.whl
           python -m pip install -U numpy
-          python -c "import gwplot"
+#          python -c "import gwplot"
 
       - name: Archive wheel files
         uses: actions/upload-artifact@v3

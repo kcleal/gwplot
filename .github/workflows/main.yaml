@@ -104,9 +104,8 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64"  # arm64
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=11.0 REPAIR_LIBRARY_PATH=/usr/local/lib
           CIBW_ARCHS_LINUX: "auto"
-          CIBW_BEFORE_ALL_MACOS: |
-            bash ci/osx-build-deps
-#         CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
+          CIBW_BEFORE_ALL_MACOS: bash ci/osx-build-deps
+          CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: DYLD_LIBRARY_PATH=$REPAIR_LIBRARY_PATH delocate-wheel -w {dest_dir} -v {wheel} # --require-archs x86_64
           #CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
 #          CIBW_BEFORE_TEST_MACOS: |

@@ -45,8 +45,6 @@ ls
 cd gw
 make prep
 make shared -j3
-cp -rf libgw/include ../
-cp libgw.* /usr/local/lib
-cd ../
+cp lib/libgw/out/* /usr/local/lib/
 
 echo "MANYLINUX-DEPS DONE"

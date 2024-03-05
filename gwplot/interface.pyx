@@ -318,7 +318,7 @@ cdef class Gw:
         references to the object are gone. Freeing of the array is left to the c++ layer"""
         pass
 
-    def RGBA_array(self):
+    def array(self):
         if not self.raster_surface_created:
             return None
         return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)

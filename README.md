@@ -61,12 +61,12 @@ plot.apply_command("theme dark")
 plot.draw_buffer_reads()  # Reads are held in memory
 print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)  # 304 Mb
 
-print(plot.RGBA_array())  # Raw pixel array image
+print(plot.array())  # Raw pixel array image
 
 import matplotlib.pyplot as plt
 from PIL import Image
 
-img = Image.fromarray(plot.RGBA_array())
+img = Image.fromarray(plot.array())
 plt.figure()
 plt.imshow(img)
 plt.show()
@@ -77,7 +77,7 @@ plt.show()
 import pprint
 pprint.pprint([i for i in dir(plot) if "__" not in i])
 
-['RGBA_array',
+['array',
  'add_bam',
  'add_bams_from_iter',
  'add_region',

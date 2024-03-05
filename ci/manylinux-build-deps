@@ -9,11 +9,9 @@ yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel
     cmake  xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
     wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr-devel libssh2 libs3 extra-cmake-modules
 
-# Fix POSIX time error for glfw3
-{ echo '#define POSIX_REQUIRED_STANDARD 199309L'; echo '#define _POSIX_C_SOURCE POSIX_REQUIRED_STANDARD'; echo '#define _POSIX_SOURCE POSIX_REQUIRED_STANDARD'; cat  /project/glfw-3.4/src/posix_time.c; } > time.tmp && mv time.tmp  /project/glfw-3.4/src/posix_time.c
 
-curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
-unzip glfw-3.4.zip && cd glfw-3.4
+curl -L -o glfw-3.3.10.zip https://github.com/glfw/glfw/releases/download/3.3.10/glfw-3.3.10.zip
+unzip glfw-3.3.10.zip && cd glfw-3.3.10
 cmake -S . -B build && cd build && make
 ls && cp libglfw3.a /usr/local/lib && cp libglfw3.a /usr/local/lib/libglfw.a
 cd ../ && cp -rf include/GLFW3 /usr/local/include

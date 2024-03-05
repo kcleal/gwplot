@@ -5,7 +5,7 @@ echo "STARTING MANYLINUX-DEPS"
 yum -y groupinstall "Development Tools"
 yum -y install glibc-devel
 yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel \
-    bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel  curl-devel curl \
+    bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel curl-devel curl \
     cmake  xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
     wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr-devel libssh2 libs3 extra-cmake-modules
 

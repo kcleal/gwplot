@@ -10,11 +10,12 @@ yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel
     wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr-devel libssh2 libs3 extra-cmake-modules
 
 
-curl -L -o glfw-3.3.10.zip https://github.com/glfw/glfw/releases/download/3.3.10/glfw-3.3.10.zip
-unzip glfw-3.3.10.zip && cd glfw-3.3.10
+curl -L -o glfw-3.3.8.zip https://github.com/glfw/glfw/releases/download/3.3.8/glfw-3.3.8.zip
+unzip glfw-3.3.8.zip && cd glfw-3.3.8
 cmake -S . -B build && cd build && make
-ls && cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
-cd ../ && cp -rf include/GLFW3 /usr/local/include
+cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
+cd ../ && ls
+cp -rf include/GLFW3 /usr/local/include
 ls /usr/local/include/
 ls /usr/local/include/GLFW/
 cd ../

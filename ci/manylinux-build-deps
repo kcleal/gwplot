@@ -15,7 +15,7 @@ unzip glfw-3.3.8.zip && cd glfw-3.3.8
 cmake -S . -B build && cd build && make
 cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
 cd ../ && ls
-cp -rf include/GLFW3 /usr/local/include
+cp -rf include/GLFW /usr/local/include
 ls /usr/local/include/
 ls /usr/local/include/GLFW/
 cd ../

@@ -6,12 +6,12 @@ yum -y groupinstall "Development Tools"
 yum -y install glibc-devel
 yum -y install epel-release
 yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel \
-    bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel curl-devel curl \
+    bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel curl-devel curl \
     cmake xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
     wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr libXrandr-devel libssh2 libs3 \
     extra-cmake-modules
-yum -y install fontconfig-devel libpng-devel librsvg2-devel libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
-    freetype-devel libuuid-devel glfw-devel
+yum -y install fontconfig-devel libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
+     libuuid-devel glfw-devel  # freetype-devel  libpng-devel libjpeg-devel librsvg2-devel
 
 
 #curl -L -o glfw-3.3.8.zip https://github.com/glfw/glfw/releases/download/3.3.8/glfw-3.3.8.zip
@@ -47,5 +47,6 @@ cd gw
 make prep
 make shared -j3
 cp lib/libgw/out/* /usr/local/lib/
+cp lib/skia/out/Release*/*.a /usr/local/lib
 
 echo "MANYLINUX-DEPS DONE"

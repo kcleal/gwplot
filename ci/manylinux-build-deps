@@ -2,20 +2,21 @@
 
 echo "STARTING MANYLINUX-DEPS"
 
-#yum -y groupinstall "Development Tools"
-#yum -y install glibc-devel
-#yum -y install gcc gcc-c++ wget autoconf openssl-devel libffi libffi-devel zlib-devel \
-#    bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel  curl-devel curl \
-#    cmake  xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
-#    wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr-devel glfw  # libssh2 libs3 extra-cmake-modules
+yum -y groupinstall "Development Tools"
+yum -y install glibc-devel
+yum -y install gcc gcc-c++ wget autoconf openssl-devel libffi libffi-devel zlib-devel \
+    bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel  curl-devel curl \
+    cmake  xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
+    wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr-devel libssh2 libs3 extra-cmake-modules \
+    libglfw3 libglfw3-dev
 
-apt-get update
-apt-get install -y build-essential
+#apt-get update
+#apt-get install -y build-essential
 #sudo apt-get install -y libc6-dev
-apt-get install -y gcc g++ wget autoconf libssl-dev libffi-dev zlib1g-dev \
-    libbz2-dev liblzma-dev libffi-dev libatlas-base-dev libjpeg-dev curl \
-    cmake xorg openbox libxcursor-dev libxi-dev libxinerama-dev \
-    libwayland-dev libxkbcommon-dev wayland-protocols libxrandr-dev libglfw3 libglfw3-dev
+#apt-get install -y gcc g++ wget autoconf libssl-dev libffi-dev zlib1g-dev \
+#    libbz2-dev liblzma-dev libffi-dev libatlas-base-dev libjpeg-dev curl \
+#    cmake xorg openbox libxcursor-dev libxi-dev libxinerama-dev \
+#    libwayland-dev libxkbcommon-dev wayland-protocols libxrandr-dev libglfw3 libglfw3-dev
 
 
 #wget https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip && unzip glfw-3.4.zip && cd glfw-3.4
@@ -26,8 +27,8 @@ apt-get install -y gcc g++ wget autoconf libssl-dev libffi-dev zlib1g-dev \
 #ls /usr/local/include/GLFW/
 
 git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
-    cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build && \
-    cp build/libdeflate.a /usr/local/lib && cp libdeflate.h /usr/local/include
+    cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build
+cp build/libdeflate.a /usr/local/lib && cp libdeflate.h /usr/local/include
 cd ../
 
 wget -O htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.17/htslib-1.17.tar.bz2
@@ -35,12 +36,12 @@ ls -lh
 tar -xvf htslib.tar.bz2
 mv htslib-1.17 htslib && rm htslib.tar.bz2
 cd htslib
-
-#autoheader
-#autoconf
 ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
 make && make install
 cd ../
+
+pwd
+ls
 
 cd gw
 make prep

@@ -4,11 +4,13 @@ echo "STARTING MANYLINUX-DEPS"
 
 yum -y groupinstall "Development Tools"
 yum -y install glibc-devel
-yum -y install gcc gcc-c++ wget autoconf openssl-devel libffi libffi-devel zlib-devel \
+yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel \
     bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel libjpeg-devel  curl-devel curl \
     cmake  xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
-    wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr-devel libssh2 libs3 extra-cmake-modules \
-    libglfw3 libglfw3-dev
+    wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr-devel libssh2 libs3 extra-cmake-modules
+
+yum -y install epel-release
+yum -y install glfw
 
 #wget https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip && unzip glfw-3.4.zip && cd glfw-3.4
 #cmake -S . -B build && cd build && make
@@ -22,7 +24,7 @@ git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
 cp build/libdeflate.a /usr/local/lib && cp libdeflate.h /usr/local/include
 cd ../
 
-wget -O htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.17/htslib-1.17.tar.bz2
+curl -L -o htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.17/htslib-1.17.tar.bz2
 ls -lh
 tar -xvf htslib.tar.bz2
 mv htslib-1.17 htslib && rm htslib.tar.bz2

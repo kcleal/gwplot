@@ -116,7 +116,7 @@ jobs:
 #            pip install -r requirements.txt
 #            pip install pillow matplotlib
 #            bash ci/manylinux-run-deps
-          CIBW_TEST_COMMAND:  pip install -U numpy; python -c 'import gwplot'
+          CIBW_TEST_COMMAND:  ldd --version; apt -y update; apt -y upgrade; pip install -U numpy; python -c 'import gwplot'
           CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
 
       - uses: actions/upload-artifact@v3

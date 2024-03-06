@@ -45,7 +45,8 @@ ls
 
 cd gw
 make prep
-sed -i 's/freetype/freetype2/g' Makefile
+ls ./lib/skia/out/Release-*/
+sed -i 's|-lfreetype|./lib/skia/out/Release-x64/libfreetype2.a|g' Makefile
 make shared -j3
 cp lib/libgw/out/* /usr/local/lib/
 cp lib/skia/out/Release*/*.a /usr/local/lib

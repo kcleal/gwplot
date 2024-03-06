@@ -11,10 +11,8 @@ yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel
     wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr libXrandr-devel libssh2 libs3 \
     extra-cmake-modules
 yum -y install fontconfig-devel libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
-     libuuid-devel glfw-devel  # freetype-devel  libpng-devel libjpeg-devel librsvg2-devel
+     libuuid-devel glfw-devel freetype-devel  libpng-devel libjpeg-devel librsvg2-devel
 
-yum list- | grep freetype
-yum -y remove freetype-devel
 
 #curl -L -o glfw-3.3.8.zip https://github.com/glfw/glfw/releases/download/3.3.8/glfw-3.3.8.zip
 #unzip glfw-3.3.8.zip && cd glfw-3.3.8
@@ -47,6 +45,7 @@ ls
 
 cd gw
 make prep
+sed -i 's/freetype/freetype2/g' Makefile
 make shared -j3
 cp lib/libgw/out/* /usr/local/lib/
 cp lib/skia/out/Release*/*.a /usr/local/lib

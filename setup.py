@@ -8,7 +8,7 @@ import os
 import sysconfig
 import platform
 
-
+os_name = platform.system()
 debug = False
 
 cy_options = {

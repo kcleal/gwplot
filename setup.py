@@ -6,6 +6,7 @@ import numpy
 from distutils import ccompiler
 import os
 import sysconfig
+import platform
 
 
 debug = False
@@ -62,11 +63,14 @@ print("*"*80)
 root = os.path.abspath(os.path.dirname(__file__))
 libraries = ["hts", "skia", "gw"]
 
-
 include_dirs = [numpy.get_include(),"./gw/lib/libgw/include", "./gw/lib/skia", "./gw/lib/libBigWig", "./ci/build_gwplot"]
+library_dirs = [numpy.get_include(), "./gwplot", "./ci/build_gwplot", "./gw/lib/libgw/out/"]
 
-library_dirs = [numpy.get_include(), "./gwplot", "./ci/build_gwplot"]
-
+extra_link_args = []
+if os_name == 'Darwin':  # macOS
+    extra_link_args.append('-Wl,-rpath,@loader_path/.')
+elif os_name == 'Linux':
+    extra_link_args.append('-Wl,-rpath,$ORIGIN')
 
 print("Libs", libraries)
 print("Library dirs", library_dirs)
@@ -78,8 +82,7 @@ ext_module = cythonize(Extension("gwplot.interface",
                                 library_dirs=library_dirs,
                                 include_dirs=include_dirs,
                                 extra_compile_args=extras_args,
-                                runtime_library_dirs=["/opt/homebrew/lib/python3.10/site-packages/gwplot"],
-                                extra_link_args=["-Wl,-rpath,@loader_path/."],
+                                extra_link_args=extra_link_args,
                                 language="c++",
                                 ), **cy_options)
 

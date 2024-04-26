@@ -69,6 +69,10 @@ library_dirs = [numpy.get_include(), "./gwplot", "./gw/lib/libgw/out/"]
 extra_link_args = []
 if os_name == 'Darwin':
     extra_link_args.append('-Wl,-rpath,@loader_path/.')
+    if os.path.exists("/opt/homebrew/include"):
+        include_dirs.append("/opt/homebrew/include")
+    if os.path.exists("/opt/homebrew/lib"):
+        library_dirs.append("/opt/homebrew/lib")
 elif os_name == 'Linux':
     extra_link_args.append('-Wl,-rpath,$ORIGIN')
 

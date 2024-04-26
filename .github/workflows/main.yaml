@@ -30,9 +30,11 @@ jobs:
         run: |
           #          rm -rf $(brew --repo homebrew/core)
           #          brew tap --force homebrew/core
-          brew tap --repair
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          # brew tap --repair
+          # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           brew update
+          brew upgrade
+          brew --cellar
           brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
 
       - name: Checkout gw submodule at gw_dev branch
@@ -50,8 +52,8 @@ jobs:
         run: |
           cd ./gw
           make prep > /dev/null 2>&1
-          CPPFLAGS+="-I$(brew --Cellar)/../include" LDFLAGS+="-L$(brew --Cellar)/../lib" make shared -j3
-          cp lib/libgw/out/* $(brew --Cellar)/../lib
+          CPPFLAGS+="-I$(brew --cellar)/../include" LDFLAGS+="-L$(brew --cellar)/../lib" make shared -j3
+          cp lib/libgw/out/* $(brew --cellar)/../lib
           cd ..
 
       - name: Install Python dependencies
@@ -62,7 +64,7 @@ jobs:
 
       - name: Build wheel file
         run: |
-          CPPFLAGS+="-I$(brew --Cellar)/../include" LDFLAGS+="-L$(brew --Cellar)/../lib" pip wheel . --wheel-dir dist
+          CPPFLAGS+="-I$(brew --cellar)/../include" LDFLAGS+="-L$(brew --cellar)/../lib" pip wheel . --wheel-dir dist
 
       - name: Delocate wheel file
         run: |

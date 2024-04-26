@@ -11,18 +11,18 @@ yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel
     wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr libXrandr-devel libssh2 libs3 \
     extra-cmake-modules
 yum -y install fontconfig-devel libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
-     libuuid-devel glfw-devel freetype-devel  libpng-devel libjpeg-devel librsvg2-devel
+     libuuid-devel freetype-devel  libpng-devel libjpeg-devel librsvg2-devel  # glfw-devel
 
 
-#curl -L -o glfw-3.3.8.zip https://github.com/glfw/glfw/releases/download/3.3.8/glfw-3.3.8.zip
-#unzip glfw-3.3.8.zip && cd glfw-3.3.8
-#cmake -S . -B build && cd build && make
-#cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
-#cd ../ && ls
-#cp -rf include/GLFW /usr/local/include
-#ls /usr/local/include/
-#ls /usr/local/include/GLFW/
-#cd ../
+curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
+unzip glfw-3.4.zip && cd glfw-3.4
+cmake -S . -B build && cd build && make
+cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
+cd ../ && ls
+cp -rf include/GLFW /usr/local/include
+ls /usr/local/include/
+ls /usr/local/include/GLFW/
+cd ../
 
 git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
     cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build
@@ -44,7 +44,7 @@ pwd
 ls
 
 cd gw
-make prep
+make prep --silent
 ls ./lib/skia/out/Release-*/
 sed -i 's|-lfreetype|./lib/skia/out/Release-x64/libfreetype2.a|g' Makefile
 make shared -j3

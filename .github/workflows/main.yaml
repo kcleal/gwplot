@@ -5,7 +5,7 @@ on: [push, pull_request]
 
 jobs:
   build_arm64:
-    runs-on: macos-14 #3-xlarge
+    runs-on: macos-14
     env:
       _PYTHON_HOST_PLATFORM: "macosx-14.0-arm64"
       ARCHFLAGS: "-arch arm64"

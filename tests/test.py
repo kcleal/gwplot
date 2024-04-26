@@ -51,7 +51,7 @@ class TestConstruct(unittest.TestCase):
 
     def test_run_draw_no_buffer(self):
         plot.draw()
-        img = Image.fromarray(plot.RGBA_array())
+        img = Image.fromarray(plot.array())
         plt.figure()
         plt.imshow(img)
         # plt.show()

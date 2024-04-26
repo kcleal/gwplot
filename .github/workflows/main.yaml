@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           rm -rf $(brew --repo homebrew/core)
-          brew tap homebrew/core
+          brew tap --force homebrew/core
           brew update
           brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
 

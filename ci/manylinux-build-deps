@@ -15,7 +15,8 @@ yum -y install fontconfig-devel libX11-devel mesa-libEGL-devel mesa-libGLES-deve
 
 
 curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
-unzip glfw-3.4.zip && cd glfw-3.4
+unzip glfw-3.4.zip > /dev/null 2>&1
+cd glfw-3.4
 cmake -S . -B build && cd build && make
 cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
 cd ../ && ls
@@ -32,7 +33,7 @@ cd ../
 
 curl -L -o htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.17/htslib-1.17.tar.bz2
 ls -lh
-tar -xvf htslib.tar.bz2
+tar -xvf htslib.tar.bz2 > /dev/null 2>&1
 mv htslib-1.17 htslib && rm htslib.tar.bz2
 cd htslib
 ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
@@ -44,9 +45,9 @@ pwd
 ls
 
 cd gw
-make prep --silent
+make prep > /dev/null 2>&1
 ls ./lib/skia/out/Release-*/
-sed -i 's|-lfreetype|./lib/skia/out/Release-x64/libfreetype2.a|g' Makefile
+#sed -i 's|-lfreetype|./lib/skia/out/Release-x64/libfreetype2.a|g' Makefile
 make shared -j3
 cp lib/libgw/out/* /usr/local/lib/
 cp lib/skia/out/Release*/*.a /usr/local/lib

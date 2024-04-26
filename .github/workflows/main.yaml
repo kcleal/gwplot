@@ -5,11 +5,11 @@ on: [push, pull_request]
 
 jobs:
   build_arm64:
-    runs-on: macos-14
+    runs-on: macos-13
     env:
-      _PYTHON_HOST_PLATFORM: "macosx-11.0-arm64"
+      _PYTHON_HOST_PLATFORM: "macosx-13.0-arm64"
       ARCHFLAGS: "-arch arm64"
-      MACOSX_DEPLOYMENT_TARGET: "11.0"
+      MACOSX_DEPLOYMENT_TARGET: "13.0"
       CPPFLAGS: "-I/usr/local/include"
       LDFLAGS: "-L/usr/local/lib"
     strategy:
@@ -30,7 +30,7 @@ jobs:
         run: |
           brew update
           brew upgrade
-          brew --cellar
+          brew --prefix
           brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
 
       - name: Checkout gw submodule at gw_dev branch
@@ -48,8 +48,8 @@ jobs:
         run: |
           cd ./gw
           make prep > /dev/null 2>&1
-          CPPFLAGS+="-I$(brew --cellar)/../include" LDFLAGS+="-L$(brew --cellar)/../lib" make shared -j3
-          cp lib/libgw/out/* $(brew --cellar)/../lib
+          CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
+          cp lib/libgw/out/* $(brew --prefix)/lib
           cd ..
 
       - name: Install Python dependencies
@@ -60,11 +60,11 @@ jobs:
 
       - name: Build wheel file
         run: |
-          CPPFLAGS+="-I$(brew --cellar)/../include" LDFLAGS+="-L$(brew --cellar)/../lib" pip wheel . --wheel-dir dist
+          CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" pip wheel . --wheel-dir dist
 
       - name: Delocate wheel file
         run: |
-          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --cellar)/../lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
+          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --prefix)/lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
       - name: Install and test wheel
         run: |

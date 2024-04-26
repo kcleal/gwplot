@@ -63,11 +63,11 @@ print("*"*80)
 root = os.path.abspath(os.path.dirname(__file__))
 libraries = ["hts", "skia", "gw"]
 
-include_dirs = [numpy.get_include(),"./gw/lib/libgw/include", "./gw/lib/skia", "./gw/lib/libBigWig", "./ci/build_gwplot"]
-library_dirs = [numpy.get_include(), "./gwplot", "./ci/build_gwplot", "./gw/lib/libgw/out/"]
+include_dirs = [numpy.get_include(),"./gw/lib/libgw/include", "./gw/lib/skia", "./gw/lib/libBigWig"]
+library_dirs = [numpy.get_include(), "./gwplot", "./gw/lib/libgw/out/"]
 
 extra_link_args = []
-if os_name == 'Darwin':  # macOS
+if os_name == 'Darwin':
     extra_link_args.append('-Wl,-rpath,@loader_path/.')
 elif os_name == 'Linux':
     extra_link_args.append('-Wl,-rpath,$ORIGIN')

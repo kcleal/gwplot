@@ -5,7 +5,7 @@ on: [push, pull_request]
 
 jobs:
   build_arm64:
-    runs-on: macos-13-xlarge
+    runs-on: macos-13 #3-xlarge
     env:
       _PYTHON_HOST_PLATFORM: "macosx-13.0-arm64"
       ARCHFLAGS: "-arch arm64"
@@ -17,6 +17,9 @@ jobs:
         python-version: [ '3.11', '3.12' ] #[3.8, 3.9, 3.10, 3.11, 3.12]
 
     steps:
+      - name: Check architecture
+        run: uname -m && arch
+
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
@@ -72,7 +75,7 @@ jobs:
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
           echo $PYTHON_VERSION $PYTHON_VERSION_NO_DOT
           ls dist
-          $(brew --prefix)/bin/python${PYTHON_VERSION} -m pip debug --verbose
+          # $(brew --prefix)/bin/python${PYTHON_VERSION} -m pip debug --verbose
           echo "-"
           $(brew --prefix)/bin/python${PYTHON_VERSION} --version
           $(brew --prefix)/bin/python${PYTHON_VERSION} -m site

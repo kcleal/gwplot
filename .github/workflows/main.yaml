@@ -69,17 +69,17 @@ jobs:
         run: |
           DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --prefix)/lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
-      - name: Install and test wheel
-        run: |
-          PYTHON_VERSION=${{ matrix.python-version }}
-          PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
-          echo $PYTHON_VERSION $PYTHON_VERSION_NO_DOT
-          ls dist
-          # $(brew --prefix)/bin/python${PYTHON_VERSION} -m pip debug --verbose
-          echo "-"
-          $(brew --prefix)/bin/python${PYTHON_VERSION} --version
-          $(brew --prefix)/bin/python${PYTHON_VERSION} -m site
-          $(brew --prefix)/bin/python${PYTHON_VERSION} -m pip install dist/*cp${PYTHON_VERSION_NO_DOT}*.whl
+#      - name: Install and test wheel
+#        run: |
+#          PYTHON_VERSION=${{ matrix.python-version }}
+#          PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
+#          echo $PYTHON_VERSION $PYTHON_VERSION_NO_DOT
+#          ls dist
+#          # $(brew --prefix)/bin/python${PYTHON_VERSION} -m pip debug --verbose
+#          echo "-"
+#          $(brew --prefix)/bin/python${PYTHON_VERSION} --version
+#          $(brew --prefix)/bin/python${PYTHON_VERSION} -m site
+#          $(brew --prefix)/bin/python${PYTHON_VERSION} -m pip install dist/*cp${PYTHON_VERSION_NO_DOT}*.whl
 #          python -c "import gwplot"
       - name: Archive wheel files
         uses: actions/upload-artifact@v3

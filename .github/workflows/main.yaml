@@ -28,10 +28,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          #          rm -rf $(brew --repo homebrew/core)
-          #          brew tap --force homebrew/core
-          # brew tap --repair
-          # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           brew update
           brew upgrade
           brew --cellar
@@ -68,7 +64,7 @@ jobs:
 
       - name: Delocate wheel file
         run: |
-          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --Cellar)/../lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
+          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --cellar)/../lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
       - name: Install and test wheel
         run: |

@@ -95,4 +95,7 @@ setup(
     name="gwplot",
     ext_modules=cythonize(ext_module),
     include_package_data=True,
+    package_data={
+        'gwplot': ['gw/lib/libgw/out/libgw.so'],  # Ensure the shared object is packaged
+    },
 )

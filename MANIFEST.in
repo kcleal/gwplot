@@ -1,3 +1,4 @@
 include _custom_build.py
 include gwplot/*
 include tests/*
+include gw/lib/libgw/out/libgw.so

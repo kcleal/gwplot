@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name="gwplot"
-version='0.0.1'
+version='0.0.2'
 description="Visualise genomics data fast"
 requires-python='>=3.9'
 readme="README.md"
@@ -25,4 +25,4 @@ packages=["gwplot"]
 Repository="https://github.com/kcleal/gwplot"
 
 [project.optional-dependencies]
-test = ["numpy>=1.19.3", "pillow", "matplotlib"]
+test = ["numpy>=1.19.3", "pillow", "matplotlib", "Flask"]

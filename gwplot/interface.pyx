@@ -5,6 +5,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 import numpy as np
 cimport numpy as np
+import glfw
 
 np.import_array()
 
@@ -32,9 +33,30 @@ cdef class Gw:
     def canvas_width(self):
         return self.thisptr.opts.dimensions.x
 
+    def set_canvas_width(self, int width):
+        self.thisptr.fb_width = width
+        self.thisptr.opts.dimensions.x = width
+        self.thisptr.makeRasterSurface()
+
     @property
     def canvas_height(self):
         return self.thisptr.opts.dimensions.y
+
+    def set_canvas_height(self, int height):
+        self.thisptr.fb_height = height
+        self.thisptr.opts.dimensions.y = height
+        self.thisptr.makeRasterSurface()
+
+    @property
+    def canvas_size(self):
+        return self.thisptr.opts.dimensions.x, self.thisptr.opts.dimensions.y
+
+    def set_canvas_size(self, int width, int height):
+        self.thisptr.fb_width = width
+        self.thisptr.opts.dimensions.x = width
+        self.thisptr.fb_height = height
+        self.thisptr.opts.dimensions.y = height
+        self.thisptr.makeRasterSurface()
 
     @property
     def theme(self):
@@ -255,6 +277,9 @@ cdef class Gw:
         cdef string c = command.encode("utf-8")
         self.thisptr.inputText = c
         self.thisptr.commandProcessed()
+
+    def key_press(self, int key, int scancode, int action, int mods):
+        self.thisptr.keyPress(key, scancode, action, mods)
 
     def make_raster_surface(self, width=None, height=None):
         if width is not None:

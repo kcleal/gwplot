@@ -100,7 +100,11 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void runDraw()
 
-        void rasterToPng(const char * path);
+        void rasterToPng(const char * path)
+
+        void keyPress(int key, int scancode, int action, int mods)
+
+        void windowResize(int x, int y)
 
 
 cdef class Gw:

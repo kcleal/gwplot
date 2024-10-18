@@ -13,21 +13,17 @@ On mac use brew to get library dependencies:
     brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
     pip install -r requirements
 
-Make sure this is added to .bashrc, .bash_profile or .zshrc. (run source ~/.bashrc to refresh):
-
-    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --prefix)/lib
-
-Then build gw:
+Then build libgw - has to be installed globally (for now):
     
     cd ./gw
-    make prep -j8
-    CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
-    cp lib/libgw/out/* $(brew --prefix)/lib
+    make prep
+    make shared -j8
+    sudo cp ./lib/libgw/* /usr/local/lib
     cd ..
 
 Finally, install gwplot:
 
-    pip install . --no-build-isolation 
+    pip install . --no-build-isolation -v
 
 
 Test using:
@@ -48,18 +44,18 @@ t0 = time.time()
 plot = Gw('/Users/sbi8kc2/Documents/data/db/hg19/ucsc.hg19.fa')
 plot.add_bam('/Users/sbi8kc2/Desktop/HG002.bam')
 plot.add_region('chr1', 1, 1000000)
-plot.draw()  # Reads are streamed
+plot.draw()  # Reads are held in memory
 plot.raster_to_png("out.png")
 
 print('Time (s):', time.time() - t0)  # 0.21 seconds
-print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)  # 94 Mb
+print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)
 
 # Apply commands, same as when using GW
 plot.apply_command("chr2")
 plot.apply_command("theme dark")
 
-plot.draw_buffer_reads()  # Reads are held in memory
-print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)  # 304 Mb
+plot.draw_stream()  # Reads are streamed
+print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)
 
 print(plot.array())  # Raw pixel array image
 

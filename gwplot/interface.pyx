@@ -5,7 +5,6 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 import numpy as np
 cimport numpy as np
-import glfw
 
 np.import_array()
 
@@ -19,11 +18,13 @@ cdef class Gw:
         cdef vector[Region] regions
         if width is not None:
             assert isinstance(width, int)
-            opts.dimensions.x = width
+            opts.dimensions.x = <int>width
         if height is not None:
             assert isinstance(height, int)
-            opts.dimensions.y = height
+            opts.dimensions.y = <int>height
         self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)
+        self.thisptr.drawToBackWindow = <bint>True
+        # self.thisptr.initBack(opts.dimensions.x, opts.dimensions.y)
 
     def __init__(self, str reference, str theme="slate", width=None, height=None):
         self.raster_surface_created = False
@@ -233,11 +234,11 @@ cdef class Gw:
     def remove_bam(self, int index):
         self.thisptr.removeBam(index)
 
-    def add_track(self, path):
+    def add_track(self, path, bint vcf_as_track=True, bint bed_as_track=True):
         cdef string b
         assert os.path.exists(path)
         b = path.encode("utf-8")
-        self.thisptr.addTrack(b, False)
+        self.thisptr.addTrack(b, <bint>False, vcf_as_track, bed_as_track)
 
     def add_tracks_from_iter(self, paths):
         try:
@@ -284,16 +285,15 @@ cdef class Gw:
     def make_raster_surface(self, width=None, height=None):
         if width is not None:
             assert isinstance(width, int)
-            self.thisptr.opts.dimensions.x = width
+            self.thisptr.opts.dimensions.x = <int>width
         if height is not None:
             assert isinstance(height, int)
-            self.thisptr.opts.dimensions.y = height
+            self.thisptr.opts.dimensions.y = <int>height
+        self.thisptr.setImageSize(self.thisptr.opts.dimensions.x, self.thisptr.opts.dimensions.y)
         size = self.thisptr.makeRasterSurface()
-        assert size
-        self.thisptr.fb_width = self.thisptr.opts.dimensions.x
-        self.thisptr.fb_height = self.thisptr.opts.dimensions.y
+        if size == 0:
+            raise RuntimeError("Could not create raster image. Size was 0")
         self.raster_surface_created = True
-        return self
 
     def raster_to_png(self, path):
         cdef string c = path.encode("utf-8")
@@ -303,13 +303,13 @@ cdef class Gw:
         if not self.raster_surface_created:
             self.make_raster_surface()
         self.thisptr.processed = False
-        self.thisptr.runDrawNoBuffer()
+        self.thisptr.runDraw()
 
-    def draw_buffer_reads(self):
+    def draw_stream(self):
         if not self.raster_surface_created:
             self.make_raster_surface()
         self.thisptr.processed = False
-        self.thisptr.runDraw()
+        self.thisptr.runDrawNoBuffer()
 
     # def __array__(self):
     #     print("In array")

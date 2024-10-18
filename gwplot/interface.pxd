@@ -22,11 +22,11 @@ cdef extern from "utils.h" namespace "Utils" nogil:
 cdef extern from "themes.h" namespace "Themes" nogil:
 
     cpdef enum GwPaint:
-        bgPaint, fcNormal, fcDel, fcDup, fcInvF, fcInvR, fcTra, fcIns, fcSoftClip,
+        bgPaint, bgPaintTiled, bgMenu, fcNormal, fcDel, fcDup, fcInvF, fcInvR, fcTra, fcIns, fcSoftClip,
         fcA, fcT, fcC, fcG, fcN, fcCoverage, fcTrack, fcNormal0, fcDel0, fcDup0, fcInvF0, fcInvR0, fcTra0,
-        fcSoftClip0, fcBigWig, mate_fc, mate_fc0, ecMateUnmapped, ecSplit, ecSelected,
-        lcJoins, lcCoverage, lcLightJoins, insF, insS, lcLabel, lcBright, tcDel, tcIns, tcLabels, tcBackground,
-        marker_paint
+        fcSoftClip0, fcBigWig, fcRoi, mate_fc, mate_fc0, ecMateUnmapped, ecSplit, ecSelected,
+        lcJoins, lcCoverage, lcLightJoins, lcGTFJoins, lcLabel, lcBright, tcDel, tcIns, tcLabels, tcBackground,
+        fcMarkers, fc5mc, fc5hmc, fcOther
 
     cdef cppclass BaseTheme:
         BaseTheme() nogil
@@ -74,25 +74,29 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         IniOptions opts
         vector[char] pixelMemory
         vector[Region] regions
+        bint drawToBackWindow
         int fb_width, fb_height
 
         bint processed
 
         string inputText
 
+        void initBack(int width, int height)
         void clearCollections()
 
         void addBam(string &bam_path)
 
         void removeBam(int index)
 
-        void addTrack(string &track_path, bint print_message)
+        void addTrack(string &track_path, bint print_message, bint vcf_as_track, bint bed_as_track)
 
         void removeTrack(int index)
 
         void removeRegion(int index)
 
         void commandProcessed()
+
+        void setImageSize(int width, int height)
 
         int makeRasterSurface()
 
@@ -114,4 +118,4 @@ cdef class Gw:
     cdef Py_ssize_t shape[1]
     cdef Py_ssize_t strides[1]
 
-    cdef bint raster_surface_created
+    cdef public bint raster_surface_created

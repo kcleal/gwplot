@@ -54,7 +54,7 @@ def get_extra_args(flags):
 
 extras = ["-Wno-unused-function", "-Wno-unused-result",
           "-Wno-ignored-qualifiers", "-Wno-deprecated-declarations"]
-extras_args = get_extra_args(extras) + ["-std=c++17"]
+extras_args = get_extra_args(extras) + ["-std=c++17", "-DBUILDING_LIBGW", "-DGLAD_GLAPI_EXPORT", "-DGLAD_GLAPI_EXPORT_BUILD"]
 
 print("Extra compile args:",  extras_args)
 print("*"*80)
@@ -63,12 +63,12 @@ print("*"*80)
 root = os.path.abspath(os.path.dirname(__file__))
 libraries = ["hts", "skia", "gw"]
 
-include_dirs = [numpy.get_include(),"./gw/lib/libgw/include", "./gw/lib/skia", "./gw/lib/libBigWig"]
-library_dirs = [numpy.get_include(), "./gwplot", "./gw/lib/libgw/out/"]
+include_dirs = [numpy.get_include(),"./gw/include/libgw"]
+library_dirs = [numpy.get_include(), "./gwplot", "./gw/lib/libgw/"]
 
 extra_link_args = []
 if os_name == 'Darwin':
-    extra_link_args.append('-Wl,-rpath,@loader_path/.')
+    extra_link_args = ['-Wl,-rpath,@loader_path/.',  '-framework','Metal', '-framework','CoreText']
     if os.path.exists("/opt/homebrew/include"):
         include_dirs.append("/opt/homebrew/include")
     if os.path.exists("/opt/homebrew/lib"):
@@ -91,11 +91,17 @@ ext_module = cythonize(Extension("gwplot.interface",
                                 ), **cy_options)
 
 print("Found packages", find_packages(where="."))
+package_data = ['gw/lib/libgw/out/libskia.a']
+if os_name == 'Darwin':
+    package_data.append('gw/lib/libgw/out/libgw.dylib')
+elif os_name == 'Linux':
+    package_data.append('gw/lib/libgw/out/libgw.so')
+
 setup(
     name="gwplot",
     ext_modules=cythonize(ext_module),
     include_package_data=True,
     package_data={
-        'gwplot': ['gw/lib/libgw/out/libgw.so'],  # Ensure the shared object is packaged
+        'gwplot': package_data
     },
 )

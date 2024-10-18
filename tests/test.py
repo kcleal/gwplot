@@ -7,15 +7,15 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
-
 root = os.path.abspath(os.path.dirname(__file__))
 fa = root + "/ref.fa"
 plot = Gw(fa)
 
+
 class TestConstruct(unittest.TestCase):
     """ Test construction and alignment"""
     def test_make_raster_surface(self):
-        assert plot.make_raster_surface()
+        plot.make_raster_surface()
 
     def test_set_theme(self):
         plot.set_theme("dark")
@@ -35,7 +35,7 @@ class TestConstruct(unittest.TestCase):
         plot.remove_track(0)
 
     def test_add_region(self):
-        plot.add_regions_from_iter((("chr1", 1, 20000),))
+        plot.add_regions_from_iter([("chr1", 1, 20000)])
 
     def test_remove_region(self):
         plot.remove_region(0)
@@ -54,7 +54,7 @@ class TestConstruct(unittest.TestCase):
         img = Image.fromarray(plot.array())
         plt.figure()
         plt.imshow(img)
-        # plt.show()
+        plt.show()
 
     def test_set_paint(self):
         plot.set_paint_ARBG(GwPaint.fcNormal, 255, 0, 0, 255)

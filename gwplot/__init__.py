@@ -1,5 +1,1 @@
-
-from gwplot.interface import (
-    Gw,
-    GwPaint
-)
+from .interface import *

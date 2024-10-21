@@ -45,11 +45,11 @@ pwd
 ls
 
 cd gw
-make prep > /dev/null 2>&1
+make prep > /dev/null
 ls ./lib/skia/out/Release-*/
 #sed -i 's|-lfreetype|./lib/skia/out/Release-x64/libfreetype2.a|g' Makefile
 make shared -j3
-cp lib/libgw/out/* /usr/local/lib/
+cp lib/libgw/* /usr/local/lib/
 cp lib/skia/out/Release*/*.a /usr/local/lib
 
 echo "MANYLINUX-DEPS DONE"

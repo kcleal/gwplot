@@ -8,10 +8,12 @@ yum -y install epel-release
 yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel \
     bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel curl-devel curl \
     cmake xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
-    wayland-devel libxkbcommon-devel wayland-protocols-devel libXrandr libXrandr-devel libssh2 libs3 \
+    libxkbcommon-devel libXrandr libXrandr-devel libssh2 libs3 \
     extra-cmake-modules
 yum -y install fontconfig-devel libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
-     libuuid-devel freetype-devel  libpng-devel libjpeg-devel librsvg2-devel  # glfw-devel
+     libuuid-devel freetype-devel  libpng-devel libjpeg-devel librsvg2-devel
+
+yum -y install wayland-devel egl-wayland-devel wayland-protocols-devel
 
 
 curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip

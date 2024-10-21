@@ -116,6 +116,7 @@ jobs:
           CIBW_ARCHS_LINUX: "auto"
           CIBW_BEFORE_ALL_MACOS: bash ci/osx-build-deps
           CIBW_BEFORE_ALL_LINUX: |
+            yum install -y wget
             wget https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
             rpm --import RPM-GPG-KEY-AlmaLinux
             bash ci/manylinux-build-deps

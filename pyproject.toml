@@ -3,29 +3,30 @@ requires = ["setuptools>=61.0", "cython", "numpy"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name="gwplot"
-version='0.0.3'
-description="Visualise genomics data fast"
-requires-python='>=3.9'
-readme="README.md"
-authors=[
+name = "gwplot"
+version = "0.0.3"
+description = "Visualise genomics data fast"
+requires-python = ">=3.9"
+readme = "README.md"
+authors = [
     { name = "Kez Cleal", email = "clealk@cardiff.ac.uk" }
 ]
-classifiers=[
+classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
 ]
+dependencies = [
+    "numpy>=1.19.3",
+    "pillow"
+]
 
 [tool.setuptools]
-packages=["gwplot"]
+packages = ["gwplot"]
 
 [project.urls]
-Repository="https://github.com/kcleal/gwplot"
-
-[project.dependencies]
-test = ["numpy>=1.19.3", "pillow"]
+Repository = "https://github.com/kcleal/gwplot"
 
 [project.optional-dependencies]
 test = ["matplotlib", "Flask"]

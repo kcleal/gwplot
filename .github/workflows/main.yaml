@@ -36,7 +36,7 @@ jobs:
           brew --prefix
           brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
 
-      - name: Checkout gw submodule at gw_dev branch
+      - name: Checkout gw
         run: |
           git submodule init
           git submodule update

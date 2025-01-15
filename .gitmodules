@@ -1,4 +1,4 @@
 [submodule "gw"]
 	path = gw
 	url = https://github.com/kcleal/gw
-	branch = gw_dev
+	branch = master

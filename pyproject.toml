@@ -24,5 +24,8 @@ packages=["gwplot"]
 [project.urls]
 Repository="https://github.com/kcleal/gwplot"
 
+[project.dependencies]
+test = ["numpy>=1.19.3", "pillow"]
+
 [project.optional-dependencies]
-test = ["numpy>=1.19.3", "pillow", "matplotlib", "Flask"]
+test = ["matplotlib", "Flask"]

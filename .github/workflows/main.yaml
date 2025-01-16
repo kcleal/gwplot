@@ -65,22 +65,11 @@ jobs:
 
       - name: Delocate wheel file
         run: |
-          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --prefix)/lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
-
-      - name: Check wheel contents
-        run: |
+          echo "Before delocate - wheel contents:"
           unzip -l dist/*.whl
-          # Also check if the extension module exists
-          find dist -name "interface*.so" -o -name "interface*.pyd"
-
-          WHEEL_FILE=$(ls dist/*.whl)
-          mkdir wheel_contents
-          cd wheel_contents
-          unzip "../$WHEEL_FILE"
-          echo "Wheel contents:"
-          ls -R
-          echo "Dynamic library dependencies:"
-          otool -L gwplot/interface*.so
+          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --prefix)/lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
+          echo "After delocate - wheel contents:"
+          unzip -l dist/*.whl
 
       - name: Install and test wheel
         run: |

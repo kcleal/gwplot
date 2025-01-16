@@ -65,14 +65,14 @@ jobs:
 
       - name: Delocate wheel file
         run: |
-          echo "Before delocate - wheel contents:"
-          unzip -l dist/*.whl
           DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --prefix)/lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
-          echo "After delocate - wheel contents:"
-          unzip -l dist/*.whl
 
       - name: Install and test wheel
         run: |
+          python -m pip install wheel
+          python -m wheel unpack dist/*.whl --dest wheel_contents
+          echo "Unpacked wheel contents:"
+          ls -R wheel_contents
           PYTHON_VERSION=${{ matrix.python-version }}
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
           python${PYTHON_VERSION} -m venv .venv

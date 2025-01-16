@@ -99,9 +99,17 @@ elif os_name == 'Linux':
 
 setup(
     name="gwplot",
+    packages=find_packages(where="."),
     ext_modules=cythonize(ext_module),
     include_package_data=True,
     package_data={
-        'gwplot': package_data
+        'gwplot': [
+            'gw/lib/libgw/out/libskia.a',
+            'gw/lib/libgw/out/libgw.dylib',  # for MacOS
+            'gw/lib/libgw/out/libgw.so',     # for Linux
+            '*.pxd',
+            '*.h',
+        ]
     },
+    zip_safe=False,
 )

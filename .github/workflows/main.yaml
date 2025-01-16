@@ -91,7 +91,7 @@ jobs:
           python -m pip install dist/*cp${PYTHON_VERSION_NO_DOT}*.whl
           python -c "import gwplot"
       - name: Archive wheel files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wheels_macOS_arm64
           path: dist/*.whl
@@ -226,7 +226,7 @@ jobs:
 #          CIBW_TEST_COMMAND:  "" #ldd --version; apt -y update; apt -y upgrade; pip install -U numpy; python -c 'import gwplot'
 #          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
 #
-#      - uses: actions/upload-artifact@v3
+#      - uses: actions/upload-artifact@v4
 #        with:
 #          name: wheels_intel_macOS_manylinux
 #          path: ./wheelhouse/*.whl

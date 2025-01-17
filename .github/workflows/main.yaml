@@ -69,8 +69,8 @@ jobs:
 
       - name: Install and test wheel
         run: |
-          python -m pip install wheel
-          python -m wheel unpack dist/*.whl --dest wheel_contents
+          ls -lh dist/*
+          python -m wheel unpack dist/gwplot*.whl --dest wheel_contents
           echo "Unpacked wheel contents:"
           ls -R wheel_contents
           PYTHON_VERSION=${{ matrix.python-version }}

@@ -72,12 +72,10 @@ jobs:
           ls -lh dist/*
           python -m wheel unpack dist/gwplot*.whl --dest wheel_contents
           echo "Unpacked wheel contents:"
-          ls -R wheel_contents
+          ls -Ra wheel_contents
           
           echo "Checking interface.so dependencies:"
           otool -L wheel_contents/gwplot-*/gwplot/interface.*.so
-          echo "\nChecking for required libraries in installation directory:"
-          ls -la /Users/runner/.local/lib/python3.12/site-packages/gwplot/
           
           PYTHON_VERSION=${{ matrix.python-version }}
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')

@@ -106,11 +106,15 @@ setup(
     include_package_data=True,
     package_data={
         'gwplot': [
-            'gw/lib/libgw/out/*',
-            'interface.*.so'
+            'gw/lib/libgw/out/libskia.a',
+            'gw/lib/libgw/out/libgw*',
+            '*.so',
             '*.pxd',
             '*.h',
         ]
     },
+    data_files=[
+        ('gwplot/.dylibs', ['gw/lib/libgw/out/libskia.a'])
+    ],
     zip_safe=False,
 )

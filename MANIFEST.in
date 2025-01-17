@@ -1,5 +1,5 @@
-include ./gwplot/*
-include ./tests/*
-include ./gw/lib/libgw/libgw.so
-include ./gw/lib/libgw/libgw.dylib
-include ./gw/lib/libgw/libskia.a
+include .gwplot/*
+include tests/*
+include gw/lib/libgw/libgw.so
+include gw/lib/libgw/libgw.dylib
+include gw/lib/libgw/libskia.a

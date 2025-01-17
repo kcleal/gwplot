@@ -50,6 +50,7 @@ jobs:
           cd ./gw
           make prep > /dev/null 2>&1
           CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
+          cp lib/libgw/* $(brew --prefix)/lib
           cd ..
 
       - name: Install Python dependencies

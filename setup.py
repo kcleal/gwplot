@@ -68,7 +68,9 @@ library_dirs = [numpy.get_include(), "./gwplot", "./gw/lib/libgw/"]
 
 extra_link_args = []
 if os_name == 'Darwin':
-    extra_link_args = ['-Wl,-rpath,@loader_path/.',  '-framework','Metal', '-framework','CoreText']
+    extra_link_args = ['-Wl,-rpath,@loader_path/.',
+                       '-framework','Metal',
+                       '-framework','CoreText']
     if os.path.exists("/opt/homebrew/include"):
         include_dirs.append("/opt/homebrew/include")
     if os.path.exists("/opt/homebrew/lib"):
@@ -104,9 +106,8 @@ setup(
     include_package_data=True,
     package_data={
         'gwplot': [
-            'gw/lib/libgw/out/libskia.a',
-            'gw/lib/libgw/out/libgw.dylib',  # for MacOS
-            'gw/lib/libgw/out/libgw.so',     # for Linux
+            'gw/lib/libgw/out/*',
+            'interface.*.so'
             '*.pxd',
             '*.h',
         ]

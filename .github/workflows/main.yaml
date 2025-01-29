@@ -50,9 +50,9 @@ jobs:
           cd ./gw
           make prep > /dev/null 2>&1
           CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
-          cp libgw/*.a $(brew --prefix)/lib
-          cp libgw/*.dylib $(brew --prefix)/lib
-          cp libgw $(brew --prefix)/include
+          echo "LibGW compiled"
+          cp libgw/*.* $(brew --prefix)/lib
+          cp -rf libgw $(brew --prefix)/include
           cd ..
           ls $(brew --prefix)/include
           ls $(brew --prefix)/lib

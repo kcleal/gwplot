@@ -59,17 +59,19 @@ extras_args = get_extra_args(extras) + ["-std=c++17", "-DBUILDING_LIBGW", "-DGLA
 print("Extra compile args:",  extras_args)
 print("*"*80)
 
-
 root = os.path.abspath(os.path.dirname(__file__))
-libraries = ["hts", "skia", "gw"]
 
-include_dirs = [numpy.get_include(),"./gw/libgw/include"]
-library_dirs = [numpy.get_include(), "./gwplot", "./gw/libgw"]
+include_dirs = [numpy.get_include(), f"{root}/gw/libgw/GW"]
+libraries = ["hts", "skia", "gw"]
+library_dirs = [numpy.get_include(), f"{root}/gwplot", f"{root}/gw/libgw"]
 
 extra_link_args = []
 if os_name == 'Darwin':
     extra_link_args = ['-Wl,-rpath,@loader_path/.',
                        '-framework','Metal',
+                       '-framework','OpenGL',
+                       '-framework','AppKit',
+                       '-framework','ApplicationServices',
                        '-framework','CoreText']
     if os.path.exists("/opt/homebrew/include"):
         include_dirs.append("/opt/homebrew/include")

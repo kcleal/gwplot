@@ -63,8 +63,8 @@ print("*"*80)
 root = os.path.abspath(os.path.dirname(__file__))
 libraries = ["hts", "skia", "gw"]
 
-include_dirs = [numpy.get_include(),"./gw/include/libgw"]
-library_dirs = [numpy.get_include(), "./gwplot", "./gw/lib/libgw/"]
+include_dirs = [numpy.get_include(),"./gw/libgw/include"]
+library_dirs = [numpy.get_include(), "./gwplot", "./gw/libgw"]
 
 extra_link_args = []
 if os_name == 'Darwin':
@@ -93,11 +93,11 @@ ext_module = cythonize(Extension("gwplot.interface",
                                 ), **cy_options)
 
 print("Found packages", find_packages(where="."))
-package_data = ['gw/lib/libgw/out/libskia.a']
+package_data = ['gw/libgw/libskia.a']
 if os_name == 'Darwin':
-    package_data.append('gw/lib/libgw/out/libgw.dylib')
+    package_data.append('gw/libgw/libgw.dylib')
 elif os_name == 'Linux':
-    package_data.append('gw/lib/libgw/out/libgw.so')
+    package_data.append('gw/libgw/libgw.so')
 
 setup(
     name="gwplot",
@@ -106,15 +106,15 @@ setup(
     include_package_data=True,
     package_data={
         'gwplot': [
-            'gw/lib/libgw/out/libskia.a',
-            'gw/lib/libgw/out/libgw*',
+            'gw/libgw/libskia.a',
+            'gw/libgw/libgw*',
             '*.so',
             '*.pxd',
             '*.h',
         ]
     },
     data_files=[
-        ('gwplot/.dylibs', ['gw/lib/libgw/out/libskia.a'])
+        ('gwplot/.dylibs', ['gw/libgw/libskia.a'])
     ],
     zip_safe=False,
 )

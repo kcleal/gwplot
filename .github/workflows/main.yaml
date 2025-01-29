@@ -50,8 +50,12 @@ jobs:
           cd ./gw
           make prep > /dev/null 2>&1
           CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
-          cp lib/libgw/* $(brew --prefix)/lib
+          cp libgw/*.a $(brew --prefix)/lib
+          cp libgw/*.dylib $(brew --prefix)/lib
+          cp libgw $(brew --prefix)/include
           cd ..
+          ls $(brew --prefix)/include
+          ls $(brew --prefix)/lib
 
       - name: Install Python dependencies
         run: |
@@ -61,11 +65,11 @@ jobs:
 
       - name: Build wheel file
         run: |
-          CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" pip wheel . --wheel-dir dist
+          CPPFLAGS+="-I$(brew --prefix)/include -I$(brew --prefix)/include/libgw" LDFLAGS+="-L$(brew --prefix)/lib" pip wheel . --wheel-dir dist
 
       - name: Delocate wheel file
         run: |
-          DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(brew --prefix)/lib delocate-wheel --require-archs arm64 -w dist -v dist/*.whl --verbose
+          DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$(brew --prefix)/lib" delocate-wheel --require-archs arm64 -w dist -v dist/*.whl --verbose
 
       - name: Install and test wheel
         run: |

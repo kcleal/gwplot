@@ -88,6 +88,7 @@ jobs:
           source .venv/bin/activate
           python -m pip install dist/*cp${PYTHON_VERSION_NO_DOT}*.whl
           python -c "import gwplot"
+
       - name: Archive wheel files
         uses: actions/upload-artifact@v4
         with:

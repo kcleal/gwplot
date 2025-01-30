@@ -1,5 +1,3 @@
 include .gwplot/*
 include tests/*
-include gw/libgw/libgw.so
-include gw/libgw/libgw.dylib
-include gw/libgw/libskia.a
+include gwplot/.dylibs/*

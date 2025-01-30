@@ -7,6 +7,32 @@ from distutils import ccompiler
 import os
 import sysconfig
 import platform
+import subprocess
+import shutil
+
+
+def get_system_prefix():
+    if shutil.which('brew'):
+        try:
+            result = subprocess.run(['brew', '--prefix'],
+                                    capture_output=True,
+                                    text=True,
+                                    check=True)
+            if result.stdout.strip():
+                return result.stdout.strip()
+        except subprocess.CalledProcessError:
+            pass
+
+    conda_prefix = os.environ.get('CONDA_PREFIX')
+    if conda_prefix:
+        return conda_prefix
+
+    prefix = os.environ.get('PREFIX')
+    if prefix:
+        return prefix
+
+    return None
+
 
 os_name = platform.system()
 debug = False
@@ -68,17 +94,23 @@ library_dirs = [numpy.get_include(), f"{root}/gwplot", f"{root}/gw/libgw"]
 extra_link_args = []
 if os_name == 'Darwin':
     extra_link_args = ['-Wl,-rpath,@loader_path/.',
-                       '-framework','Metal',
-                       '-framework','OpenGL',
-                       '-framework','AppKit',
-                       '-framework','ApplicationServices',
-                       '-framework','CoreText']
-    if os.path.exists("/opt/homebrew/include"):
-        include_dirs.append("/opt/homebrew/include")
-    if os.path.exists("/opt/homebrew/lib"):
-        library_dirs.append("/opt/homebrew/lib")
+                       '-framework', 'Metal',
+                       '-framework', 'OpenGL',
+                       '-framework', 'AppKit',
+                       '-framework', 'ApplicationServices',
+                       '-framework', 'CoreText']
 elif os_name == 'Linux':
     extra_link_args.append('-Wl,-rpath,$ORIGIN')
+
+sys_prefix = get_system_prefix()
+if sys_prefix:
+    print("Using system prefix:", sys_prefix)
+    if os.path.exists(f"{sys_prefix}/include"):
+        include_dirs.append(f"{sys_prefix}/include")
+    if os.path.exists(f"{sys_prefix}/include/GW"):
+        include_dirs.append(f"{sys_prefix}/include/GW")
+    if os.path.exists(f"{sys_prefix}/lib"):
+        library_dirs.append(f"{sys_prefix}/lib")
 
 print("Libs", libraries)
 print("Library dirs", library_dirs)
@@ -101,11 +133,10 @@ setup(
     include_package_data=True,
     package_data={
         'gwplot': [
-            'gw/libgw/libskia.a',
-            'gw/libgw/libgw*',
             '*.so',
             '*.pxd',
             '*.h',
+            '.dylibs/*'
         ]
     },
     zip_safe=False,

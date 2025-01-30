@@ -69,7 +69,6 @@ jobs:
           pwd
           mkdir -p gwplot/.dylibs
           cp gw/libgw/libskia.a gwplot/.dylibs/
-          cp gw/libgw/libgw.* gwplot/.dylibs/
           cp gw/libgw/libskia.a gwplot/.dylibs/libskia.dylib
           CPPFLAGS+="-I$(brew --prefix)/include -I$(brew --prefix)/include/GW" LDFLAGS+="-L$(brew --prefix)/lib" pip wheel . --wheel-dir dist
 

@@ -1,1 +1,2 @@
-from .interface import *
+
+from gwplot.interface import *

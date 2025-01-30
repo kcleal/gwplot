@@ -1,6 +1,9 @@
 from setuptools import setup, find_packages
 import setuptools
 from setuptools.extension import Extension
+from setuptools.command.build_ext import build_ext
+from setuptools.command.install import install
+from setuptools.command.build_py import build_py
 from Cython.Build import cythonize
 import numpy
 from distutils import ccompiler
@@ -93,14 +96,18 @@ library_dirs = [numpy.get_include(), f"{root}/gwplot", f"{root}/gw/libgw"]
 
 extra_link_args = []
 if os_name == 'Darwin':
-    extra_link_args = ['-Wl,-rpath,@loader_path/.',
+    extra_link_args = ['-Wl,-rpath,@loader_path',
+                       '-Wl,-rpath,@loader_path/.',
                        '-framework', 'Metal',
                        '-framework', 'OpenGL',
                        '-framework', 'AppKit',
                        '-framework', 'ApplicationServices',
                        '-framework', 'CoreText']
 elif os_name == 'Linux':
-    extra_link_args.append('-Wl,-rpath,$ORIGIN')
+    extra_link_args = [
+        '-Wl,-rpath,$ORIGIN',
+        '-Wl,-rpath,$ORIGIN/.'
+    ]
 
 sys_prefix = get_system_prefix()
 if sys_prefix:
@@ -116,7 +123,7 @@ print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)
 
-ext_module = cythonize(Extension("gwplot.interface",
+ext_module = Extension("gwplot.interface",
                         ["gwplot/interface.pyx"],
                                 libraries=libraries,
                                 library_dirs=library_dirs,
@@ -124,21 +131,45 @@ ext_module = cythonize(Extension("gwplot.interface",
                                 extra_compile_args=extras_args,
                                 extra_link_args=extra_link_args,
                                 language="c++",
-                                ), **cy_options)
+                                runtime_library_dirs=[
+                                        os.path.abspath("$ORIGIN"),
+                                        os.path.abspath("$ORIGIN/."),
+                                    ] if os_name == 'Linux' else None
+                        )
+
+ext_modules = cythonize([ext_module], **cy_options)
+
+
+class CustomBuildExt(build_ext):
+    def run(self):
+        # Build libgw.dylib using the Makefile and copy to the gwplot directory
+        libgw_dir = os.path.join(os.getcwd(), 'gw', 'libgw')
+        subprocess.run(f'cd {os.getcwd()}/gw; make shared', shell=True)
+        if os_name == 'Linux':
+            ext = "so"
+        else:
+            ext = "dylib"
+        libgw_src = os.path.join(libgw_dir, f'libgw.{ext}')
+        libgw_dest = os.path.join(os.getcwd(), 'gwplot', f'libgw.{ext}')
+        shutil.copy(libgw_src, libgw_dest)
+
+        super().run()
 
 setup(
     name="gwplot",
     packages=find_packages(where="."),
-    ext_modules=cythonize(ext_module),
+    ext_modules=ext_modules,
     include_package_data=True,
     package_data={
         'gwplot': [
             '*.so',
             '*.pxd',
-            '*.h',
             '*.a',
             '*.dylib',
         ]
+    },
+    cmdclass={
+        'build_ext': CustomBuildExt,  # Use the custom build command
     },
     zip_safe=False,
 )

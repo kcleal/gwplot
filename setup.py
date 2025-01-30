@@ -136,7 +136,8 @@ setup(
             '*.so',
             '*.pxd',
             '*.h',
-            '.dylibs/*'
+            '*.a',
+            '*.dylib',
         ]
     },
     zip_safe=False,

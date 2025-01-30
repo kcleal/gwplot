@@ -52,11 +52,13 @@ jobs:
           CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
           echo "LibGW compiled"
           cp libgw/*.* $(brew --prefix)/lib
+          cp libgw/*.* ../gwplot/
           cp -rf libgw/GW $(brew --prefix)/include
           cd ..
           ls $(brew --prefix)/include/GW
           ls -lh $(brew --prefix)/lib/libgw*
           ls -lh $(brew --prefix)/lib/libskia.a
+          ls -lh ./gwplot
 
       - name: Install Python dependencies
         run: |
@@ -66,14 +68,10 @@ jobs:
 
       - name: Build wheel file
         run: |
-          pwd
           CPPFLAGS+="-I$(brew --prefix)/include -I$(brew --prefix)/include/GW" LDFLAGS+="-L$(brew --prefix)/lib" pip wheel . --wheel-dir dist
 
       - name: Delocate wheel file
         run: |
-          pwd
-          mkdir -p gwplot/.dylibs
-          cp gw/libgw/libskia.a gwplot/.dylibs/
           DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$(brew --prefix)/lib" delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
       - name: Install and test wheel
@@ -87,7 +85,7 @@ jobs:
           otool -L wheel_contents/gwplot-*/gwplot/interface.*.so
           
           echo "Checking libgw dependencies:"
-          otool -L wheel_contents/gwplot-*/gwplot/libgw.*dylib
+          otool -L wheel_contents/gwplot-*/gwplot/.dylibs/libgw.*dylib
           
           PYTHON_VERSION=${{ matrix.python-version }}
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')

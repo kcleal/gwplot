@@ -84,6 +84,9 @@ jobs:
           echo "Checking interface.so dependencies:"
           otool -L wheel_contents/gwplot-*/gwplot/interface.*.so
           
+          echo "Checking libgw dependencies:"
+          otool -L wheel_contents/gwplot-*/gwplot/libgw.*dylib
+          
           PYTHON_VERSION=${{ matrix.python-version }}
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
           python${PYTHON_VERSION} -m venv .venv

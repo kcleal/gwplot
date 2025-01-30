@@ -67,14 +67,15 @@ jobs:
       - name: Build wheel file
         run: |
           pwd
-          mkdir -p gwplot/.dylibs
-          cp gw/libgw/libskia.a gwplot/.dylibs/
-          cp gw/libgw/libskia.a gwplot/.dylibs/libskia.dylib
           CPPFLAGS+="-I$(brew --prefix)/include -I$(brew --prefix)/include/GW" LDFLAGS+="-L$(brew --prefix)/lib" pip wheel . --wheel-dir dist
 
       - name: Delocate wheel file
         run: |
-          DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$(brew --prefix)/lib" delocate-wheel --require-archs arm64 -w dist -v dist/*.whl --verbose
+          pwd
+          mkdir -p gwplot/.dylibs
+          cp gw/libgw/libskia.a gwplot/.dylibs/
+#          cp gw/libgw/libskia.a gwplot/.dylibs/libskia.dylib
+          DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$(brew --prefix)/lib" delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
       - name: Install and test wheel
         run: |

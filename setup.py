@@ -94,13 +94,6 @@ ext_module = cythonize(Extension("gwplot.interface",
                                 language="c++",
                                 ), **cy_options)
 
-print("Found packages", find_packages(where="."))
-package_data = ['gw/libgw/libskia.a']
-if os_name == 'Darwin':
-    package_data.append('gw/libgw/libgw.dylib')
-elif os_name == 'Linux':
-    package_data.append('gw/libgw/libgw.so')
-
 setup(
     name="gwplot",
     packages=find_packages(where="."),
@@ -115,8 +108,5 @@ setup(
             '*.h',
         ]
     },
-    data_files=[
-        ('gwplot/.dylibs', ['gw/libgw/libskia.a'])
-    ],
     zip_safe=False,
 )

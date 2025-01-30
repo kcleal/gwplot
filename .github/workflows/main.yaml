@@ -74,7 +74,6 @@ jobs:
           pwd
           mkdir -p gwplot/.dylibs
           cp gw/libgw/libskia.a gwplot/.dylibs/
-#          cp gw/libgw/libskia.a gwplot/.dylibs/libskia.dylib
           DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$(brew --prefix)/lib" delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
       - name: Install and test wheel

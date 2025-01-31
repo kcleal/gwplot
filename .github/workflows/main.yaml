@@ -76,22 +76,27 @@ jobs:
 
       - name: Install and test wheel
         run: |
-          ls -lh dist/*
-          python -m wheel unpack dist/gwplot*.whl --dest wheel_contents
+          mkdir -p test_env
+          cd test_env
+          cp ../dist/*.whl .
+
+          python -m wheel unpack *.whl --dest wheel_contents
           echo "Unpacked wheel contents:"
           ls -Ra wheel_contents
-          
+
           echo "Checking interface.so dependencies:"
           otool -L wheel_contents/gwplot-*/gwplot/interface.*.so
-          
+
           echo "Checking libgw dependencies:"
           otool -L wheel_contents/gwplot-*/gwplot/.dylibs/libgw.*dylib
-          
+
           PYTHON_VERSION=${{ matrix.python-version }}
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
           python${PYTHON_VERSION} -m venv .venv
           source .venv/bin/activate
-          python -m pip install dist/*cp${PYTHON_VERSION_NO_DOT}*.whl
+
+          python -m pip install *cp${PYTHON_VERSION_NO_DOT}*.whl
+
           python -c "import gwplot"
 
       - name: Archive wheel files

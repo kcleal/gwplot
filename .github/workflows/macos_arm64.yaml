@@ -1,14 +1,13 @@
 
-name: Build
+name: Build_macOS_arm64
 
-on: [push, pull_request]
+on: workflow_dispatch #[push, pull_request]
 
 jobs:
   build_macOS_arm64:
     runs-on: macos-14
     env:
       _PYTHON_HOST_PLATFORM: "macosx-14.0-arm64"
-      ARCHFLAGS: "-arch arm64"
       MACOSX_DEPLOYMENT_TARGET: "14.0"
       CPPFLAGS: "-I/usr/local/include"
       LDFLAGS: "-L/usr/local/lib"

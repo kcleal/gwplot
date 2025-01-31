@@ -102,7 +102,7 @@ jobs:
       - name: Archive wheel files
         uses: actions/upload-artifact@v4
         with:
-          name: wheels_macOS_arm64
+          name: wheels_macOS_arm64_py${{ matrix.python-version }}
           path: dist/gwplot*.whl
 
 

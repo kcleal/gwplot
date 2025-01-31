@@ -7,7 +7,7 @@ jobs:
   build_macOS_x64:
     runs-on: macos-13
     env:
-      MACOSX_DEPLOYMENT_TARGET: "11.0"
+      MACOSX_DEPLOYMENT_TARGET: "13.0"
       CPPFLAGS: "-I/usr/local/include"
       LDFLAGS: "-L/usr/local/lib"
     strategy:

@@ -1,5 +1,5 @@
 
-name: Build_macOS_arm64
+name: Build_macOS_x64
 
 on: workflow_dispatch #[push, pull_request]
 

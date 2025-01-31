@@ -6,7 +6,7 @@ jobs:
   build_linux_x64:
     runs-on: ubuntu-latest
     container:
-      image: quay.io/pypa/manylinux_2_28
+      image: quay.io/pypa/manylinux2014_x86_64
       options: --user root
     strategy:
       matrix:
@@ -70,5 +70,5 @@ jobs:
       - name: Archive wheel files
         uses: actions/upload-artifact@v4
         with:
-          name: wheels_linux_x64_${{ matrix.python-version }}
+          name: wheels_manylinux_x64_${{ matrix.python-version }}
           path: wheelhouse/gwplot*.whl

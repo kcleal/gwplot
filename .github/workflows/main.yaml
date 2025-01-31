@@ -78,9 +78,9 @@ jobs:
         run: |
           mkdir -p test_env
           cd test_env
-          cp ../dist/*.whl .
+          cp ../dist/gwplot*.whl .
 
-          python -m wheel unpack *.whl --dest wheel_contents
+          python -m wheel unpack gwplot*.whl --dest wheel_contents
           echo "Unpacked wheel contents:"
           ls -Ra wheel_contents
 
@@ -103,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels_macOS_arm64
-          path: dist/*.whl
+          path: dist/gwplot*.whl
 
 
 #  build_macOS_intel:

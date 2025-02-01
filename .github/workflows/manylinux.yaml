@@ -23,8 +23,26 @@ jobs:
             LDFLAGS="-L/usr/local/lib"
 
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
-
-          CIBW_TEST_COMMAND: "python -c 'import gwplot'"
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -vv -w {dest_dir} {wheel}"
+          CIBW_TEST_COMMAND: |
+            pwd
+            ls {project}/dist
+            cp {project}/dist/gwplot*.whl .
+            
+            python -m wheel unpack gwplot*.whl --dest wheel_contents
+            echo "Unpacked wheel contents:"
+            ls -Ra wheel_contents
+            
+            echo "Checking interface.so dependencies:"
+            ldd wheel_contents/gwplot-*/gwplot/interface.*.so
+            objdump -p wheel_contents/gwplot-*/gwplot/interface.*.so | grep NEEDED
+            
+            echo "Checking libgw dependencies:"
+            ldd wheel_contents/gwplot-*/gwplot.libs/libgw.so*
+            objdump -p wheel_contents/gwplot-*/gwplot.libs/libgw.so* | grep NEEDED
+            
+            python -m pip install gwplot*.whl
+            python -c "import gwplot"
 
       - uses: actions/upload-artifact@v4
         with:

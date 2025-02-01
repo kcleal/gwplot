@@ -1,74 +1,48 @@
-name: Build_Linux_x64
+name: Build manylinux wheels
 
 on: workflow_dispatch
 
 jobs:
-  build_linux_x64:
+  build-manylinux-wheels:
     runs-on: ubuntu-latest
-    container:
-      image: quay.io/pypa/manylinux_2_24_x86_64
-      options: --user root
-    strategy:
-      matrix:
-        python-version: ['cp39', 'cp310', 'cp311', 'cp312', 'cp313']
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
-      - name: Install system dependencies
-        run: |
-          yum update -y
-          yum install -y fontconfig-devel freetype-devel glfw-devel htslib-devel libjpeg-turbo-devel libpng-devel xz-devel
+      - name: Build wheels with cibuildwheel
+        uses: pypa/cibuildwheel@v2.22.0
+        env:
+          CIBW_ARCHS: x86_64
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28_x86_64
+          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-*"
 
-      - name: Checkout gw
-        run: |
-          git submodule init
-          git submodule update
-          cd gw
-          git checkout master
-          cd ../
+          CIBW_ENVIRONMENT: |
+            CPPFLAGS="-I/usr/local/include"
+            LDFLAGS="-L/usr/local/lib"
 
-      - name: Build gw submodule
-        run: |
-          cd ./gw
-          make prep > /dev/null 2>&1
-          make shared -j3
-          echo "LibGW compiled"
-          cp libgw/libskia.a ../gwplot/
-          cp libgw/*.so* /usr/local/lib/
-          cp libgw/libskia.a ../gwplot/
-          cp -rf libgw/GW /usr/local/include/
-          cd ..
-          ldconfig
-          ls /usr/local/include/GW
-          ls -lh /usr/local/lib/libgw*
-          ls -lh /usr/local/lib/libskia.a
-          ls -lh ./gwplot
+          CIBW_BEFORE_ALL_LINUX: |
+            dnf install -y epel-release
+            dnf install -y fontconfig-devel freetype-devel glfw-devel libjpeg-turbo-devel \
+                libpng-devel xz-devel htslib-devel make gcc g++
+            
+            cd ./gw
+            make prep
+            CPPFLAGS="-I/usr/include/freetype2" make shared -j$(nproc)
+            
+            cp libgw/*.* /usr/local/lib
+            cp libgw/libskia.a ../gwplot/
+            cp -rf libgw/GW /usr/local/include
+            
+            ls -lh /usr/local/lib/libgw*
+            ls -lh /usr/local/lib/libskia.a
+            ls -lh /usr/local/include/GW
+            ls -lh ./gwplot
 
-      - name: Build wheel file
-        run: |
-          PYBIN="/opt/python/${{ matrix.python-version }}/bin"
-          "${PYBIN}/pip" install --upgrade pip
-          "${PYBIN}/pip" install wheel setuptools auditwheel
-          "${PYBIN}/pip" install -r requirements.txt
-          "${PYBIN}/pip" wheel . --wheel-dir dist/
+          CIBW_TEST_COMMAND: "python -c 'import gwplot'"
 
-      - name: Repair wheel file
-        run: |
-          auditwheel repair dist/*.whl --plat manylinux2014_x86_64
-
-      - name: Test wheel
-        run: |
-          mkdir -p test_env && cd test_env
-          cp ../wheelhouse/gwplot*.whl .
-          PYBIN="/opt/python/${{ matrix.python-version }}/bin"
-          "${PYBIN}/pip" install gwplot*.whl
-          "${PYBIN}/python" -c "import gwplot"
-
-      - name: Archive wheel files
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: wheels_manylinux_x64_${{ matrix.python-version }}
-          path: wheelhouse/gwplot*.whl
+          name: wheels_intel_macOS_manylinux
+          path: ./wheelhouse/*.whl

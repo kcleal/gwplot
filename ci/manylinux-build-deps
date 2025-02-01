@@ -12,22 +12,22 @@ dnf -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel
     libxkbcommon-devel libXrandr libXrandr-devel libssh2 libs3 \
     extra-cmake-modules
 
-dnf install -y fontconfig-devel freetype-devel glfw-devel libjpeg-turbo-devel libpng-devel xz-devel \
+dnf install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel xz-devel \
     htslib-devel libuuid-devel librsvg2-devel \
     libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
     wayland-devel egl-wayland-devel wayland-protocols-devel
 
 
-#curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
-#unzip glfw-3.4.zip > /dev/null 2>&1
-#cd glfw-3.4
-#cmake -S . -B build && cd build && make
-#cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
-#cd ../ && ls
-#cp -rf include/GLFW /usr/local/include
-#ls /usr/local/include/
-#ls /usr/local/include/GLFW/
-#cd ../
+curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
+unzip glfw-3.4.zip > /dev/null 2>&1
+cd glfw-3.4
+cmake -S . -B build && cd build && make
+cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
+cd ../ && ls
+cp -rf include/GLFW /usr/local/include
+ls /usr/local/include/
+ls /usr/local/include/GLFW/
+cd ../
 #
 #git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
 #    cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build
@@ -49,7 +49,7 @@ pwd
 ls
 
 cd ./gw
-make prep
+make prep > /dev/null 2>&1
 make shared -j3
 cp libgw/*.* /usr/local/lib
 cp libgw/libskia.a ../gwplot/

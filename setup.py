@@ -83,16 +83,18 @@ def get_extra_args(flags):
 
 extras = ["-Wno-unused-function", "-Wno-unused-result",
           "-Wno-ignored-qualifiers", "-Wno-deprecated-declarations"]
-extras_args = get_extra_args(extras) + ["-std=c++17", "-DBUILDING_LIBGW", "-DGLAD_GLAPI_EXPORT", "-DGLAD_GLAPI_EXPORT_BUILD"]
+extras_args = (get_extra_args(extras) + os.environ.get('CXXFLAGS', '').split() +
+               ["-std=c++17", "-DBUILDING_LIBGW", "-DGLAD_GLAPI_EXPORT", "-DGLAD_GLAPI_EXPORT_BUILD"]) #
+# "-DOLD_SKIA"]
 
 print("Extra compile args:",  extras_args)
 print("*"*80)
 
 root = os.path.abspath(os.path.dirname(__file__))
 
-include_dirs = [numpy.get_include(), f"{root}/gw/libgw/GW"]
+include_dirs = [numpy.get_include(), f"{root}/gw/libgw/GW"] + os.environ.get('CPPFLAGS', '').split()
 libraries = ["hts", "skia", "gw"]
-library_dirs = [numpy.get_include(), f"{root}/gwplot", f"{root}/gw/libgw"]
+library_dirs = [numpy.get_include(), f"{root}/gwplot", f"{root}/gw/libgw"] + os.environ.get('LDFLAGS', '').split()
 
 extra_link_args = []
 if os_name == 'Darwin':
@@ -139,12 +141,21 @@ ext_module = Extension("gwplot.interface",
 
 ext_modules = cythonize([ext_module], **cy_options)
 
+old_skia = os.environ.get('OLD_SKIA')
 
 class CustomBuildExt(build_ext):
     def run(self):
         # Build libgw.dylib using the Makefile and copy to the gwplot directory
         libgw_dir = os.path.join(os.getcwd(), 'gw', 'libgw')
-        subprocess.run(f'cd {os.getcwd()}/gw; make shared', shell=True)
+        if not os.path.exists(f'{os.getcwd()}/gw/lib/skia'):
+            if old_skia:
+                subprocess.run(f'cd {os.getcwd()}/gw; OLD_SKIA=1 make prep', shell=True)
+            else:
+                subprocess.run(f'cd {os.getcwd()}/gw; make prep', shell=True)
+        if old_skia:
+            subprocess.run(f'cd {os.getcwd()}/gw; OLD_SKIA=1 make shared', shell=True)
+        else:
+            subprocess.run(f'cd {os.getcwd()}/gw; make shared', shell=True)
         if os_name == 'Linux':
             ext = "so"
         else:

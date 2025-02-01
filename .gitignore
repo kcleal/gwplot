@@ -31,3 +31,5 @@
 /gw/libgwplot/out/
 /gwplot/libhts.dylib
 /gwplot/interface.cpython-311-darwin.so
+/tests/out.png
+/tests/out2.png

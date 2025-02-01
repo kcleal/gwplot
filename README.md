@@ -13,22 +13,11 @@ On mac use brew to get library dependencies:
     brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
     pip install -r requirements
 
-Then build libgw - has to be installed globally (for now):
-    
-    cd ./gw
-    make prep
-    make shared -j8
-    sudo cp ./lib/libgw/* /usr/local/lib
-    cd ..
-
-Finally, install gwplot:
-
-    pip install . --no-build-isolation -v
-
-
 Test using:
     
-    pip install -e .
+    git clone --recursive https://github.com/kcleal/gwplot
+    cd gwplot
+    pip install -e . -v
     python -m unittest discover -s ./tests
 
 

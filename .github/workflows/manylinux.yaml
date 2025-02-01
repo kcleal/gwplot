@@ -22,23 +22,7 @@ jobs:
             CPPFLAGS="-I/usr/local/include"
             LDFLAGS="-L/usr/local/lib"
 
-          CIBW_BEFORE_ALL_LINUX: |
-            dnf install -y epel-release
-            dnf install -y fontconfig-devel freetype-devel glfw-devel libjpeg-turbo-devel \
-                libpng-devel xz-devel htslib-devel make gcc g++
-            
-            cd ./gw
-            make prep
-            CPPFLAGS="-I/usr/include/freetype2" make shared -j$(nproc)
-            
-            cp libgw/*.* /usr/local/lib
-            cp libgw/libskia.a ../gwplot/
-            cp -rf libgw/GW /usr/local/include
-            
-            ls -lh /usr/local/lib/libgw*
-            ls -lh /usr/local/lib/libskia.a
-            ls -lh /usr/local/include/GW
-            ls -lh ./gwplot
+          CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
 
           CIBW_TEST_COMMAND: "python -c 'import gwplot'"
 

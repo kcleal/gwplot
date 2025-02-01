@@ -26,12 +26,12 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
           CIBW_TEST_COMMAND: >
             pwd &&
-            echo "Contents of /project/dist:" &&
-            ls -l /project/dist &&
-            cp /project/dist/gwplot*.whl . &&
+            echo "Contents of {dest_dir} and {wheel}: " &&
+            ls -l {dest_dir} &&
+            cp -rf {dest_dir}/{wheel} . &&
             echo "Contents of current directory:" &&
             ls -l &&
-            python -m wheel unpack gwplot*.whl --dest wheel_contents &&
+            python -m wheel unpack {wheel} --dest wheel_contents &&
             echo "Wheel contents:" &&
             ls -Ra wheel_contents &&
             echo "Running ldd..." &&
@@ -39,7 +39,7 @@ jobs:
             echo "Running objdump..." &&
             objdump -p $(find wheel_contents -name "interface.*.so") | grep NEEDED &&
             echo "Installing wheel..." &&
-            pip install ./gwplot*.whl &&
+            pip install {wheel} &&
             python -c "import gwplot"
 
       - uses: actions/upload-artifact@v4

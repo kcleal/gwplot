@@ -24,23 +24,7 @@ jobs:
 
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
-          CIBW_TEST_COMMAND: >
-            pwd &&
-            echo "Contents of {dest_dir} and {wheel}: " &&
-            ls -l {dest_dir} &&
-            cp -rf {dest_dir}/{wheel} . &&
-            echo "Contents of current directory:" &&
-            ls -l &&
-            python -m wheel unpack {wheel} --dest wheel_contents &&
-            echo "Wheel contents:" &&
-            ls -Ra wheel_contents &&
-            echo "Running ldd..." &&
-            ldd $(find wheel_contents -name "interface.*.so") &&
-            echo "Running objdump..." &&
-            objdump -p $(find wheel_contents -name "interface.*.so") | grep NEEDED &&
-            echo "Installing wheel..." &&
-            pip install {wheel} &&
-            python -c "import gwplot"
+          CIBW_TEST_COMMAND: pwd && ls && bash ci/manylinux-test
 
       - uses: actions/upload-artifact@v4
         with:

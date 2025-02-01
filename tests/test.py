@@ -65,7 +65,7 @@ class TestConstruct(unittest.TestCase):
         img = Image.fromarray(plot.array())
         plt.figure()
         plt.imshow(img)
-        plt.show()
+        # plt.show()
         print("test_run_draw_no_buffer done")
 
     def test_set_paint(self):

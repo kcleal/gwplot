@@ -18,15 +18,6 @@ dnf install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel 
     wayland-devel wayland-protocols-devel \
     glfw-devel
 
-echo "-- Contents of /usr/include"
-ls /usr/include/
-
-echo "-- Contents of /usr/lib"
-ls /usr/lib
-
-echo "-- Contents of /usr/lib64"
-ls /usr/lib64
-
 #curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
 #unzip glfw-3.4.zip > /dev/null 2>&1
 #cd glfw-3.4
@@ -47,7 +38,7 @@ cd ../
 curl -L -o htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.21/htslib-1.21.tar.bz2
 ls -lh
 tar -xvf htslib.tar.bz2 > /dev/null 2>&1
-mv htslib-1.17 htslib && rm htslib.tar.bz2
+mv htslib-1.21 htslib && rm htslib.tar.bz2
 cd htslib
 ./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
 make -j3 && make install

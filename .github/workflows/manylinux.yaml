@@ -24,24 +24,22 @@ jobs:
 
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
-          CIBW_TEST_COMMAND: |
-            pwd
-            ls {project}/dist
-            cp {project}/dist/gwplot*.whl .
-            
-            python -m wheel unpack gwplot*.whl --dest wheel_contents
-            echo "Unpacked wheel contents:"
-            ls -Ra wheel_contents
-            
-            echo "Checking interface.so dependencies:"
-            ldd wheel_contents/gwplot-*/gwplot/interface.*.so
-            objdump -p wheel_contents/gwplot-*/gwplot/interface.*.so | grep NEEDED
-            
-            echo "Checking libgw dependencies:"
-            ldd wheel_contents/gwplot-*/gwplot.libs/libgw.so*
-            objdump -p wheel_contents/gwplot-*/gwplot.libs/libgw.so* | grep NEEDED
-            
-            python -m pip install gwplot*.whl
+          CIBW_TEST_COMMAND: >
+            pwd &&
+            echo "Contents of /project/dist:" &&
+            ls -l /project/dist &&
+            cp /project/dist/gwplot*.whl . &&
+            echo "Contents of current directory:" &&
+            ls -l &&
+            python -m wheel unpack gwplot*.whl --dest wheel_contents &&
+            echo "Wheel contents:" &&
+            ls -Ra wheel_contents &&
+            echo "Running ldd..." &&
+            ldd $(find wheel_contents -name "interface.*.so") &&
+            echo "Running objdump..." &&
+            objdump -p $(find wheel_contents -name "interface.*.so") | grep NEEDED &&
+            echo "Installing wheel..." &&
+            pip install ./gwplot*.whl &&
             python -c "import gwplot"
 
       - uses: actions/upload-artifact@v4

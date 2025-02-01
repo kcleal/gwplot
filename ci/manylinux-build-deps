@@ -13,13 +13,19 @@ dnf -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel
     extra-cmake-modules
 
 dnf install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel xz-devel \
-    htslib-devel libuuid-devel librsvg2-devel \
+    libuuid-devel librsvg2-devel \
     libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
     wayland-devel wayland-protocols-devel \
     glfw-devel
 
-ls /usr/local/include/
-ls /usr/local/bin
+echo "-- Contents of /usr/include"
+ls /usr/include/
+
+echo "-- Contents of /usr/lib"
+ls /usr/lib
+
+echo "-- Contents of /usr/lib64"
+ls /usr/lib64
 
 #curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
 #unzip glfw-3.4.zip > /dev/null 2>&1
@@ -32,20 +38,20 @@ ls /usr/local/bin
 #ls /usr/local/include/GLFW/
 #cd ../
 #
-#git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
-#    cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build
-#cp build/libdeflate.a /usr/local/lib && cp libdeflate.h /usr/local/include
-#cd ../
-#
-#
-#curl -L -o htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.17/htslib-1.17.tar.bz2
-#ls -lh
-#tar -xvf htslib.tar.bz2 > /dev/null 2>&1
-#mv htslib-1.17 htslib && rm htslib.tar.bz2
-#cd htslib
-#./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
-#make -j3 && make install
-#cd ../
+git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
+    cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build
+cp build/libdeflate.a /usr/local/lib && cp libdeflate.h /usr/local/include
+cd ../
+
+
+curl -L -o htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.21/htslib-1.21.tar.bz2
+ls -lh
+tar -xvf htslib.tar.bz2 > /dev/null 2>&1
+mv htslib-1.17 htslib && rm htslib.tar.bz2
+cd htslib
+./configure --enable-libcurl --enable-s3 --enable-lzma --enable-bz2 --with-libdeflate
+make -j3 && make install
+cd ../
 
 
 pwd

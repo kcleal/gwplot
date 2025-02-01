@@ -23,7 +23,7 @@ jobs:
             LDFLAGS="-L/usr/local/lib"
 
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -vv -w {dest_dir} {wheel}"
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -v -w {dest_dir} {wheel}"
           CIBW_TEST_COMMAND: |
             pwd
             ls {project}/dist

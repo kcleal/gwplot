@@ -8,6 +8,7 @@ cp -rf ${wheel_file} .
 
 echo "Contents of current directory:"
 ls -l
+python -m pip install wheel
 python -m wheel unpack ${wheel_file} --dest wheel_contents
 
 echo "Wheel contents:"

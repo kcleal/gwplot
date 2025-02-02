@@ -16,7 +16,7 @@ jobs:
         env:
           CIBW_ARCHS: x86_64
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
-          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-*"
+          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
 
           CIBW_ENVIRONMENT: |
             CPPFLAGS="-I/usr/local/include"

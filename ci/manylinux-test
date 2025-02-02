@@ -1,14 +1,14 @@
 #!/bin/bash
 # This is for use with cibuildwheel, see ci/manylinux.yaml
-
+wheel_file=$1
 echo "Starting in $(pwd)"
 echo "Contents of {wheel}: "
-ls -l {wheel}
-cp -rf {wheel} .
+ls -l ${wheel_file}
+cp -rf ${wheel_file} .
 
 echo "Contents of current directory:"
 ls -l
-python -m wheel unpack {wheel} --dest wheel_contents
+python -m wheel unpack ${wheel_file} --dest wheel_contents
 
 echo "Wheel contents:"
 ls -Ra wheel_contents
@@ -19,6 +19,6 @@ ldd $(find wheel_contents -name "interface.*.so")
 echo "Running objdump..."
 objdump -p $(find wheel_contents -name "interface.*.so") | grep NEEDED
 
-echo "Installing wheel..."
-pip install {wheel}
+echo "Test import wheel..."
+
 python -c "import gwplot"

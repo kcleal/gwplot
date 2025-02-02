@@ -28,7 +28,18 @@ dnf install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel 
 #ls /usr/local/include/
 #ls /usr/local/include/GLFW/
 #cd ../
-#
+
+
+curl -L -o freetype.tar.xz https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz
+ls -lh
+tar -xvf freetype.tar.xz && rm freetype.tar.xz
+cd freetype-2*
+./configure --prefix=/usr --enable-freetype-config --disable-static
+make
+make install
+cd ../
+
+
 git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
     cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build
 cp build/libdeflate.a /usr/local/lib && cp libdeflate.h /usr/local/include

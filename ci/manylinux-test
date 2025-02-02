@@ -1,4 +1,5 @@
 #!/bin/bash
+# This is for use with cibuildwheel, see ci/manylinux.yaml
 
 echo "Starting in $(pwd)"
 echo "Contents of {wheel}: "

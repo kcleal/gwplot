@@ -1,9 +1,9 @@
 #!/bin/bash
 
-pwd
-echo "Contents of {dest_dir} and {wheel}: "
-ls -l {dest_dir}
-cp -rf {dest_dir}/{wheel} .
+echo "Starting in $(pwd)"
+echo "Contents of {wheel}: "
+ls -l {wheel}
+cp -rf {wheel} .
 
 echo "Contents of current directory:"
 ls -l

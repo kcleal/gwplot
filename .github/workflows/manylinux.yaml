@@ -24,7 +24,7 @@ jobs:
 
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
-          CIBW_TEST_COMMAND: pwd && ls && bash ci/manylinux-test
+          CIBW_TEST_COMMAND: "bash ci/manylinux-test"
 
       - uses: actions/upload-artifact@v4
         with:

@@ -2,40 +2,42 @@
 
 echo "STARTING MANYLINUX-DEPS"
 
-dnf install -y epel-release
+yum install -y epel-release
 
-dnf -y groupinstall "Development Tools"
+yum -y groupinstall "Development Tools"
 
-dnf -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel \
+yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel \
     bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel curl-devel \
     cmake xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libXcursor-devel libXi-devel libXinerama-devel \
     libxkbcommon-devel libXrandr libXrandr-devel libssh2 libs3 \
     extra-cmake-modules
 
-dnf install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel \
+yum install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel \
     libuuid-devel librsvg2-devel \
     libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
     wayland-devel wayland-protocols-devel \
-    glfw-devel harfbuzz brotli-devel
+    harfbuzz brotli-devel #glfw-devel
 
-#curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
-#unzip glfw-3.4.zip > /dev/null 2>&1
-#cd glfw-3.4
-#cmake -S . -B build && cd build && make
-#cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
-#cd ../ && ls
-#cp -rf include/GLFW /usr/local/include
-#ls /usr/local/include/
-#ls /usr/local/include/GLFW/
-#cd ../
+# GLFW
+curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
+unzip glfw-3.4.zip > /dev/null 2>&1
+cd glfw-3.4
+cmake -S . -B build && cd build && make
+cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
+cd ../ && ls
+cp -rf include/GLFW /usr/local/include
+ls /usr/local/include/
+ls /usr/local/include/GLFW/
+cd ../
 
-
+# libdeflate
 pwd
 git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
     cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build
 cp build/libdeflate.a /usr/local/lib && cp libdeflate.h /usr/local/include
 cd ../
 
+# htslib
 pwd
 curl -L -o htslib.tar.bz2 https://github.com/samtools/htslib/releases/download/1.21/htslib-1.21.tar.bz2
 ls -lh
@@ -46,7 +48,7 @@ cd htslib
 make -j3 && make install
 cd ../
 
-
+# freetype
 pwd
 curl -L -o freetype.tar.xz https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz
 ls -lh
@@ -59,6 +61,7 @@ cd ../
 pwd
 ls
 
+# libgw
 cd ./gw
 make prep > /dev/null 2>&1
 make shared -j3

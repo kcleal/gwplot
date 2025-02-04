@@ -22,6 +22,8 @@ yum install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel 
 curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
 unzip glfw-3.4.zip > /dev/null 2>&1
 cd glfw-3.4
+#https://github.com/glfw/glfw/issues/1988
+sed -i '1i #define _POSIX_C_SOURCE 199309L' /project/glfw-3.4/src/posix_time.c
 cmake -S . -B build && cd build && make
 cp ./src/libglfw3.a /usr/local/lib && cp ./src/libglfw3.a /usr/local/lib/libglfw.a
 cd ../ && ls

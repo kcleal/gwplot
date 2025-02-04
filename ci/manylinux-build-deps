@@ -5,6 +5,7 @@ echo "STARTING MANYLINUX-DEPS"
 yum install -y epel-release
 
 yum -y groupinstall "Development Tools"
+yum -y install kernel-headers
 
 yum -y install gcc gcc-c++ autoconf openssl-devel libffi libffi-devel zlib-devel \
     bzip2-devel bzip2-libs xz-devel xz-libs libffi atlas-devel curl-devel \

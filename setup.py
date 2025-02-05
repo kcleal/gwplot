@@ -83,10 +83,10 @@ def get_extra_args(flags):
 
 extras = ["-Wno-unused-function", "-Wno-unused-result",
           "-Wno-ignored-qualifiers", "-Wno-deprecated-declarations"]
-extras_args = (get_extra_args(extras) + os.environ.get('CXXFLAGS', '').split() +
+extras_args = (get_extra_args(extras) + os.environ.get('CFLAGS', '').split() +
                ["-std=c++17", "-DBUILDING_LIBGW", "-DGLAD_GLAPI_EXPORT", "-DGLAD_GLAPI_EXPORT_BUILD"]) #
 # "-DOLD_SKIA"]
-
+print('CFLAGS:', os.environ.get('CFLAGS', ''))
 print("Extra compile args:",  extras_args)
 print("*"*80)
 

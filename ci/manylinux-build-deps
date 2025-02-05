@@ -80,8 +80,8 @@ make prep > /dev/null 2>&1
 make shared -j3
 cp libgw/*.* /usr/local/lib
 cp libgw/libskia.a ../gwplot/
-cd ../
 cp -rf libgw/GW /usr/local/include
+cd ../
 ls -lh /usr/local/lib/libgw*
 ls -lh /usr/local/lib/libskia.a
 ls -lh /usr/local/include/GW

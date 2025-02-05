@@ -84,8 +84,12 @@ def get_extra_args(flags):
 extras = ["-Wno-unused-function", "-Wno-unused-result",
           "-Wno-ignored-qualifiers", "-Wno-deprecated-declarations"]
 extras_args = (get_extra_args(extras) + os.environ.get('CXXFLAGS', '').split() +
-               ["-std=c++17", "-DBUILDING_LIBGW", "-DGLAD_GLAPI_EXPORT", "-DGLAD_GLAPI_EXPORT_BUILD"]) #
-# "-DOLD_SKIA"]
+               ["-std=c++17",
+                "-DBUILDING_LIBGW",
+                "-DGLAD_GLAPI_EXPORT",
+                "-DGLAD_GLAPI_EXPORT_BUILD",
+                "-DOLD_SKIA=1"])
+
 print('CXXFLAGS:', os.environ.get('CXXFLAGS', ''))
 print("Extra compile args:",  extras_args)
 print("*"*80)
@@ -153,7 +157,7 @@ class CustomBuildExt(build_ext):
             else:
                 subprocess.run(f'cd {os.getcwd()}/gw; make prep', shell=True)
         if old_skia:
-            print('Building libgw (OLD_SKIA=1')
+            print('Building libgw (OLD_SKIA=1)')
             subprocess.run(f'cd {os.getcwd()}/gw; OLD_SKIA=1 make shared', shell=True)
         else:
             print('Building libgw')

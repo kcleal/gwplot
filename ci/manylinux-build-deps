@@ -62,14 +62,14 @@ make -j3 && make install
 cd ../
 
 # freetype
-pwd
-curl -L -o freetype.tar.xz https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz
-ls -lh
-tar -xvf freetype.tar.xz > /dev/null 2>&1 && rm freetype.tar.xz
-cd freetype-2*
-./configure --prefix=/usr --enable-freetype-config --disable-static
-make -j3 && make install
-cd ../
+#pwd
+#curl -L -o freetype.tar.xz https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz
+#ls -lh
+#tar -xvf freetype.tar.xz > /dev/null 2>&1 && rm freetype.tar.xz
+#cd freetype*
+#./configure --prefix=/usr --enable-freetype-config --disable-static
+#make -j3 && make install
+#cd ../
 
 pwd
 ls

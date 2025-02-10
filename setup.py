@@ -80,6 +80,7 @@ def get_extra_args(flags):
             extra_compile_args.append(f)
     return extra_compile_args
 
+old_skia = os.environ.get('OLD_SKIA') == "1"
 
 extras = ["-Wno-unused-function", "-Wno-unused-result",
           "-Wno-ignored-qualifiers", "-Wno-deprecated-declarations"]
@@ -87,8 +88,10 @@ extras_args = (get_extra_args(extras) + os.environ.get('CXXFLAGS', '').split() +
                ["-std=c++17",
                 "-DBUILDING_LIBGW",
                 "-DGLAD_GLAPI_EXPORT",
-                "-DGLAD_GLAPI_EXPORT_BUILD",
-                "-DOLD_SKIA=1"])
+                "-DGLAD_GLAPI_EXPORT_BUILD"])
+
+if old_skia:
+    extras_args += ["-DOLD_SKIA=1"]
 
 print('CXXFLAGS:', os.environ.get('CXXFLAGS', ''))
 print("Extra compile args:",  extras_args)
@@ -145,7 +148,6 @@ ext_module = Extension("gwplot.interface",
 
 ext_modules = cythonize([ext_module], **cy_options)
 
-old_skia = os.environ.get('OLD_SKIA') == "1"
 
 class CustomBuildExt(build_ext):
     def run(self):

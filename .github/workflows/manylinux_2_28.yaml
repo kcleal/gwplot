@@ -1,4 +1,4 @@
-name: Build manylinux wheels
+name: Build manylinux_2_28 wheels
 
 on: workflow_dispatch
 
@@ -15,13 +15,11 @@ jobs:
         uses: pypa/cibuildwheel@v2.22.0
         env:
           CIBW_ARCHS: "x86_64"
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014 # manylinux_2_28
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           CIBW_BUILD: "cp310-manylinux* cp311-manylinux* cp312-manylinux* cp313-manylinux*"
 
           CIBW_ENVIRONMENT: |
-            OLD_SKIA=1
-            BUILD_GLFW=1
-            CXXFLAGS+=" -D OLD_SKIA "
+            BUILD_FREETYPE=1
             CPPFLAGS="-I/usr/local/include"
             LDFLAGS="-L/usr/local/lib"
 

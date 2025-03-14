@@ -1,134 +1,226 @@
-gwplot
-======
+# gwplot
 
-Installation via a pip install. Check if the [build is passing here](https://github.com/kcleal/gwplot/actions)
+Python interface to GW, a high-performance interactive genome browser.
 
-If it is, download the artifact and install one of the wheel files using pip. Otherwise build from source
+[![Build Status](https://github.com/kcleal/gwplot/actions/workflows/build.yml/badge.svg)](https://github.com/kcleal/gwplot/actions)
 
-Building from source macOS only
--------------------------------
+## Overview
 
-On mac use brew to get library dependencies:
+`gwplot` provides a Python wrapper for the GW genome browser, enabling rapid visualization of:
 
-    brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
-    pip install -r requirements
+- Aligned sequencing reads (BAM files)
+- Genomic data tracks (VCF, BED, etc.)
+- Structural variants and complex rearrangements
+- Entire chromosomes with minimal memory usage
 
-Test using:
-    
-    git clone --recursive https://github.com/kcleal/gwplot
-    cd gwplot
-    pip install -e . -v
-    python -m unittest discover -s ./tests
+GW's high-performance design enables visualization of large genomic regions at speeds significantly faster than other genome browsers, while maintaining a small memory footprint.
 
+## Installation
 
-Demo
-----
+### From PyPI
+
+```bash
+pip install gwplot
+```
+
+### From Pre-built Wheels
+
+Check the [latest successful build](https://github.com/kcleal/gwplot/actions) on GitHub Actions, download the artifact, and install the appropriate wheel file:
+
+```bash
+pip install gwplot-X.Y.Z-cpXX-cpXX-PLATFORM.whl
+```
+
+### Building from Source (macOS)
+
+```bash
+# Install dependencies with Homebrew
+brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
+
+# Clone repository with submodules
+git clone --recursive https://github.com/kcleal/gwplot
+cd gwplot
+
+# Install development version
+pip install -r requirements.txt
+pip install -e . -v
+
+# Run tests
+python -m unittest discover -s ./tests
+```
+
+## Quick Start
 
 ```python
 from gwplot import Gw
-import time
-import resource
 
-t0 = time.time()
-plot = Gw('/Users/sbi8kc2/Documents/data/db/hg19/ucsc.hg19.fa')
-plot.add_bam('/Users/sbi8kc2/Desktop/HG002.bam')
-plot.add_region('chr1', 1, 1000000)
-plot.draw()  # Reads are held in memory
-plot.raster_to_png("out.png")
+# Initialize with reference genome
+gw = Gw("reference.fa")
 
-print('Time (s):', time.time() - t0)  # 0.21 seconds
-print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)
+# Add data sources
+gw.add_bam("sample.bam")
+gw.add_track("variants.vcf")
 
-# Apply commands, same as when using GW
-plot.apply_command("chr2")
-plot.apply_command("theme dark")
+# Set region to view
+gw.add_region("chr1", 1000000, 1100000)
 
-plot.draw_stream()  # Reads are streamed
-print('Memory:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6)
+# Render and save
+gw.draw()
+gw.save_png("output.png")
+```
 
-print(plot.array())  # Raw pixel array image
+## Key Features
 
+### Fluent Interface
+
+All setter methods return `self`, enabling method chaining for a more concise API:
+
+```python
+gw = (Gw("reference.fa")
+      .set_theme("dark")
+      .set_threads(4)
+      .add_bam("sample.bam")
+      .add_region("chr1", 1000000, 1100000)
+      .draw())
+```
+
+### Context Manager Support
+
+Use with the `with` statement for automatic resource cleanup:
+
+```python
+with Gw("reference.fa") as gw:
+    gw.add_bam("sample.bam")
+    gw.add_region("chr8", 10000000, 20000000)
+    gw.draw_image()
+# Resources automatically cleaned up
+```
+
+### Customizable Visualization
+
+Create custom themes or modify individual color elements:
+
+```python
+# Set individual colors
+gw.set_paint_ARBG(Paint.DELETION, 255, 255, 0, 0)  # Bright red for deletions
+gw.set_paint_ARBG(Paint.NUCLEOTIDE_A, 255, 0, 200, 0)  # Green for adenine
+
+# Save custom theme
+gw.save_theme_to_json("my_theme.json")
+
+# Load theme in another session
+gw = Gw("reference.fa").load_theme_from_json("my_theme.json")
+```
+
+### Memory-Efficient Visualization
+
+GW provides two rendering modes for different use cases:
+
+```python
+# Standard mode: loads reads into memory
+gw.draw()
+
+# Streaming mode: processes reads on-the-fly for lower memory usage
+gw.draw_stream()
+```
+
+### Integration with Python Visualization Tools
+
+Easily integrate with matplotlib, PIL, or other Python libraries:
+
+```python
 import matplotlib.pyplot as plt
 from PIL import Image
 
-img = Image.fromarray(plot.array())
-plt.figure()
+# Get visualization as a PIL Image
+img = gw.draw_image()
+
+# Display with matplotlib
+plt.figure(figsize=(12, 8))
 plt.imshow(img)
 plt.show()
 
-
-# list of functions
-# getters and setters for many of the properties
-import pprint
-pprint.pprint([i for i in dir(plot) if "__" not in i])
-
-['array',
- 'add_bam',
- 'add_bams_from_iter',
- 'add_region',
- 'add_regions_from_iter',
- 'add_track',
- 'add_tracks_from_iter',
- 'apply_command',
- 'canvas_height',
- 'canvas_width',
- 'draw',
- 'draw_buffer_reads',
- 'expand_tracks',
- 'indel_length',
- 'log2_cov',
- 'low_memory',
- 'make_raster_surface',
- 'max_coverage',
- 'max_tlen',
- 'pad',
- 'raster_to_png',
- 'remove_bam',
- 'remove_region',
- 'remove_track',
- 'scroll_speed',
- 'set_expand_tracks',
- 'set_image_number',
- 'set_indel_length',
- 'set_log2_cov',
- 'set_low_memory',
- 'set_max_coverage',
- 'set_max_tlen',
- 'set_pad',
- 'set_paint_ARBG',
- 'set_scroll_speed',
- 'set_small_indel_threshold',
- 'set_snp_threshold',
- 'set_soft_clip_threshold',
- 'set_split_view_size',
- 'set_start_index',
- 'set_sv_arcs',
- 'set_tab_track_height',
- 'set_theme',
- 'set_threads',
- 'set_tlen_yscale',
- 'set_variant_distance',
- 'set_vcf_as_tracks',
- 'set_ylim',
- 'small_indel_threshold',
- 'snp_threshold',
- 'soft_clip_threshold',
- 'split_view_size',
- 'start_index',
- 'sv_arcs',
- 'tab_track_height',
- 'theme',
- 'threads',
- 'tlen_yscale',
- 'variant_distance',
- 'vcf_as_tracks',
- 'ylim']
+# Or convert to numpy array
+array_data = gw.array()
 ```
 
-Functionality to add
----------------------
+## Key Concepts
 
-- Image grid view
-- Toggle Image grid view and alignment-view
-- Scroll and zoom in/out functions
-- Simulate a mouse click (provide x, y pixel coordinates)
+- **Regions**: Genomic intervals to visualize
+- **Themes**: Color schemes for visualization ("slate", "dark", or "igv")
+- **Paint Types**: Individual color elements that can be customized
+
+## Main Methods
+
+### Initialization
+
+```python
+# Basic initialization
+gw = Gw("reference.fa")
+
+# With options
+gw = Gw("reference.fa", 
+         theme="dark",           # Visual theme
+         threads=4,              # Processing threads
+         canvas_width=1200,      # Image width
+         canvas_height=800,      # Image height
+         sv_arcs=True,           # Show SV arcs
+         max_coverage=100)       # Max coverage display
+```
+
+### Data Loading
+
+```python
+# Add BAM files
+gw.add_bam("sample.bam")
+
+# Add tracks (VCF, BED, etc.)
+gw.add_track("variants.vcf")
+gw.add_track("features.bed", bed_as_track=True)
+
+# Define regions to view
+gw.add_region("chr1", 1000000, 1100000)
+gw.add_region("chr2", 2000000, 2100000)  # Multiple regions supported
+```
+
+### Rendering
+
+```python
+# Draw with reads in memory
+gw.draw()
+
+# Draw with streaming (lower memory usage)
+gw.draw_stream()
+
+# Get as PIL Image
+img = gw.draw_image()
+
+# Save to file
+gw.save_png("output.png")
+```
+
+### Commands
+
+Access GW's command interface for advanced functionality:
+
+```python
+# Filter reads
+gw.apply_command("filter mapq > 30")
+
+# Count reads with specific properties
+gw.apply_command("count seq contains TTAGGG")
+
+# Go to a new location
+gw.apply_command("chr8:1000000-2000000")
+
+# Change theme
+gw.apply_command("theme dark")
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+[MIT License](LICENSE)

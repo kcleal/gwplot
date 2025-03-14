@@ -76,6 +76,7 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         vector[Region] regions
         bint drawToBackWindow
         int fb_width, fb_height
+        int regionSelection
 
         bint processed
 

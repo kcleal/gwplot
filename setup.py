@@ -2,8 +2,6 @@ from setuptools import setup, find_packages
 import setuptools
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext
-from setuptools.command.install import install
-from setuptools.command.build_py import build_py
 from Cython.Build import cythonize
 import numpy
 from distutils import ccompiler
@@ -176,6 +174,7 @@ class CustomBuildExt(build_ext):
 
 setup(
     name="gwplot",
+    version="0.1.0",
     packages=find_packages(where="."),
     ext_modules=ext_modules,
     include_package_data=True,

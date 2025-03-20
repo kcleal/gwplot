@@ -1,6 +1,7 @@
 # cython: c_string_type=unicode, c_string_encoding=utf8
-import os.path
-
+import os
+import requests
+from urllib.parse import urlparse
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 import numpy as np
@@ -8,7 +9,7 @@ cimport numpy as np
 np.import_array()
 from PIL import Image
 from pysam.libcalignedsegment cimport AlignedSegment, bam1_t
-
+from .glfw_keymap import GLFW
 
 class Paint:
     """
@@ -228,6 +229,41 @@ class Paint:
             "Other Modification": cls.OTHER_MODIFICATION
         }
 
+class GwReferences:
+    @classmethod
+    def onlineGenomeTags(cls):
+        base = "https://github.com/kcleal/ref_genomes/releases/download/v0.1.0"
+        return  {
+            "ce11":       f"{base}/ce11.fa.gz",
+            "danrer11":   f"{base}/danRer11.fa.gz",
+            "dm6":        f"{base}/dm6.fa.gz",
+            "hg19":       f"{base}/hg19.fa.gz",
+            "hg38":       f"{base}/hg38.fa.gz",
+            "grch37":     f"{base}/Homo_sapiens.GRCh37.dna.toplevel.fa.gz",
+            "grch38":     f"{base}/Homo_sapiens.GRCh38.dna.toplevel.fa.gz",
+            "t2t":        f"{base}/hs1.fa.gz",
+            "mm39":       f"{base}/mm39.fa.gz",
+            "pantro6":    f"{base}/panTro6.fa.gz",
+            "saccer3":    f"{base}/sacCer3.fa.gz"
+        }
+
+def is_valid_path(path):
+    # Check if path is a URL
+    parsed = urlparse(path)
+    is_url = bool(parsed.scheme and parsed.netloc)
+
+    if is_url:
+        # Check if URL is valid
+        try:
+            response = requests.head(path, timeout=5)
+            return response.status_code < 400  # Consider any non-error status code as valid
+        except requests.RequestException:
+            return False
+    else:
+        # Check if local file exists
+        return os.path.exists(path)
+
+
 cdef class Gw:
     """
     Python interface to GW, a high-performance interactive genome browser.
@@ -239,27 +275,44 @@ cdef class Gw:
     ----------
     reference : str
         Path to reference genome file
-    theme : str, optional
-        Visual theme for the browser (options: "slate", "dark", "igv")
-    width : int, optional
-        Initial canvas width in pixels
-    height : int, optional
-        Initial canvas height in pixels
+    **kwargs : dict, optional
+            Additional parameters to configure the browser
     """
-    def __cinit__(self, str reference, str theme="slate", width=None, height=None):
+    def __cinit__(self, str reference, **kwargs):
         """Initialize the C++ GwPlot object with minimal required parameters."""
-        cdef string ref = reference.encode("utf-8")
-        cdef IniOptions opts = IniOptions()
+
         cdef vector[string] bampaths, track_paths
         cdef vector[Region] regions
 
         # Initialize with defaults
-        opts.threads = 1
+        cdef IniOptions iopts
+        iopts.threads = 1
+        iopts.theme.setAlphas()
+        cdef string theme = string(b"dark")
+        iopts.setTheme(theme)
+        tmp = bytes(reference.encode("utf-8"))
+        cdef string tag = string(tmp)
+        if not is_valid_path(reference): # Try and use genome_tag
+            online = GwReferences.onlineGenomeTags()
+            if reference.lower() in online:
+                iopts.genome_tag = tag
+                reference = online[reference.lower()]
+            else:
+                raise FileNotFoundError("Reference genome path or tag not understood")
+
+        ref = reference.encode("utf-8")
 
         # Create the C++ object
-        self.thisptr = new GwPlot(ref, bampaths, opts, regions, track_paths)
+        self.thisptr = new GwPlot(ref, bampaths, iopts, regions, track_paths)
         self.thisptr.drawToBackWindow = <bint> True
+        self.thisptr.redraw = <bint> True
+        self.thisptr.manageMouse = <bint> False  # gwplot manages mouse, not gw
+        self.thisptr.terminalOutput = <bint> False
         self.raster_surface_created = False
+        self.thisptr.opts.theme.setAlphas()
+        if not iopts.genome_tag.empty():
+            self.thisptr.loadIdeogramTag()
+
 
     def __init__(self, str reference, **kwargs):
         """
@@ -289,6 +342,7 @@ cdef class Gw:
                     raise ValueError(f"Error setting {key}={value}: {str(e)}")
             else:
                 raise ValueError(f"Unknown parameter: {key}")
+        self.thisptr.opts.theme.setAlphas()
 
     def __enter__(self):
         """
@@ -339,6 +393,41 @@ cdef class Gw:
         return False
 
     #todo reset_to_defaults function
+
+    def flush_log(self):
+        """
+        Returns and clears the GW log.
+
+        Returns
+        -------
+        string
+            GW log as a python string
+        """
+        cdef string s = self.thisptr.flushLog()
+        return str(s)
+
+    def mouse_event(self, float x_pos, float y_pos, button):
+        """
+        Parameters
+        ----------
+        x_pos : int
+            Mouse x-position
+        y_pos : int
+            Mouse y-position
+        button : str
+            "left", "right"
+        """
+        self.thisptr.xPos_fb = x_pos
+        self.thisptr.yPos_fb = y_pos
+        if button == "left":
+            self.thisptr.mouseButton(GLFW.MOUSE_BUTTON_LEFT, GLFW.PRESS, 0)
+            self.thisptr.mouseButton(GLFW.MOUSE_BUTTON_LEFT, GLFW.RELEASE, 0)
+            self.thisptr.redraw = <bint> True
+        # elif button == "right":
+        # elif button == "wheel_up":
+        # elif button == "wheel_down":
+
+
     @property
     def canvas_width(self):
         """
@@ -434,6 +523,68 @@ cdef class Gw:
         self.thisptr.fb_height = height
         self.thisptr.opts.dimensions.y = height
         self.thisptr.makeRasterSurface()
+        return self
+
+    @property
+    def font_size(self):
+        """
+        Get the current font size.
+
+        Returns
+        -------
+        int
+            Font size
+        """
+        return self.thisptr.opts.font_size
+
+    def set_font_size(self, int size):
+        """
+        Set the font size.
+
+        Parameters
+        ----------
+        size : int
+            Sets the font size
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.opts.font_size = size
+        self.thisptr.fonts.setTypeface(self.thisptr.opts.font_str, size)
+        self.thisptr.fonts.setOverlayHeight(1)
+        self.thisptr.setScaling()
+        return self
+
+    @property
+    def font_name(self):
+        """
+        Get the current font name.
+
+        Returns
+        -------
+        int
+            Font size
+        """
+        return self.thisptr.opts.font_str
+
+    def set_font_name(self, str name):
+        """
+        Set the font name.
+
+        Parameters
+        ----------
+        name : str
+            Sets the font name
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.opts.font_str = name.encode('utf-8')
+        self.thisptr.fonts.setTypeface(self.thisptr.opts.font_str, self.thisptr.opts.font_size)
         return self
 
     @property
@@ -610,9 +761,11 @@ cdef class Gw:
         theme_data = {}
 
         # Get color values for each paint type
+        cdef int a, r, g, b;
+        a = 0; r = 0; g = 0; b = 0
         for paint_value, paint_name in paint_names.items():
             # Get the current ARGB values from the C++ layer
-            a, r, g, b = self.thisptr.opts.theme.getPaintARGB(paint_value)
+            self.thisptr.opts.theme.getPaintARGB(paint_value, a, r, b, b)
             theme_data[paint_name] = [a, r, g, b]
 
         # Write the theme to a JSON file
@@ -1265,7 +1418,7 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
-        if index < self.thisptr.regions.size():
+        if index < <int>self.thisptr.regions.size():
             self.regionSelection = index
         return self
 
@@ -1296,14 +1449,8 @@ cdef class Gw:
         -------
         Gw
             Self for method chaining
-
-        Raises
-        ------
-        AssertionError
-            If the file does not exist
         """
         cdef string b
-        assert os.path.exists(path)
         b = path.encode("utf-8")
         self.thisptr.addBam(b)
         return self
@@ -1357,14 +1504,8 @@ cdef class Gw:
         -------
         Gw
             Self for method chaining
-
-        Raises
-        ------
-        AssertionError
-            If the file does not exist
         """
         cdef string b
-        assert os.path.exists(path)
         b = path.encode("utf-8")
         self.thisptr.addTrack(b, <bint>False, vcf_as_track, bed_as_track)
         return self
@@ -1416,7 +1557,7 @@ cdef class Gw:
         reg.markerPos = marker_start
         reg.markerPosEnd = marker_end
         self.thisptr.regions.push_back(reg)
-        self.thisptr.regionSelection = self.thisptr.regions.size() - 1
+        self.thisptr.regionSelection = <int>self.thisptr.regions.size() - 1
         return self
 
     def remove_region(self, int index):
@@ -1526,11 +1667,16 @@ cdef class Gw:
         self.thisptr.rasterToPng(c.c_str())
         return self
 
-    def draw(self):
+    def draw(self, clear_buffer=True):
         """
         Draw the visualization to the raster surface with buffering.
 
         Creates the raster surface if it doesn't exist yet.
+
+        Parameters
+        ----------
+        clear_buffer : bool
+            Clears any buffered reads before re-drawing
 
         Returns
         -------
@@ -1539,7 +1685,8 @@ cdef class Gw:
         """
         if not self.raster_surface_created:
             self.make_raster_surface()
-        self.thisptr.processed = False
+        if clear_buffer:
+            self.thisptr.processed = False
         self.thisptr.runDraw()
         return self
 

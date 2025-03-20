@@ -34,13 +34,13 @@ cdef extern from "themes.h" namespace "Themes" nogil:
         float lwMateUnmapped, lwSplit, lwCoverage;
         void setAlphas();
         void setPaintARGB(int paint_name, int alpha, int red, int green, int blue);
+        void getPaintARGB(int paint_name, int& alpha, int& red, int& green, int& blue);
 
     cdef cppclass IniOptions:
         IniOptions() nogil
         BaseTheme theme
         Dims dimensions, number
-
-        string genome_tag, theme_str, parse_label, labels
+        string genome_tag, theme_str, parse_label, labels, font_str
 
         int canvas_width, canvas_height;
         int indel_length, ylim, split_view_size, threads, pad, link_op, max_coverage, max_tlen
@@ -53,6 +53,13 @@ cdef extern from "themes.h" namespace "Themes" nogil:
         int soft_clip_threshold, small_indel_threshold, snp_threshold, variant_distance, low_memory
         int font_size
         void setTheme(string &theme_str)
+
+    cdef cppclass Fonts:
+        Fonts() nogil
+        int fontTypefaceSize;
+        void setTypeface(string &fontStr, int size)
+        void setOverlayHeight(float yScale)
+
 
 
 cdef extern from "include/core/SkCanvas.h" nogil:
@@ -72,17 +79,22 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         GwPlot(string reference, vector[string] &bampaths, IniOptions &opts, vector[Region] &regions, vector[string] &track_paths);
 
         IniOptions opts
+        Fonts fonts
         vector[char] pixelMemory
         vector[Region] regions
-        bint drawToBackWindow
+        bint drawToBackWindow, terminalOutput, manageMouse
+        bint redraw
         int fb_width, fb_height
         int regionSelection
+        float monitorScale, gap, refSpace
+        double xPos_fb, yPos_fb  # mouse position
 
         bint processed
 
         string inputText
 
         void initBack(int width, int height)
+
         void clearCollections()
 
         void addBam(string &bam_path)
@@ -93,9 +105,13 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void removeTrack(int index)
 
+        void addVariantTrack(string & path, int startIndex, bool cacheStdin, bool useFullPath)
+
         void removeRegion(int index)
 
         void commandProcessed()
+
+        void setScaling()
 
         void setImageSize(int width, int height)
 
@@ -110,6 +126,14 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         void keyPress(int key, int scancode, int action, int mods)
 
         void windowResize(int x, int y)
+
+        void loadIdeogramTag()
+
+        string flushLog()
+
+        void mouseButton(int button, int action, int mods)
+
+        void mousePos(double x, double y)
 
 
 cdef class Gw:

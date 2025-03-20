@@ -105,7 +105,7 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void removeTrack(int index)
 
-        void addVariantTrack(string & path, int startIndex, bool cacheStdin, bool useFullPath)
+        void addVariantTrack(string & path, int startIndex, bint cacheStdin, bint useFullPath)
 
         void removeRegion(int index)
 

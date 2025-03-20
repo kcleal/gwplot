@@ -8,7 +8,7 @@ import numpy as np
 cimport numpy as np
 np.import_array()
 from PIL import Image
-from pysam.libcalignedsegment cimport AlignedSegment, bam1_t
+# from pysam.libcalignedsegment cimport AlignedSegment, bam1_t
 from .glfw_keymap import GLFW
 
 class Paint:
@@ -1455,25 +1455,25 @@ cdef class Gw:
         self.thisptr.addBam(b)
         return self
 
-    def add_pysam_alignments(self, bam_iter):
-        """
-        WIP. Add alignments from a pysam iterator.
-
-        Parameters
-        ----------
-        bam_iter : iterator
-            Iterator of pysam AlignedSegment objects
-
-        Returns
-        -------
-        Gw
-            Self for method chaining
-        """
-        cdef bam1_t * bam_ptr
-        cdef AlignedSegment read
-        for read in bam_iter:
-            bam_ptr = read._delegate
-        return self
+    # def add_pysam_alignments(self, bam_iter):
+    #     """
+    #     WIP. Add alignments from a pysam iterator.
+    #
+    #     Parameters
+    #     ----------
+    #     bam_iter : iterator
+    #         Iterator of pysam AlignedSegment objects
+    #
+    #     Returns
+    #     -------
+    #     Gw
+    #         Self for method chaining
+    #     """
+    #     cdef bam1_t * bam_ptr
+    #     cdef AlignedSegment read
+    #     for read in bam_iter:
+    #         bam_ptr = read._delegate
+    #     return self
 
     def remove_bam(self, int index):
         """

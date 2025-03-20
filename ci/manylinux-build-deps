@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "STARTING MANYLINUX-DEPS"
+env
 
 yum install -y epel-release
 
@@ -20,7 +21,7 @@ yum install -y fontconfig-devel freetype-devel libjpeg-turbo-devel libpng-devel 
     harfbuzz brotli-devel
 
 # GLFW
-if [ -n "$BUILD_GLFW" ]; then
+if [[ "$BUILD_GLFW" == "1" ]]; then
   curl -L -o glfw-3.4.zip https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip
   unzip glfw-3.4.zip > /dev/null 2>&1
   cd glfw-3.4

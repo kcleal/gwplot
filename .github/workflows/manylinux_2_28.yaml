@@ -23,7 +23,7 @@ jobs:
             CPPFLAGS="-I/usr/local/include"
             LDFLAGS="-L/usr/local/lib"
 
-          CIBW_ENVIRONMENT_PASS_LINUX: OLD_SKIA CXXFLAGS CPPFLAGS LDFLAGS
+          CIBW_ENVIRONMENT_PASS_LINUX: OLD_SKIA CXXFLAGS CPPFLAGS LDFLAGS BUILD_FREETYPE
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
           CIBW_TEST_COMMAND: bash {package}/ci/manylinux-test {wheel}

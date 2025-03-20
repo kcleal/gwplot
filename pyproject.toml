@@ -21,7 +21,8 @@ dependencies = [
     "numpy>=1.19.3",
     "pillow",
     "setuptools>=61.0",
-    "cython"
+    "cython",
+    "requests"
 ]
 
 [tool.setuptools]

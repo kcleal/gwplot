@@ -1,3 +1,8 @@
 
-from gwplot.interface import *
-from gwplot.glfw_keymap import *
+from gwplot.glfw_interface import GLFW
+
+from gwplot.interface import (
+    Gw,
+    GwPalette
+)
+

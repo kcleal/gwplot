@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "gwplot"
 version = "0.1.0"
-license = "MIT"
+license = { file = "LICENSE" }
 description = "Visualise genomics data fast"
 requires-python = ">=3.9"
 readme = "README.md"
@@ -22,7 +22,6 @@ dependencies = [
     "pillow",
     "setuptools>=61.0",
     "cython",
-    "requests"
 ]
 
 [tool.setuptools]

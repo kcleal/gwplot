@@ -130,21 +130,25 @@ print("Libs", libraries)
 print("Library dirs", library_dirs)
 print("Include dirs", include_dirs)
 
-ext_module = Extension("gwplot.interface",
-                        ["gwplot/interface.pyx"],
-                                libraries=libraries,
-                                library_dirs=library_dirs,
-                                include_dirs=include_dirs,
-                                extra_compile_args=extras_args,
-                                extra_link_args=extra_link_args,
-                                language="c++",
-                                runtime_library_dirs=[
-                                        os.path.abspath("$ORIGIN"),
-                                        os.path.abspath("$ORIGIN/."),
-                                    ] if os_name == 'Linux' else None
+ext_modules = []
+for item in ("glfw_interface", "interface"):
+    ext_modules.append( Extension(f"gwplot.{item}",
+                            [f"gwplot/{item}.pyx"],
+                                    libraries=libraries,
+                                    library_dirs=library_dirs,
+                                    include_dirs=include_dirs,
+                                    extra_compile_args=extras_args,
+                                    extra_link_args=extra_link_args,
+                                    language="c++",
+                                    runtime_library_dirs=[
+                                            os.path.abspath("$ORIGIN"),
+                                            os.path.abspath("$ORIGIN/."),
+                                        ] if os_name == 'Linux' else None
+                            )
                         )
 
-ext_modules = cythonize([ext_module], **cy_options)
+
+ext_modules = cythonize(ext_modules, **cy_options)
 
 
 class CustomBuildExt(build_ext):

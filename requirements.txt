@@ -2,4 +2,3 @@ setuptools>=61.0
 cython
 numpy>=1.19.3
 pillow
-requests

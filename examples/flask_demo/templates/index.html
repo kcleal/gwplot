@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GW server demo</title>
+    <title>GW</title>
     <style>
         body {
             background-color: #111;
@@ -56,6 +56,10 @@
         .nav-button:hover {
             background-color: #444;
         }
+        #btn-zoom-in, #btn-zoom-out {
+            font-weight: bold;
+            font-size: 18px;
+        }
         .clear-output {
             background-color: #333;
             color: white;
@@ -105,7 +109,7 @@
             background-color: #111;
             color: #e0e0e0;
             font-family: 'Consolas', 'Monaco', 'Menlo', monospace;
-            font-size: 14px;
+            font-size: 11px;
             line-height: 1.4;
             border: 1px solid #444;
             padding: 10px;
@@ -126,15 +130,17 @@
 
     <div class="command-nav-container">
         <form id="commandForm">
-            <input type="text" name="user_input" id="user_input" placeholder="Enter GW command here" value="chr1">
+            <input type="text" name="user_input" id="user_input" placeholder="Enter GW command here" value="chr1" spellcheck="false" autocomplete="off">
             <input type="submit" value="Submit">
         </form>
 
         <div class="nav-buttons">
             <button class="nav-button" id="btn-left">←</button>
+            <button class="nav-button" id="btn-right">→</button>
             <button class="nav-button" id="btn-up">↑</button>
             <button class="nav-button" id="btn-down">↓</button>
-            <button class="nav-button" id="btn-right">→</button>
+            <button class="nav-button" id="btn-zoom-in">+</button>
+            <button class="nav-button" id="btn-zoom-out">−</button>
             <button class="clear-output" id="clearOutput">Clear Log</button>
         </div>
     </div>
@@ -211,11 +217,17 @@
         document.getElementById('btn-right').addEventListener('click', function() {
             sendKeyToServer('ArrowRight');
         });
-        document.getElementById('btn-up').addEventListener('click', function() {
+        document.getElementById('btn-zoom-in').addEventListener('click', function() {
             sendKeyToServer('ArrowUp');
         });
-        document.getElementById('btn-down').addEventListener('click', function() {
+        document.getElementById('btn-zoom-out').addEventListener('click', function() {
             sendKeyToServer('ArrowDown');
+        });
+        document.getElementById('btn-up').addEventListener('click', function() {
+            sendKeyToServer('PageUp');
+        });
+        document.getElementById('btn-down').addEventListener('click', function() {
+            sendKeyToServer('PageDown');
         });
 
         // Setup clear output button
@@ -253,11 +265,11 @@
         }
 
         function loadImage() {
-            fetch('/display_image')
+            // Add cache-busting parameter with timestamp
+            fetch('/display_image?nocache=' + new Date().getTime())
                 .then(response => response.json())
                 .then(data => {
                     updateCanvas(data.image);
-                    // Also fetch the latest output
                     fetchOutput();
                 })
                 .catch(error => console.error('Error loading initial image:', error));
@@ -383,7 +395,8 @@
                     body: JSON.stringify({
                         x: canvasX,
                         y: canvasY,
-                        button: button
+                        button: button,
+                        nocache: new Date().getTime() // Add cache busting parameter
                     })
                 })
                 .then(response => response.json())

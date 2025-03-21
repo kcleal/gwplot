@@ -1,4 +1,6 @@
 
+__all__ = ["GLFW"]
+
 class GLFW:
     TRUE = 1
     FALSE = 0
@@ -329,3 +331,15 @@ class GLFW:
     PLATFORM_NULL = 0x00060005
     ANY_POSITION = 0x80000000
     DONT_CARE = -1
+
+    @staticmethod
+    def init():
+        return glfwInit()
+
+    @staticmethod
+    def terminate():
+        glfwTerminate()
+
+    @staticmethod
+    def get_key_scancode(key):
+        return glfwGetKeyScancode(key)

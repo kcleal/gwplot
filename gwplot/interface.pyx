@@ -1,7 +1,5 @@
 # cython: c_string_type=unicode, c_string_encoding=utf8
 import os
-import requests
-from urllib.parse import urlparse
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 import numpy as np
@@ -9,9 +7,12 @@ cimport numpy as np
 np.import_array()
 from PIL import Image
 # from pysam.libcalignedsegment cimport AlignedSegment, bam1_t
-from .glfw_keymap import GLFW
+from .glfw_interface import GLFW
 
-class Paint:
+__all__ = ["Gw", "GwPalette"]
+
+
+class GwPalette:
     """
     Paint types for GW visualization elements.
 
@@ -78,27 +79,26 @@ class Paint:
     TRACK = GwPaint.fcTrack
     """Generic data track color"""
 
-    # Alternative read feature colors (secondary color set)
-    NORMAL_READ_ALT = GwPaint.fcNormal0
-    """Alternative normal read color (for contrasting pairs)"""
+    NORMAL_READ_MQ0 = GwPaint.fcNormal0
+    """Map-quality=0 normal read color"""
 
-    DELETION_ALT = GwPaint.fcDel0
-    """Alternative deletion color (for contrasting pairs)"""
+    DELETION_MQ0 = GwPaint.fcDel0
+    """Map-quality=0 deletion color"""
 
-    DUPLICATION_ALT = GwPaint.fcDup0
-    """Alternative duplication color (for contrasting pairs)"""
+    DUPLICATION_MQ0 = GwPaint.fcDup0
+    """Map-quality=0 duplication color"""
 
-    INVERSION_FORWARD_ALT = GwPaint.fcInvF0
-    """Alternative forward inversion color (for contrasting pairs)"""
+    INVERSION_FORWARD_MQ0 = GwPaint.fcInvF0
+    """Map-quality=0 forward inversion color"""
 
-    INVERSION_REVERSE_ALT = GwPaint.fcInvR0
-    """Alternative reverse inversion color (for contrasting pairs)"""
+    INVERSION_REVERSE_MQ0 = GwPaint.fcInvR0
+    """Map-quality=0 reverse inversion color"""
 
-    TRANSLOCATION_ALT = GwPaint.fcTra0
-    """Alternative translocation color (for contrasting pairs)"""
+    TRANSLOCATION_MQ0 = GwPaint.fcTra0
+    """Map-quality=0 translocation color"""
 
-    SOFT_CLIP_ALT = GwPaint.fcSoftClip0
-    """Alternative soft clip color (for contrasting pairs)"""
+    SOFT_CLIP_MQ0 = GwPaint.fcSoftClip0
+    """Map-quality=0 soft clip color"""
 
     # BigWig and other special features
     BIGWIG = GwPaint.fcBigWig
@@ -168,101 +168,6 @@ class Paint:
     OTHER_MODIFICATION = GwPaint.fcOther
     """Color for other base modifications"""
 
-    @classmethod
-    def get_all_paints(cls):
-        """
-        Get a dictionary of all paint constants with their names.
-
-        This is useful for creating UIs that let users select paint types.
-
-        Returns
-        -------
-        dict
-            Dictionary mapping human-readable names to paint enum values
-        """
-        return {
-            "Background": cls.BACKGROUND,
-            "Background (Tiled)": cls.BACKGROUND_TILED,
-            "Menu Background": cls.BACKGROUND_MENU,
-            "Normal Read": cls.NORMAL_READ,
-            "Deletion": cls.DELETION,
-            "Duplication": cls.DUPLICATION,
-            "Forward Inversion": cls.INVERSION_FORWARD,
-            "Reverse Inversion": cls.INVERSION_REVERSE,
-            "Translocation": cls.TRANSLOCATION,
-            "Insertion": cls.INSERTION,
-            "Soft Clip": cls.SOFT_CLIP,
-            "Nucleotide A": cls.NUCLEOTIDE_A,
-            "Nucleotide T": cls.NUCLEOTIDE_T,
-            "Nucleotide C": cls.NUCLEOTIDE_C,
-            "Nucleotide G": cls.NUCLEOTIDE_G,
-            "Nucleotide N": cls.NUCLEOTIDE_N,
-            "Coverage": cls.COVERAGE,
-            "Track": cls.TRACK,
-            "Normal Read (Alt)": cls.NORMAL_READ_ALT,
-            "Deletion (Alt)": cls.DELETION_ALT,
-            "Duplication (Alt)": cls.DUPLICATION_ALT,
-            "Forward Inversion (Alt)": cls.INVERSION_FORWARD_ALT,
-            "Reverse Inversion (Alt)": cls.INVERSION_REVERSE_ALT,
-            "Translocation (Alt)": cls.TRANSLOCATION_ALT,
-            "Soft Clip (Alt)": cls.SOFT_CLIP_ALT,
-            "BigWig": cls.BIGWIG,
-            "Region of Interest": cls.REGION_OF_INTEREST,
-            "Primary Mate": cls.MATE_PRIMARY,
-            "Secondary Mate": cls.MATE_SECONDARY,
-            "Unmapped Mate": cls.MATE_UNMAPPED,
-            "Split Read": cls.SPLIT_READ,
-            "Selected Element": cls.SELECTED_ELEMENT,
-            "Line Joins": cls.LINE_JOINS,
-            "Line Coverage": cls.LINE_COVERAGE,
-            "Light Line Joins": cls.LINE_LIGHT_JOINS,
-            "GTF Line Joins": cls.LINE_GTF_JOINS,
-            "Label Lines": cls.LINE_LABEL,
-            "Bright Lines": cls.LINE_BRIGHT,
-            "Deletion Text": cls.TEXT_DELETION,
-            "Insertion Text": cls.TEXT_INSERTION,
-            "Label Text": cls.TEXT_LABELS,
-            "Text Background": cls.TEXT_BACKGROUND,
-            "Markers": cls.MARKERS,
-            "Methylated C": cls.METHYLATED_C,
-            "Hydroxymethylated C": cls.HYDROXYMETHYLATED_C,
-            "Other Modification": cls.OTHER_MODIFICATION
-        }
-
-class GwReferences:
-    @classmethod
-    def onlineGenomeTags(cls):
-        base = "https://github.com/kcleal/ref_genomes/releases/download/v0.1.0"
-        return  {
-            "ce11":       f"{base}/ce11.fa.gz",
-            "danrer11":   f"{base}/danRer11.fa.gz",
-            "dm6":        f"{base}/dm6.fa.gz",
-            "hg19":       f"{base}/hg19.fa.gz",
-            "hg38":       f"{base}/hg38.fa.gz",
-            "grch37":     f"{base}/Homo_sapiens.GRCh37.dna.toplevel.fa.gz",
-            "grch38":     f"{base}/Homo_sapiens.GRCh38.dna.toplevel.fa.gz",
-            "t2t":        f"{base}/hs1.fa.gz",
-            "mm39":       f"{base}/mm39.fa.gz",
-            "pantro6":    f"{base}/panTro6.fa.gz",
-            "saccer3":    f"{base}/sacCer3.fa.gz"
-        }
-
-def is_valid_path(path):
-    # Check if path is a URL
-    parsed = urlparse(path)
-    is_url = bool(parsed.scheme and parsed.netloc)
-
-    if is_url:
-        # Check if URL is valid
-        try:
-            response = requests.head(path, timeout=5)
-            return response.status_code < 400  # Consider any non-error status code as valid
-        except requests.RequestException:
-            return False
-    else:
-        # Check if local file exists
-        return os.path.exists(path)
-
 
 cdef class Gw:
     """
@@ -292,8 +197,8 @@ cdef class Gw:
         iopts.setTheme(theme)
         tmp = bytes(reference.encode("utf-8"))
         cdef string tag = string(tmp)
-        if not is_valid_path(reference): # Try and use genome_tag
-            online = GwReferences.onlineGenomeTags()
+        if not os.path.exists(reference): # Try and use genome_tag
+            online = self.onlineGenomeTags()
             if reference.lower() in online:
                 iopts.genome_tag = tag
                 reference = online[reference.lower()]
@@ -312,7 +217,6 @@ cdef class Gw:
         self.thisptr.opts.theme.setAlphas()
         if not iopts.genome_tag.empty():
             self.thisptr.loadIdeogramTag()
-
 
     def __init__(self, str reference, **kwargs):
         """
@@ -392,6 +296,43 @@ cdef class Gw:
         # Let any exceptions propagate
         return False
 
+    @staticmethod
+    def onlineGenomeTags():
+        """
+        A dict of online reference genome paths
+
+        Returns
+        -------
+        dict
+            Keys are genome-tag, values are genome-path
+        """
+        base = "https://github.com/kcleal/ref_genomes/releases/download/v0.1.0"
+        return {
+            "ce11": f"{base}/ce11.fa.gz",
+            "danrer11": f"{base}/danRer11.fa.gz",
+            "dm6": f"{base}/dm6.fa.gz",
+            "hg19": f"{base}/hg19.fa.gz",
+            "hg38": f"{base}/hg38.fa.gz",
+            "grch37": f"{base}/Homo_sapiens.GRCh37.dna.toplevel.fa.gz",
+            "grch38": f"{base}/Homo_sapiens.GRCh38.dna.toplevel.fa.gz",
+            "t2t": f"{base}/hs1.fa.gz",
+            "mm39": f"{base}/mm39.fa.gz",
+            "pantro6": f"{base}/panTro6.fa.gz",
+            "saccer3": f"{base}/sacCer3.fa.gz"
+        }
+
+    def glfw_init(self):
+        """
+        Initialise GLFW window. This is needed interactions such as mouse-clicks.
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.initBack(self.canvas_width, self.canvas_height)
+        return self
+
     #todo reset_to_defaults function
 
     def flush_log(self):
@@ -420,8 +361,9 @@ cdef class Gw:
         self.thisptr.xPos_fb = x_pos
         self.thisptr.yPos_fb = y_pos
         if button == "left":
-            self.thisptr.mouseButton(GLFW.MOUSE_BUTTON_LEFT, GLFW.PRESS, 0)
-            self.thisptr.mouseButton(GLFW.MOUSE_BUTTON_LEFT, GLFW.RELEASE, 0)
+            print("button was ", <int>GLFW.MOUSE_BUTTON_LEFT, <int>GLFW.PRESS)
+            self.thisptr.mouseButton(<int>GLFW.MOUSE_BUTTON_LEFT, <int>GLFW.PRESS, 0)
+            self.thisptr.mouseButton(<int>GLFW.MOUSE_BUTTON_LEFT, <int>GLFW.RELEASE, 0)
             self.thisptr.redraw = <bint> True
         # elif button == "right":
         # elif button == "wheel_up":
@@ -641,9 +583,9 @@ cdef class Gw:
         Examples
         --------
         >>> custom_theme = {
-        ...     Paint.BACKGROUND: (255, 240, 240, 240),
-        ...     Paint.NORMAL_READ: (255, 100, 100, 100),
-        ...     Paint.DELETION: (255, 255, 0, 0)
+        ...     GwPalette.BACKGROUND: (255, 240, 240, 240),
+        ...     GwPalette.NORMAL_READ: (255, 100, 100, 100),
+        ...     GwPalette.DELETION: (255, 255, 0, 0)
         ... }
         >>> gw.apply_theme(custom_theme)
         """
@@ -685,7 +627,6 @@ cdef class Gw:
         ```
 
         Then load it in your code:
-
         >>> gw = Gw("reference.fa")
         >>> gw.load_theme_from_json("custom_theme.json")
         >>> gw.add_bam("sample.bam").draw_image()
@@ -696,7 +637,7 @@ cdef class Gw:
         import json
 
         # Get a mapping from string names to Paint constants
-        paint_by_name = {name: getattr(Paint, name) for name in dir(Paint)
+        paint_by_name = {name: getattr(GwPalette, name) for name in dir(GwPalette)
                          if not name.startswith('_') and name.isupper()}
 
         with open(filepath, 'r') as f:
@@ -737,22 +678,21 @@ cdef class Gw:
         --------
         >>> gw = Gw("reference.fa", theme="dark")
         >>> # Customize some colors
-        >>> gw.set_paint_ARBG(Paint.DELETION, 255, 255, 0, 0)
-        >>> gw.set_paint_ARBG(Paint.NUCLEOTIDE_A, 255, 0, 220, 0)
+        >>> gw.set_paint_ARBG(GwPalette.DELETION, 255, 255, 0, 0)
+        >>> gw.set_paint_ARBG(GwPalette.NUCLEOTIDE_A, 255, 0, 220, 0)
         >>> # Save the customized theme
         >>> gw.save_theme_to_json("my_custom_theme.json")
 
         The resulting JSON file can be shared and loaded in other sessions:
-
         >>> new_gw = Gw("reference.fa")
         >>> new_gw.load_theme_from_json("my_custom_theme.json")
         """
         import json
 
         # Get all paint constants from the Paint class
-        paint_constants = {name: getattr(Paint, name) for name in dir(Paint)
+        paint_constants = {name: getattr(GwPalette, name) for name in dir(GwPalette)
                            if not name.startswith('_') and name.isupper()
-                           and not callable(getattr(Paint, name))}
+                           and not callable(getattr(GwPalette, name))}
 
         # Invert the dictionary to look up names by value
         paint_names = {value: name for name, value in paint_constants.items()}
@@ -1385,8 +1325,8 @@ cdef class Gw:
         Parameters
         ----------
         paint_enum : int
-            Paint type enumeration value from GwPaint enum or Paint class
-            (e.g., Paint.NORMAL_READ, Paint.DELETION)
+            Paint type enumeration value from GwPalette enum or Paint class
+            (e.g., GwPalette.NORMAL_READ, GwPalette.DELETION)
         a : int
             Alpha channel value (0-255)
         r : int
@@ -1399,7 +1339,7 @@ cdef class Gw:
         Example
         -------
         >>> # Set normal read color to dark blue
-        >>> gw.set_paint_ARBG(Paint.NORMAL_READ, 255, 0, 0, 128)
+        >>> gw.set_paint_ARBG(GwPalette.NORMAL_READ, 255, 0, 0, 128)
         """
         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
         return self
@@ -1588,13 +1528,19 @@ cdef class Gw:
 
         Returns
         -------
-        Gw
-            Self for method chaining
+        tuple
+            A tuple containing:
+
+            clear_buffer : bool
+                Whether the current image needs to have its buffer cleared.
+                Needed when calling GwPlot.draw(clear_buffer)
+            redraw : bool
+                Whether the image should be redrawn using GwPlot.draw
         """
         cdef string c = command.encode("utf-8")
         self.thisptr.inputText = c
         self.thisptr.commandProcessed()
-        return self
+        return not self.thisptr.processed, self.thisptr.redraw
 
     def key_press(self, int key, int scancode, int action, int mods):
         """
@@ -1667,9 +1613,9 @@ cdef class Gw:
         self.thisptr.rasterToPng(c.c_str())
         return self
 
-    def draw(self, clear_buffer=True):
+    def draw(self, clear_buffer=False):
         """
-        Draw the visualization to the raster surface with buffering.
+        Draw the visualization to the raster surface.
 
         Creates the raster surface if it doesn't exist yet.
 
@@ -1730,6 +1676,20 @@ cdef class Gw:
     def view_region(self, chrom, start, end):
         """
         Clear existing regions and view a specific genomic region.
+
+        Parameters
+        ----------
+        chrom : str
+            Chromosome
+        start : int
+            Region start
+        end : int
+            Region end
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
         """
         self.clear_regions()
         self.add_region(chrom, start, end)

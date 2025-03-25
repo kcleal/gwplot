@@ -39,8 +39,8 @@ from gwplot import Gw
 # List available reference genomes
 print(Gw.onlineGenomeTags())
 
-# Use a built-in reference genome
-gw = Gw("hg38")  # Will download the reference if needed
+# Use a built-in reference genome, fetch from online location
+gw = Gw("hg38")
 ```
 
 Available genome tags include: ce11, danrer11, dm6, hg19, hg38, grch37, grch38, t2t, mm39, pantro6, saccer3

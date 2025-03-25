@@ -1,0 +1,132 @@
+body {
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#genomePlot {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #444;
+}
+
+#commandForm {
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.nav-buttons {
+    display: inline-flex;
+    gap: 10px;
+    margin-left: 15px;
+    align-items: center;
+}
+
+.command-nav-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 40px;
+}
+
+.nav-button {
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    line-height: 26px;
+    cursor: pointer;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-button:hover {
+    background-color: #444;
+}
+
+#btn-zoom-in, #btn-zoom-out {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.clear-output {
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.clear-output:hover {
+    background-color: #444;
+}
+
+input[type="text"] {
+    padding: 6px 8px;
+    height: 18px;
+    width: 300px;
+    background-color: #222;
+    color: white;
+    border: 1px solid #444;
+    box-sizing: content-box;
+}
+
+input[type="submit"] {
+    padding: 6px 15px;
+    height: 30px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+input[type="submit"]:hover {
+    background-color: #444;
+}
+
+#outputContainer {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#outputBox {
+    width: 100%;
+    flex: 1;
+    background-color: #111;
+    color: #e0e0e0;
+    font-family: 'Consolas', 'Monaco', 'Menlo', monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    border: 1px solid #444;
+    padding: 10px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    max-height: calc(100% - 10px);
+}

@@ -6,7 +6,7 @@ import numpy as np
 cimport numpy as np
 from enum import Enum
 from cython.operator cimport dereference as deref, preincrement as inc
-
+from libc.stdint cimport uint8_t
 
 cdef extern from "utils.h" namespace "Utils" nogil:
     cdef struct Dims:
@@ -82,7 +82,7 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         Fonts fonts
         vector[char] pixelMemory
         vector[Region] regions
-        bint drawToBackWindow, terminalOutput, manageMouse
+        bint drawToBackWindow, terminalOutput
         bint redraw
         int fb_width, fb_height
         int regionSelection
@@ -111,17 +111,31 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void commandProcessed()
 
+        void fetchRefSeq(Region &rgn)
+
         void setScaling()
 
         void setImageSize(int width, int height)
 
         int makeRasterSurface()
 
+        void syncImageCacheQueue()
+
+        void drawScreen()
+
+        void drawScreenNoBuffer()
+
         void runDrawNoBuffer()
 
         void runDraw()
 
         void rasterToPng(const char * path)
+
+        vector[uint8_t]* encodeToPngVector(int compression_level)
+
+        vector[uint8_t]* encodeToJpegVector(int quality)
+
+        vector[uint8_t]* encodeToWebPVector(int quality)
 
         void keyPress(int key, int scancode, int action, int mods)
 
@@ -134,6 +148,8 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         void mouseButton(int button, int action, int mods)
 
         void mousePos(double x, double y)
+
+        bint collectionsNeedRedrawing()
 
 
 cdef class Gw:

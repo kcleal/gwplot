@@ -7,7 +7,7 @@ cimport numpy as np
 np.import_array()
 from PIL import Image
 # from pysam.libcalignedsegment cimport AlignedSegment, bam1_t
-from .glfw_interface import GLFW
+from cpython.bytes cimport PyBytes_FromStringAndSize
 
 __all__ = ["Gw", "GwPalette"]
 
@@ -211,7 +211,6 @@ cdef class Gw:
         self.thisptr = new GwPlot(ref, bampaths, iopts, regions, track_paths)
         self.thisptr.drawToBackWindow = <bint> True
         self.thisptr.redraw = <bint> True
-        self.thisptr.manageMouse = <bint> False  # gwplot manages mouse, not gw
         self.thisptr.terminalOutput = <bint> False
         self.raster_surface_created = False
         self.thisptr.opts.theme.setAlphas()
@@ -323,7 +322,7 @@ cdef class Gw:
 
     def glfw_init(self):
         """
-        Initialise GLFW window. This is needed interactions such as mouse-clicks.
+        Initialise GLFW backend.
 
         Returns
         -------
@@ -347,7 +346,37 @@ cdef class Gw:
         cdef string s = self.thisptr.flushLog()
         return str(s)
 
-    def mouse_event(self, float x_pos, float y_pos, button):
+    @property
+    def clear_buffer(self):
+        """
+        Whether the read buffer should be cleared on the next draw.
+
+        Returns
+        -------
+        bool
+            Read buffer needs clearing
+        """
+        return not self.thisptr.processed
+
+    @property
+    def redraw(self):
+        """
+        Whether a re-draw needs to occur. Check this after some event e.g. command or mouse button.
+
+        Returns
+        -------
+        bool
+            Image needs to be re-drawn
+        """
+        return self.thisptr.redraw
+
+    def set_redraw(self, bint state):
+        """
+        Set the redraw status. For dynamic applications, set this to False after a drawing call
+        """
+        self.thisptr.redraw = state
+
+    def mouse_event(self, float x_pos, float y_pos, int button, int action):
         """
         Parameters
         ----------
@@ -360,14 +389,7 @@ cdef class Gw:
         """
         self.thisptr.xPos_fb = x_pos
         self.thisptr.yPos_fb = y_pos
-        if button == "left":
-            print("button was ", <int>GLFW.MOUSE_BUTTON_LEFT, <int>GLFW.PRESS)
-            self.thisptr.mouseButton(<int>GLFW.MOUSE_BUTTON_LEFT, <int>GLFW.PRESS, 0)
-            self.thisptr.mouseButton(<int>GLFW.MOUSE_BUTTON_LEFT, <int>GLFW.RELEASE, 0)
-            self.thisptr.redraw = <bint> True
-        # elif button == "right":
-        # elif button == "wheel_up":
-        # elif button == "wheel_down":
+        self.thisptr.mouseButton(button, action, 0)
 
 
     @property
@@ -1496,6 +1518,7 @@ cdef class Gw:
         reg.end = end
         reg.markerPos = marker_start
         reg.markerPosEnd = marker_end
+        self.thisptr.fetchRefSeq(reg)
         self.thisptr.regions.push_back(reg)
         self.thisptr.regionSelection = <int>self.thisptr.regions.size() - 1
         return self
@@ -1526,21 +1549,10 @@ cdef class Gw:
         command : str
             GW command to execute (e.g., "filter", "count", etc.)
 
-        Returns
-        -------
-        tuple
-            A tuple containing:
-
-            clear_buffer : bool
-                Whether the current image needs to have its buffer cleared.
-                Needed when calling GwPlot.draw(clear_buffer)
-            redraw : bool
-                Whether the image should be redrawn using GwPlot.draw
         """
         cdef string c = command.encode("utf-8")
         self.thisptr.inputText = c
         self.thisptr.commandProcessed()
-        return not self.thisptr.processed, self.thisptr.redraw
 
     def key_press(self, int key, int scancode, int action, int mods):
         """
@@ -1613,9 +1625,9 @@ cdef class Gw:
         self.thisptr.rasterToPng(c.c_str())
         return self
 
-    def draw(self, clear_buffer=False):
+    def draw_interactive(self, clear_buffer=False):
         """
-        Draw the visualization to the raster surface.
+        Draw the visualization to the raster surface. Caches state for using with interactive functions.
 
         Creates the raster surface if it doesn't exist yet.
 
@@ -1633,10 +1645,11 @@ cdef class Gw:
             self.make_raster_surface()
         if clear_buffer:
             self.thisptr.processed = False
-        self.thisptr.runDraw()
+        self.thisptr.syncImageCacheQueue()
+        self.thisptr.drawScreen()
         return self
 
-    def draw_stream(self):
+    def draw(self):
         """
         Draw the visualization to the raster surface without buffering.
 
@@ -1653,7 +1666,7 @@ cdef class Gw:
         self.thisptr.runDrawNoBuffer()
         return self
 
-    def draw_image(self, stream=False):
+    def draw_image(self, stream=True):
         """
         Draw the visualization and return it as a PIL Image.
 
@@ -1670,7 +1683,10 @@ cdef class Gw:
         if stream:
             self.draw_stream()
         else:
-            self.draw()
+            if not self.raster_surface_created:
+                self.make_raster_surface()
+            self.thisptr.processed = False
+            self.runDraw()
         return Image.fromarray(self.array())
 
     def view_region(self, chrom, start, end):
@@ -1694,6 +1710,42 @@ cdef class Gw:
         self.clear_regions()
         self.add_region(chrom, start, end)
         return self
+
+    def encode_as_png(self, int compression_level=6):
+        """
+        Encode the current canvas as PNG and return the binary data.
+
+        Returns:
+            bytes: PNG encoded image data
+        """
+        cdef vector[uint8_t]* png_vector = self.thisptr.encodeToPngVector(compression_level)
+        if not png_vector[0].empty():
+            return PyBytes_FromStringAndSize(<char *> png_vector[0].data(), png_vector[0].size())
+        return None
+
+    def encode_as_jpeg(self, int quality=80):
+        """
+        Encode the current canvas as JPEG and return the binary data.
+
+        Returns:
+            bytes: PNG encoded image data
+        """
+        cdef vector[uint8_t]* jpeg_vector = self.thisptr.encodeToJpegVector(quality)
+        if not jpeg_vector[0].empty():
+            return PyBytes_FromStringAndSize(<char *> jpeg_vector[0].data(), jpeg_vector[0].size())
+        return None
+
+    def encode_as_webp(self, int quality=80):
+        """
+        Encode the current canvas as WEBP and return the binary data.
+
+        Returns:
+            bytes: PNG encoded image data
+        """
+        cdef vector[uint8_t]* webp_vector = self.thisptr.encodeToWebPVector(quality)
+        if not webp_vector[0].empty():
+            return PyBytes_FromStringAndSize(<char *> webp_vector[0].data(), webp_vector[0].size())
+        return None
 
     def __getbuffer__(self, Py_buffer *buffer, int flags):
         """

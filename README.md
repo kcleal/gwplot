@@ -2,38 +2,15 @@
 
 `gwplot` is a plotting library for genomics data and a Python interface to GW, a high-performance interactive genome browser.
 
-Visit the documentation for more details:  https://kcleal.github.io/gwplot/
+Visit the [documentation for more details](https://kcleal.github.io/gwplot/)
 
 [![Build Status](https://github.com/kcleal/gwplot/actions/workflows/build.yml/badge.svg)](https://github.com/kcleal/gwplot/actions)
-
-## Overview
-
-`gwplot` can be used for rapid visualization of:
-
-- Aligned sequencing reads (BAM files)
-- Genomic data tracks (VCF, BED, etc.)
-- Structural variants and complex rearrangements
-- Entire chromosomes with minimal memory usage
 
 
 ## Installation
 
-### From PyPI
-
 ```bash
 pip install gwplot
-```
-
-### Building from Source (macOS)
-
-```bash
-# Install dependencies with Homebrew
-brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
-
-git clone --recursive https://github.com/kcleal/gwplot
-cd gwplot
-pip install -r requirements.txt
-pip install .
 ```
 
 ## Quick Start

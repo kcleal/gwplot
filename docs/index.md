@@ -5,11 +5,9 @@ nav_order: 1
 description: "gwplot: a python library for plotting genomic sequencing data"
 ---
 
-# gwplot: Python library for plotting genomics data
+# gwplot
 
-`gwplot` is a high-performance interactive genome browser for Python. It provides a Cython wrapper around 
-the `libgw` C++ library, enabling rapid visualization of aligned sequencing reads, data tracks, 
-and genome-variation datasets.
+`gwplot` is a plotting library for genomics data and a Python interface to GW, a high-performance interactive genome browser.
 
 <br>
 

@@ -1398,6 +1398,13 @@ cdef class Gw:
         for i in range(self.thisptr.regions.size()):
             self.remove_region(i)
 
+    def clear(self):  #todo this is incomplete
+        """
+        Remove all data.
+        """
+        self.clear_alignments()
+        self.clear_regions()
+
     def add_bam(self, path):
         """
         Add a BAM file to the visualization.

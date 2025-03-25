@@ -1,0 +1,13 @@
+title: gwplot documentation
+description: Documentation for gwplot
+theme: just-the-docs
+
+logo: "/assets/images/gw_icon.png"
+favicon_ico: "/assets/images/gw_icon.ico"
+color_scheme: dark
+
+baseurl: "/gwplot"
+url: "https://kcleal.github.io"
+
+aux_links:
+  GitHub Repository: "https://github.com/kcleal/gwplot"

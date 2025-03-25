@@ -21,7 +21,7 @@ The `Gw` class is the main interface to libgw (GW).
 
 ### Initialization
 
-#### `Gw(reference, **kwargs)`
+### `Gw(reference, **kwargs)`
 
 Initialize the GW object with a reference genome and optional parameters.
 
@@ -38,7 +38,7 @@ gw = Gw("reference.fa", theme="dark", threads=4,
 
 ### Class Methods
 
-#### `onlineGenomeTags()`
+### `onlineGenomeTags()`
 
 Returns a dictionary of available online reference genome tags. Use a local genome 
 for much better performance.
@@ -55,7 +55,7 @@ print(tags)
 
 ### Loading Data
 
-#### `add_bam(path)`
+### `add_bam(path)`
 
 Add a BAM file to the visualization.
 
@@ -70,7 +70,7 @@ Add a BAM file to the visualization.
 gw.add_bam("sample.bam")
 ```
 
-#### `remove_bam(index)`
+### `remove_bam(index)`
 
 Remove a BAM file from the visualization.
 
@@ -80,7 +80,7 @@ Remove a BAM file from the visualization.
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `add_track(path, vcf_as_track=True, bed_as_track=True)`
+### `add_track(path, vcf_as_track=True, bed_as_track=True)`
 
 Add a genomic data track to the visualization.
 
@@ -101,7 +101,7 @@ gw.add_track("variants.vcf")
 gw.add_track("features.bed")
 ```
 
-#### `remove_track(index)`
+### `remove_track(index)`
 
 Remove a data track from the visualization.
 
@@ -113,7 +113,7 @@ Remove a data track from the visualization.
 
 ### Managing Regions
 
-#### `add_region(chrom, start, end, marker_start=-1, marker_end=-1)`
+### `add_region(chrom, start, end, marker_start=-1, marker_end=-1)`
 
 Add a genomic region for visualization. Setting the markers will result in a small triangle being drawn at
 the genomic position.
@@ -134,7 +134,7 @@ the genomic position.
 gw.add_region("chr1", 1000000, 1100000, 1050000, 1060000)
 ```
 
-#### `remove_region(index)`
+### `remove_region(index)`
 
 Remove a genomic region from the visualization.
 
@@ -144,7 +144,7 @@ Remove a genomic region from the visualization.
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `view_region(chrom, start, end)`
+### `view_region(chrom, start, end)`
 
 Clear existing regions and view a specific genomic region.
 
@@ -162,7 +162,7 @@ Clear existing regions and view a specific genomic region.
 gw.view_region("chr1", 1000000, 1100000)
 ```
 
-#### `set_active_region_index(index)`
+### `set_active_region_index(index)`
 
 Set the currently active region for dynamic visualization.
 
@@ -172,28 +172,28 @@ Set the currently active region for dynamic visualization.
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `clear()`
+### `clear()`
 
 Remove all data.
 
-#### `clear_regions()`
+### `clear_regions()`
 
 Remove all defined genomic regions.
 
-#### `clear_alignments()`
+### `clear_alignments()`
 
 Remove all loaded alignment data.
 
 ### Visualization
 
-#### `draw()`
+### `draw()`
 
 Draw the visualization to the raster surface without buffering. Suitable for non-interactive visualizations.
 
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `draw_interactive(clear_buffer=False)`
+### `draw_interactive(clear_buffer=False)`
 
 Draw the visualization to the raster surface. Caches state for using with interactive functions.
 
@@ -203,7 +203,7 @@ Draw the visualization to the raster surface. Caches state for using with intera
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `draw_image(stream=True)`
+### `draw_image(stream=True)`
 
 Draw the visualization and return it as a PIL Image.
 
@@ -220,7 +220,7 @@ img = gw.draw_image()
 img.save("output.png")
 ```
 
-#### `save_png(path)`
+### `save_png(path)`
 
 Save the current raster image to a PNG file.
 
@@ -235,7 +235,7 @@ Save the current raster image to a PNG file.
 gw.draw().save_png("visualization.png")
 ```
 
-#### `encode_as_png(compression_level=6)`
+### `encode_as_png(compression_level=6)`
 
 Encode the current canvas as PNG and return the binary data.
 
@@ -245,7 +245,7 @@ Encode the current canvas as PNG and return the binary data.
 **Returns:**
 - `bytes`: PNG encoded image data
 
-#### `encode_as_jpeg(quality=80)`
+### `encode_as_jpeg(quality=80)`
 
 Encode the current canvas as JPEG and return the binary data.
 
@@ -255,7 +255,7 @@ Encode the current canvas as JPEG and return the binary data.
 **Returns:**
 - `bytes`: JPEG encoded image data
 
-#### `array()`
+### `array()`
 
 Convert the image pixel data to a numpy array.
 
@@ -270,7 +270,7 @@ img_array = gw.draw().array()
 
 ### Canvas and Display Settings
 
-#### `set_canvas_width(width)`
+### `set_canvas_width(width)`
 
 Set the canvas width and recreate the raster surface.
 
@@ -280,7 +280,7 @@ Set the canvas width and recreate the raster surface.
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `set_canvas_height(height)`
+### `set_canvas_height(height)`
 
 Set the canvas height and recreate the raster surface.
 
@@ -290,7 +290,7 @@ Set the canvas height and recreate the raster surface.
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `set_canvas_size(width, height)`
+### `set_canvas_size(width, height)`
 
 Set both canvas width and height and recreate the raster surface.
 
@@ -301,7 +301,7 @@ Set both canvas width and height and recreate the raster surface.
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `set_theme(theme_name)`
+### `set_theme(theme_name)`
 
 Set a predefined visualization theme.
 
@@ -317,7 +317,7 @@ Set a predefined visualization theme.
 gw.set_theme("dark")
 ```
 
-#### `set_paint_ARBG(paint_enum, a, r, g, b)`
+### `set_paint_ARBG(paint_enum, a, r, g, b)`
 
 Set the ARGB color for a specific paint type.
 
@@ -334,7 +334,7 @@ Set the ARGB color for a specific paint type.
 gw.set_paint_ARBG(GwPalette.NORMAL_READ, 255, 0, 0, 128)
 ```
 
-#### `apply_theme(theme_dict)`
+### `apply_theme(theme_dict)`
 
 Apply a custom theme using a dictionary of paint types and colors.
 
@@ -354,7 +354,7 @@ custom_theme = {
 gw.apply_theme(custom_theme)
 ```
 
-#### `load_theme_from_json(filepath)`
+### `load_theme_from_json(filepath)`
 
 Load and apply a theme from a JSON file.
 
@@ -369,7 +369,7 @@ Load and apply a theme from a JSON file.
 gw.load_theme_from_json("custom_theme.json")
 ```
 
-#### `save_theme_to_json(filepath)`
+### `save_theme_to_json(filepath)`
 
 Save the current theme settings to a JSON file.
 
@@ -385,7 +385,7 @@ Save the current theme settings to a JSON file.
 gw.save_theme_to_json("my_theme.json")
 ```
 
-#### `set_font_size(size)`
+### `set_font_size(size)`
 
 Set the font size.
 
@@ -395,7 +395,7 @@ Set the font size.
 **Returns:**
 - `Gw`: Self for method chaining
 
-#### `set_font_name(name)`
+### `set_font_name(name)`
 
 Set the font name.
 
@@ -437,14 +437,14 @@ Set the font name.
 
 ### Interactive Controls
 
-#### `apply_command(command)`
+### `apply_command(command)`
 
 Apply a GW command string.
 
 **Parameters:**
 - `command` (str): GW command to execute (e.g., "filter", "count", etc.)
 
-#### `key_press(key, scancode, action, mods)`
+### `key_press(key, scancode, action, mods)`
 
 Process a key press event.
 
@@ -454,7 +454,7 @@ Process a key press event.
 - `action` (int): Key action code
 - `mods` (int): Modifier keys
 
-#### `mouse_event(x_pos, y_pos, button, action)`
+### `mouse_event(x_pos, y_pos, button, action)`
 
 Process a mouse event.
 

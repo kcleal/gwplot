@@ -4,7 +4,7 @@ theme: just-the-docs
 
 logo: "/assets/images/gw_icon.png"
 favicon_ico: "/assets/images/gw_icon.ico"
-color_scheme: dark
+color_scheme: light
 
 baseurl: "/gwplot"
 url: "https://kcleal.github.io"

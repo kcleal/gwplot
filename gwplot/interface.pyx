@@ -1735,18 +1735,6 @@ cdef class Gw:
             return PyBytes_FromStringAndSize(<char *> jpeg_vector[0].data(), jpeg_vector[0].size())
         return None
 
-    def encode_as_webp(self, int quality=80):
-        """
-        Encode the current canvas as WEBP and return the binary data.
-
-        Returns:
-            bytes: PNG encoded image data
-        """
-        cdef vector[uint8_t]* webp_vector = self.thisptr.encodeToWebPVector(quality)
-        if not webp_vector[0].empty():
-            return PyBytes_FromStringAndSize(<char *> webp_vector[0].data(), webp_vector[0].size())
-        return None
-
     def __getbuffer__(self, Py_buffer *buffer, int flags):
         """
         Implement the buffer protocol for access to pixel data.

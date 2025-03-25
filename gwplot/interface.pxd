@@ -135,7 +135,6 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         vector[uint8_t]* encodeToJpegVector(int quality)
 
-        vector[uint8_t]* encodeToWebPVector(int quality)
 
         void keyPress(int key, int scancode, int action, int mods)
 

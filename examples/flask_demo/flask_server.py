@@ -24,6 +24,7 @@ class GwInstance:
     plot: object
     log: list
     position: str
+    last_access: int
 
 
 gw_instances = defaultdict(GwInstance)
@@ -63,8 +64,8 @@ def cleanup_old_sessions(max_age=3600):  # 1 hour timeout to cleanup old session
     current_time = time.time()
     to_remove = []
     with instance_lock:
-        for session_id, data in gw_instances.items():
-            if 'last_access' in data and (current_time - data['last_access']) > max_age:
+        for session_id, instance in gw_instances.items():
+            if current_time - instance.last_access > max_age:
                 to_remove.append(session_id)
         for session_id in to_remove:
             if session_id in gw_instances:
@@ -112,9 +113,8 @@ def create_app():
         with instance_lock:
             if session_id not in gw_instances:
                 plot = create_gw_instance(root, args)
-                gw_instances[session_id] = GwInstance(plot=plot, log=[], position="")
+                gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
 
-            session['last_access'] = time.time()
             return session_id, gw_instances[session_id]
 
     @app.after_request

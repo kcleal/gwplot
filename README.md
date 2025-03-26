@@ -29,7 +29,6 @@ gw.add_track("variants.vcf")
 gw.add_region("chr1", 1000000, 1100000)
 
 # Render and save
-gw.draw()
 gw.save_png("output.png")
 ```
 

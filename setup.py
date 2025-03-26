@@ -178,7 +178,7 @@ class CustomBuildExt(build_ext):
 
 setup(
     name="gwplot",
-    version="0.1.0",
+    version="0.2.0",
     packages=find_packages(where="."),
     ext_modules=ext_modules,
     include_package_data=True,

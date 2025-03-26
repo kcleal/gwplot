@@ -13,5 +13,4 @@ gw.add_bam(root + "/tests/small.bam")
 gw.add_region("chr1", 1, 20000)
 
 # Render and save
-gw.draw()
 gw.save_png("output.png")

@@ -11,3 +11,41 @@ url: "https://kcleal.github.io"
 
 aux_links:
   GitHub Repository: "https://github.com/kcleal/gwplot"
+
+# Navigation Order
+nav_sort: case_insensitive
+nav_order: 1
+
+# Sidebar navigation
+nav:
+  - title: Home
+    url: /index.html
+    nav_order: 1
+  - title: Installation
+    url: /docs/Install.html
+    nav_order: 2
+  - title: Quick Start
+    url: /docs/quickstart.html
+    nav_order: 3
+  - title: API Reference
+    url: /docs/API.html
+    nav_order: 4
+    children:
+      - title: Gw
+        url: /docs/API.html#gw-class
+      - title: Loading data
+        url: /docs/API.html#loading-data
+      - title: Managing regions
+        url: /docs/API.html#managing-regions
+      - title: Visualisation
+        url: /docs/API.html#visualisation
+      - title: Saving images
+        url: /docs/API.html#saving-images
+      - title: Display settings
+        url: /docs/API.html#saving-images
+      - title: Configure
+        url: /docs/API.html#configuration-properties
+      - title: Interactive controls
+        url: /docs/API.html#interactive-controls
+      - title: GwPalette
+        url: /docs/API.html#gwpalette-class

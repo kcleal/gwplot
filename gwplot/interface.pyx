@@ -1616,7 +1616,7 @@ cdef class Gw:
 
     def save_png(self, path):
         """
-        Save the current raster image to a PNG file.
+        Draws and saves the raster canvas to a PNG file.
 
         Parameters
         ----------
@@ -1628,14 +1628,14 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
+        self.draw()
         cdef string c = path.encode("utf-8")
         self.thisptr.rasterToPng(c.c_str())
         return self
 
     def save_pdf(self, path):
         """
-        Saves a PDF file using the current configuration. Note calling draw() is
-        not needed beforehand.
+        Draws and saves a PDF file using the current configuration.
 
         Parameters
         ----------
@@ -1653,8 +1653,7 @@ cdef class Gw:
 
     def save_svg(self, path):
         """
-        Saves an SVG file using the current configuration. Note calling draw() is
-        not needed beforehand.
+        Saves an SVG file using the current configuration.
 
         Parameters
         ----------

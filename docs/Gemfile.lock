@@ -1,5 +1,4 @@
 GEM
-  remote: https://rubygems.org/
   specs:
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
@@ -74,9 +73,7 @@ PLATFORMS
   arm64-darwin-24
 
 DEPENDENCIES
-  jekyll (~> 4.3.2)
-  just-the-docs (~> 0.8.2)
-  webrick (~> 1.8)
+  just-the-docs
 
 BUNDLED WITH
    2.3.26

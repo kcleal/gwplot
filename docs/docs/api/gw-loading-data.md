@@ -6,6 +6,7 @@ nav_order: 2
 ---
 
 ## Loading Data
+{: .no_toc .text-delta }
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -15,7 +16,8 @@ nav_order: 2
 
 ---
 
-### `add_bam(path)`
+### add_bam
+`add_bam(path)`
 
 Add a BAM file to the visualisation.
 
@@ -31,7 +33,8 @@ gw.add_bam("sample.bam")
 ```
 ---
 
-### `remove_bam(index)`
+### remove_bam
+`remove_bam(index)`
 
 Remove a BAM file from the visualisation.
 
@@ -43,7 +46,8 @@ Remove a BAM file from the visualisation.
 
 ---
 
-### `add_track(path, vcf_as_track=True, bed_as_track=True)`
+### add_track
+`add_track(path, vcf_as_track=True, bed_as_track=True)`
 
 
 Add a genomic data track to the visualisation.
@@ -66,7 +70,8 @@ gw.add_track("features.bed")
 ```
 ---
 
-### `remove_track(index)`
+### remove_track
+`remove_track(index)`
 
 Remove a data track from the visualisation.
 

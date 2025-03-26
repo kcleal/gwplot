@@ -6,12 +6,13 @@ parent: API Reference
 nav_order: 1
 ---
 
-# Gw Class
+## Gw Class
+
+`Gw(reference, **kwargs)`
 
 The `Gw` class is the main interface to libgw (GW). Initialise the GW object 
 with a reference genome and optional parameters.
 
-### `Gw(reference, **kwargs)`
 
 **Parameters:**
 - `reference` (str): Path to reference genome file or genome tag
@@ -25,8 +26,9 @@ gw = Gw("reference.fa", theme="dark", threads=4,
 ```
 ---
 
+## onlineGenomeTags
 
-### `onlineGenomeTags()`
+`onlineGenomeTags()`
 
 Returns a dictionary of available online reference genome tags. Use a local genome 
 for much better performance.

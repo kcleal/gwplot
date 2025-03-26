@@ -6,6 +6,7 @@ nav_order: 5
 ---
 
 ## Saving images
+{: .no_toc .text-delta }
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -15,7 +16,8 @@ nav_order: 5
 
 ---
 
-### `save_png(path)`
+### save_png
+`save_png(path)`
 
 Save the current raster image to a PNG file.
 
@@ -32,7 +34,8 @@ gw.save_png("visualisation.png")
 
 ---
 
-### `save_pdf(path)`
+### save_pdf
+`save_pdf(path)`
 
 Save the plot to a PDF file.
 
@@ -49,7 +52,8 @@ gw.save_pdf("visualization.pdf")
 
 ---
 
-### `save_svg(path)`
+### save_svg
+`save_svg(path)`
 
 Save the plot to a SVG file.
 
@@ -66,7 +70,8 @@ gw.save_svg("visualization.svg")
 
 ---
 
-### `encode_as_png(compression_level=6)`
+### encode_as_png
+`encode_as_png(compression_level=6)`
 
 Encode the current canvas as PNG and return the binary data.
 
@@ -76,7 +81,8 @@ Encode the current canvas as PNG and return the binary data.
 **Returns:**
 - `bytes`: PNG encoded image data
 
-### `encode_as_jpeg(quality=80)`
+### encode_as_jpeg
+`encode_as_jpeg(quality=80)`
 
 Encode the current canvas as JPEG and return the binary data.
 
@@ -88,7 +94,8 @@ Encode the current canvas as JPEG and return the binary data.
 
 ---
 
-### `array()`
+### array
+`array()`
 
 Convert the raster image to a numpy array.
 

@@ -173,7 +173,7 @@ img.save("processed_visualisation.png")
 
 ---
 
-### Commands
+## Commands
 
 Access GW's command interface for advanced functionality:
 
@@ -195,7 +195,7 @@ See GW documentation for more details https://kcleal.github.io/gw/docs/guide/Com
 
 ---
 
-### Interactive plots
+## Interactive plots
 
 `Gw` can support interactivity through mouse buttons and keyboard events, allowing 
 interacive apps to be built. 

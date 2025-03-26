@@ -8,6 +8,7 @@ nav_order: 7
 ---
 
 # Interactive Controls
+{: .no_toc .text-delta }
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -17,7 +18,8 @@ nav_order: 7
 
 ---
 
-### `apply_command(command)`
+### apply_command
+`apply_command(command)`
 
 Apply a GW command string.
 
@@ -26,7 +28,8 @@ Apply a GW command string.
 
 ---
 
-### `key_press(key, scancode, action, mods)`
+### key_press
+`key_press(key, scancode, action, mods)`
 
 Process a key press event.
 
@@ -38,7 +41,8 @@ Process a key press event.
 
 ---
 
-### `mouse_event(x_pos, y_pos, button, action)`
+### mouse_event
+`mouse_event(x_pos, y_pos, button, action)`
 
 Process a mouse event.
 

@@ -6,6 +6,7 @@ nav_order: 3
 ---
 
 ## Managing Regions
+{: .no_toc .text-delta }
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -15,7 +16,8 @@ nav_order: 3
 
 ---
 
-### `add_region(chrom, start, end, marker_start=-1, marker_end=-1)`
+### add_region
+`add_region(chrom, start, end, marker_start=-1, marker_end=-1)`
 
 Add a genomic region for visualisation. Setting the markers will result in a small triangle being drawn at
 the genomic position.
@@ -38,7 +40,8 @@ gw.add_region("chr1", 1000000, 1100000, 1050000, 1060000)
 
 ---
 
-### `remove_region(index)`
+### remove_region
+`remove_region(index)`
 
 Remove a genomic region from the visualisation.
 
@@ -50,7 +53,8 @@ Remove a genomic region from the visualisation.
 
 ---
 
-### `view_region(chrom, start, end)`
+### view_region
+`view_region(chrom, start, end)`
 
 Clear existing regions and view a specific genomic region.
 
@@ -70,7 +74,8 @@ gw.view_region("chr1", 1000000, 1100000)
 
 ---
 
-### `set_active_region_index(index)`
+### set_active_region_index
+`set_active_region_index(index)`
 
 Set the currently active region for dynamic visualisation.
 
@@ -82,19 +87,22 @@ Set the currently active region for dynamic visualisation.
 
 ---
 
-### `clear()`
+### clear
+`clear()`
 
 Remove all data.
 
 ---
 
-### `clear_regions()`
+### clear_regions
+`clear_regions()`
 
 Remove all defined genomic regions.
 
 ---
 
-### `clear_alignments()`
+### clear_alignments
+`clear_alignments()`
 
 Remove all loaded alignment data.
 

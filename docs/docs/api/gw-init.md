@@ -6,7 +6,8 @@ parent: API Reference
 nav_order: 1
 ---
 
-## Gw Class
+# Gw class
+---
 
 `Gw(reference, **kwargs)`
 

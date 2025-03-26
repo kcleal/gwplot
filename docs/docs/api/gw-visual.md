@@ -5,8 +5,9 @@ parent: API Reference
 nav_order: 4
 ---
 
-## Visualisation
+# Visualisation
 {: .no_toc .text-delta }
+---
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -16,7 +17,7 @@ nav_order: 4
 
 ---
 
-### draw
+## draw
 `draw()`
 
 Draw the visualisation to the raster surface. Suitable for non-interactive visualisations.
@@ -26,7 +27,7 @@ Draw the visualisation to the raster surface. Suitable for non-interactive visua
 
 ---
 
-### draw_interactive
+## draw_interactive
 `draw_interactive(clear_buffer=False)`
 
 Draw the visualisation to the raster surface. Caches state for using with interactive functions.
@@ -39,7 +40,7 @@ Draw the visualisation to the raster surface. Caches state for using with intera
 
 ---
 
-### draw_image
+## draw_image
 `draw_image()`
 
 Draw the visualisation and return it as a PIL Image.

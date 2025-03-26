@@ -6,6 +6,7 @@ permalink: /quickstart
 ---
 
 # Quickstart
+---
 
 `Gw` is intialised with a reference genome path or tag (a tag is used below). Next, add
 data tracks (bam files etc), and add a genomic region. Images can then be saved to common file

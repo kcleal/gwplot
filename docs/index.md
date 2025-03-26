@@ -6,6 +6,7 @@ description: "gwplot: a python library for plotting genomic sequencing data"
 ---
 
 # gwplot
+---
 
 `gwplot` is a plotting library for genomics data and a Python interface to GW, a high-performance interactive genome browser.
 
@@ -15,10 +16,7 @@ Install using:
 pip install gwplot
 ```
 
-<br>
-
-![Alt text](/assets/images/splash1.png "Gwplot")
-
+---
 
 ## Features
 
@@ -44,3 +42,7 @@ gw.add_region("chr1", 1000000, 1100000)
 # Draw and save an image
 gw.save_pdf("region.pdf")
 ```
+
+![Alt text](/assets/images/splash1.png "Gwplot")
+
+

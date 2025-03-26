@@ -6,6 +6,7 @@ nav_order: 2
 ---
 
 # Installation
+---
 
 ### From PyPI
 

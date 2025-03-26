@@ -5,9 +5,9 @@ parent: API Reference
 nav_order: 8
 ---
 
-
 # GwPalette Class
 {: .no_toc .text-delta }
+---
 
 ## Table of contents
 {: .no_toc .text-delta }

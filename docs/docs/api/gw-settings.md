@@ -5,8 +5,9 @@ parent: API Reference
 nav_order: 6
 ---
 
-### Display Settings
+# Display Settings
 {: .no_toc .text-delta }
+---
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -29,7 +30,7 @@ Set the canvas width and recreate the raster surface.
 
 ---
 
-### set_canvas_height
+# set_canvas_height
 `set_canvas_height(height)`
 
 Set the canvas height and recreate the raster surface.
@@ -42,7 +43,7 @@ Set the canvas height and recreate the raster surface.
 
 ---
 
-### set_canvas_size
+# set_canvas_size
 `set_canvas_size(width, height)`
 
 Set both canvas width and height and recreate the raster surface.
@@ -56,7 +57,7 @@ Set both canvas width and height and recreate the raster surface.
 
 ---
 
-### set_theme
+# set_theme
 `set_theme(theme_name)`
 
 Set a predefined visualisation theme.
@@ -75,7 +76,7 @@ gw.set_theme("dark")
 
 ---
 
-### set_paint_ARBG
+# set_paint_ARBG
 `set_paint_ARBG(paint_enum, a, r, g, b)`
 
 Set the ARGB color for a specific paint type.
@@ -95,7 +96,7 @@ gw.set_paint_ARBG(GwPalette.NORMAL_READ, 255, 0, 0, 128)
 
 ---
 
-### apply_theme
+# apply_theme
 `apply_theme(theme_dict)`
 
 Apply a custom theme using a dictionary of paint types and colors.
@@ -118,7 +119,7 @@ gw.apply_theme(custom_theme)
 
 ---
 
-### load_theme_from_json
+# load_theme_from_json
 `load_theme_from_json(filepath)`
 
 Load and apply a theme from a JSON file.
@@ -136,7 +137,7 @@ gw.load_theme_from_json("custom_theme.json")
 
 ---
 
-### save_theme_to_json
+# save_theme_to_json
 `save_theme_to_json(filepath)`
 
 Save the current theme settings to a JSON file.
@@ -155,7 +156,7 @@ gw.save_theme_to_json("my_theme.json")
 
 ---
 
-### set_font_size
+# set_font_size
 `set_font_size(size)`
 
 Set the font size.

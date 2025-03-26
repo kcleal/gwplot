@@ -6,11 +6,7 @@ nav_order: 4
 ---
 
 # Visualisation
-{: .no_toc .text-delta }
----
-
-## Table of contents
-{: .no_toc .text-delta }
+{: .no_toc }
 
 - TOC
 {:toc}

@@ -6,11 +6,7 @@ nav_order: 2
 ---
 
 # Loading Data
-{: .no_toc .text-delta }
----
-
-## Table of contents
-{: .no_toc .text-delta }
+{: .no_toc }
 
 - TOC
 {:toc}

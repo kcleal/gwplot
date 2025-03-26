@@ -203,12 +203,9 @@ Draw the visualization to the raster surface. Caches state for using with intera
 **Returns:**
 - `Gw`: Self for method chaining
 
-### `draw_image(stream=True)`
+### `draw_image()`
 
 Draw the visualization and return it as a PIL Image.
-
-**Parameters:**
-- `stream` (bool, optional): Whether to use streaming mode for drawing
 
 **Returns:**
 - `PIL.Image`: The visualization as a PIL Image

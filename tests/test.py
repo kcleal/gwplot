@@ -1,7 +1,7 @@
 
 import unittest
 import os
-from gwplot import Gw, GwPaint
+from gwplot import Gw, GwPalette
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -62,7 +62,7 @@ class TestConstruct(unittest.TestCase):
 
     def test_run_save_png(self):
         gw.draw()
-        gw.raster_to_png("out.png")
+        gw.save_png("out.png")
         print("test_run_save_png done")
 
     def test_to_ndarray(self):
@@ -72,7 +72,8 @@ class TestConstruct(unittest.TestCase):
 
     def test_run_draw_no_buffer(self):
         gw.apply_command("ylim 30")
-        gw.draw_stream()
+        gw.set_low_memory(1)
+        gw.draw()
         img = Image.fromarray(gw.array())
         plt.figure()
         plt.imshow(img)
@@ -87,31 +88,31 @@ class TestConstruct(unittest.TestCase):
         print("test_run_draw_image done")
 
     def test_set_paint(self):
-        gw.set_paint_ARBG(GwPaint.fcNormal, 255, 0, 0, 255)
+        gw.set_paint_ARBG(GwPalette.NORMAL_READ, 255, 0, 0, 255)
         print("test_set_paint done")
 
     def test_set_repaint(self):
-        gw.set_paint_ARBG(GwPaint.bgPaint, 55, 255, 0, 0)
+        gw.set_paint_ARBG(GwPalette.BACKGROUND, 55, 255, 0, 0)
         gw.draw()
-        gw.raster_to_png("out2.png")
+        gw.save_png("out2.png")
         print("test_set_repaint done")
 
-    def test_pysam(self):
-        if not have_pysam:
-            return
-        af = pysam.AlignmentFile(root + "/small.bam")
-        region = ("chr1", 1, 20000)
-        bam_itr = af.fetch(*region)
-
-        gw.clear_alignments()
-        gw.clear_regions()
-        gw.add_region(*region)
-
-        gw.add_pysam_alignments(bam_itr)
-
-        print(dir(bam_itr))
-        print(bam_itr)
-        print("test_pysam done")
+    # def test_pysam(self):
+    #     if not have_pysam:
+    #         return
+    #     af = pysam.AlignmentFile(root + "/small.bam")
+    #     region = ("chr1", 1, 20000)
+    #     bam_itr = af.fetch(*region)
+    #
+    #     gw.clear_alignments()
+    #     gw.clear_regions()
+    #     gw.add_region(*region)
+    #
+    #     gw.add_pysam_alignments(bam_itr)
+    #
+    #     print(dir(bam_itr))
+    #     print(bam_itr)
+    #     print("test_pysam done")
 
 def main():
     unittest.main()

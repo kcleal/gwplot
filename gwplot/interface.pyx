@@ -1673,27 +1673,19 @@ cdef class Gw:
         self.thisptr.runDrawNoBuffer()
         return self
 
-    def draw_image(self, stream=True):
+    def draw_image(self):
         """
         Draw the visualization and return it as a PIL Image.
-
-        Parameters
-        ----------
-        stream : bool, optional
-            Whether to use streaming mode for drawing
 
         Returns
         -------
         PIL.Image
             The visualization as a PIL Image
         """
-        if stream:
-            self.draw_stream()
-        else:
-            if not self.raster_surface_created:
-                self.make_raster_surface()
-            self.thisptr.processed = False
-            self.runDraw()
+        if not self.raster_surface_created:
+            self.make_raster_surface()
+        self.thisptr.processed = False
+        self.thisptr.runDrawNoBuffer()
         return Image.fromarray(self.array())
 
     def view_region(self, chrom, start, end):

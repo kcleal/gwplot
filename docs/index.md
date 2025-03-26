@@ -9,16 +9,22 @@ description: "gwplot: a python library for plotting genomic sequencing data"
 
 `gwplot` is a plotting library for genomics data and a Python interface to GW, a high-performance interactive genome browser.
 
+Install using:
+
+```bash
+pip install gwplot
+```
+
 <br>
 
-![Alt text](/assets/images/splash.png "Gwplot")
+![Alt text](/assets/images/splash1.png "Gwplot")
 
 
 ## Features
 
 - **High-performance visualization** of genomic data including BAM files, VCF, BED, and other formats
-- **Customizable themes and colors** for creating publication-quality visualizations
-- **Multi-region support** for comparative genomics
+- **Customizable themes and colors** for creating high-quality visualizations
+- **Multi-regions and data tracks** for comparative genomics
 - **Interactive mode** for dynamic exploration of genomic regions
 - **Flexible output formats** including PNG, JPEG, and NumPy arrays for further processing
 - **Built-in access** to common reference genomes
@@ -36,5 +42,5 @@ gw.add_bam("sample.bam")
 gw.add_region("chr1", 1000000, 1100000)
 
 # Draw and save an image
-gw.draw().save_png("visualization.png")
+gw.draw().save_png("region.png")
 ```

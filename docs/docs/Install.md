@@ -13,20 +13,26 @@ nav_order: 2
 pip install gwplot
 ```
 
-### Building from Source (macOS)
+### Building from Source 
 
+#### MacOS
+
+Install dependencies using homebrew (shown), or conda.
 ```bash
-# Install dependencies with Homebrew
 brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
+```
 
-# Clone repository with submodules
+Clone repository with GW submodule, install using pip
+```bash
 git clone --recursive https://github.com/kcleal/gwplot
 cd gwplot
+pip install -e . -v  # Use editable mode for development
 
-# Install development version
-pip install -r requirements.txt
-pip install -e . -v
-
-# Run tests
+# Run tests, need -e option when using pip install
 python -m unittest discover -s ./tests
 ```
+
+#### Linux
+
+For linux users, building is more convoluted. You will need to install htslib, glfw and freetype. An
+example build script can be found in `ci/manylinux-build-deps`

@@ -1,4 +1,4 @@
-name: Deploy Just the Docs Site
+name: Deploy gwplot docs
 on:
   push:
     branches:
@@ -18,10 +18,10 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: bundle install
+        run: cd docs && bundle install
 
       - name: Build site
-        run: bundle exec jekyll build --source docs --destination _site
+        run: cd docs && bundle exec jekyll build --source docs --destination _site
 
       - name: Deploy to GitHub Pages
         uses: actions/upload-pages-artifact@v3

@@ -2,7 +2,7 @@ name: Deploy gwplot docs
 on:
   push:
     branches:
-      - main  # or your default branch
+      - main
 
 jobs:
   build:
@@ -26,5 +26,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: docs/_site
 

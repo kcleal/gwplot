@@ -33,7 +33,6 @@ jobs:
 
       - name: Build site
         run: cd docs && bundle exec jekyll build --destination _site
-        # Removed the --source docs part since you're already in the docs directory
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

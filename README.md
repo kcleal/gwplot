@@ -18,7 +18,7 @@ pip install gwplot
 ```python
 from gwplot import Gw
 
-# Initialize with reference genome
+# Initialise with reference genome
 gw = Gw("reference.fa")
 
 # Add data sources

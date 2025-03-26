@@ -14,13 +14,13 @@ formats such as PNG, SVG and PDF:
 ```python
 from gwplot import Gw
 
-# Initialize with a reference genome
+# Initialise with a reference genome
 gw = Gw("hg38")  # Can use reference path or built-in genome tag
 
 # Add a BAM file
 gw.add_bam("sample.bam")
 
-# Add a region to visualize
+# Add a region to visualise
 gw.add_region("chr1", 1000000, 1100000)
 
 # Generate and save an image
@@ -63,16 +63,16 @@ gw.add_bam("tumor.bam")
 gw.add_track("variants.vcf")
 gw.add_track("annotations.bed")
 
-# Visualize a region
+# Visualise a region
 gw.add_region("chr1", 1000000, 1100000)
 gw.add_region("chr2", 1000000, 1100000)
-gw.save_png("multi_track_visualization.png")
+gw.save_png("multi_track_visualisation.png")
 ```
 ---
 
-## Customizing the Visualization
+## Customising the Visualisation
 
-You can customize the appearance of your visualization:
+You can customise the appearance of your visualisation:
 
 ```python
 from gwplot import Gw, GwPalette
@@ -82,21 +82,21 @@ gw = Gw("hg38")
 # Set the theme
 gw.set_theme("dark")  # Options: "dark", "slate", "igv"
 
-# Customize specific colors
+# Customise specific colors
 gw.set_paint_ARBG(GwPalette.DELETION, 255, 255, 0, 0)  # Red deletions
 gw.set_paint_ARBG(GwPalette.INSERTION, 255, 0, 255, 0)  # Green insertions
 
 # Set canvas size
 gw.set_canvas_size(1200, 800)
 
-# Adjust other visualization parameters
+# Adjust other visualisation parameters
 gw.set_font_size(18)
 gw.set_ylim(100)  # Set y-axis limit for coverage
 
-# Add data and visualize
+# Add data and visualise
 gw.add_bam("sample.bam")
 gw.add_region("chr1", 1000000, 1100000)
-gw.save_png("customized_visualization.png")
+gw.save_png("customised_visualisation.png")
 ```
 
 ### Custom Themes
@@ -152,7 +152,7 @@ with Gw("hg19", canvas_width=1000, canvas_height=400, theme="slate") as gw:
 
 ## Working with NumPy Arrays
 
-You can convert visualizations to NumPy arrays for further processing:
+You can convert visualisations to NumPy arrays for further processing:
 
 ```python
 from gwplot import Gw
@@ -163,12 +163,12 @@ gw.add_bam("sample.bam")
 gw.add_region("chr1", 1000000, 1010000)
 gw.draw()
 
-# Get the visualization as a NumPy array
+# Get the visualisation as a NumPy array
 img_array = gw.array()  # Returns RGBA data as height x width x 4 array
 
 # Process with NumPy/PIL
 img = Image.fromarray(img_array)
-img.save("processed_visualization.png")
+img.save("processed_visualisation.png")
 ```
 
 ---

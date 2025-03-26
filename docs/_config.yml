@@ -14,11 +14,3 @@ aux_links:
 
 # Navigation Order
 nav_sort: case_insensitive
-
-# Enable "On this page" navigation
-heading_anchors: true
-# Display TOC in sidebar
-toc:
-  enabled: true
-  h_min: 2
-  h_max: 3

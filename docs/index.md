@@ -26,7 +26,7 @@ pip install gwplot
 - **Customizable themes and colors** for creating high-quality visualizations
 - **Multi-regions and data tracks** for comparative genomics
 - **Interactive mode** for dynamic exploration of genomic regions
-- **Flexible output formats** including PNG, JPEG, and NumPy arrays for further processing
+- **Flexible output formats** including PNG, PDF, SVG, JPEG, and NumPy arrays for further processing
 - **Built-in access** to common reference genomes
 
 ## Example Visualization
@@ -42,5 +42,5 @@ gw.add_bam("sample.bam")
 gw.add_region("chr1", 1000000, 1100000)
 
 # Draw and save an image
-gw.draw().save_png("region.png")
+gw.save_pdf("region.pdf")
 ```

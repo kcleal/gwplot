@@ -1632,6 +1632,45 @@ cdef class Gw:
         self.thisptr.rasterToPng(c.c_str())
         return self
 
+    def save_pdf(self, path):
+        """
+        Saves a PDF file using the current configuration. Note calling draw() is
+        not needed beforehand.
+
+        Parameters
+        ----------
+        path : str
+            Path to save the PDF file
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        cdef string c = path.encode("utf-8")
+        self.thisptr.saveToPdf(c.c_str())
+        return self
+
+    def save_svg(self, path):
+        """
+        Saves an SVG file using the current configuration. Note calling draw() is
+        not needed beforehand.
+
+        Parameters
+        ----------
+        path : str
+            Path to save the SVG file
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        cdef string c = path.encode("utf-8")
+        self.thisptr.saveToSvg(c.c_str())
+        return self
+
+
     def draw_interactive(self, clear_buffer=False):
         """
         Draw the visualization to the raster surface. Caches state for using with interactive functions.
@@ -1658,7 +1697,7 @@ cdef class Gw:
 
     def draw(self):
         """
-        Draw the visualization to the raster surface without buffering.
+        Draw the visualization to the raster surface.
 
         Creates the raster surface if it doesn't exist yet.
 
@@ -1670,7 +1709,10 @@ cdef class Gw:
         if not self.raster_surface_created:
             self.make_raster_surface()
         self.thisptr.processed = False
-        self.thisptr.runDrawNoBuffer()
+        if self.thisptr.opts.link_op == 0:
+            self.thisptr.runDrawNoBuffer()
+        else:
+            self.thisptr.runDraw()
         return self
 
     def draw_image(self):
@@ -1685,7 +1727,10 @@ cdef class Gw:
         if not self.raster_surface_created:
             self.make_raster_surface()
         self.thisptr.processed = False
-        self.thisptr.runDrawNoBuffer()
+        if self.thisptr.opts.link_op == 0:
+            self.thisptr.runDrawNoBuffer()
+        else:
+            self.thisptr.runDraw()
         return Image.fromarray(self.array())
 
     def view_region(self, chrom, start, end):

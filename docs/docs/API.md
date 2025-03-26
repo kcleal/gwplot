@@ -232,6 +232,36 @@ Save the current raster image to a PNG file.
 gw.draw().save_png("visualization.png")
 ```
 
+### `save_pdf(path)`
+
+Save the current raster image to a PDF file. Note draw() does not need to be called.
+
+**Parameters:**
+- `path` (str): Path to save the PDF file
+
+**Returns:**
+- `Gw`: Self for method chaining
+
+**Example:**
+```python
+gw.save_pdf("visualization.pdf")
+```
+
+### `save_svg(path)`
+
+Save the current raster image to a SVG file. Note draw() does not need to be called.
+
+**Parameters:**
+- `path` (str): Path to save the SVG file
+
+**Returns:**
+- `Gw`: Self for method chaining
+
+**Example:**
+```python
+gw.save_svg("visualization.svg")
+```
+
 ### `encode_as_png(compression_level=6)`
 
 Encode the current canvas as PNG and return the binary data.

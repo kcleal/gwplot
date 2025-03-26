@@ -129,11 +129,15 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void runDraw()
 
-        void rasterToPng(const char * path)
+        void rasterToPng(const char* path)
 
         vector[uint8_t]* encodeToPngVector(int compression_level)
 
         vector[uint8_t]* encodeToJpegVector(int quality)
+
+        void saveToPdf(const char* path)
+
+        void saveToSvg(const char * path)
 
         void keyPress(int key, int scancode, int action, int mods)
 

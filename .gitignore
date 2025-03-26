@@ -38,3 +38,5 @@
 /gwplot/glfw_interface.cpp
 /gwplot/glfw_interface.cpython-310-darwin.so
 /examples/m21009_241011_231051.GRCh38.haplotagged.bam.bai
+/examples/output_online.png
+/examples/output_online.pdf

@@ -1,13 +1,13 @@
 from gwplot import Gw
 import os
-root = os.path.abspath(os.path.dirname(__file__))
 
+root = os.path.abspath(os.path.dirname(__file__)).replace("/examples", "")
 
 # Initialize with reference genome
-gw = Gw(root + "../tests/ref.fa")
+gw = Gw(root + "/tests/ref.fa")
 
 # Add data sources
-gw.add_bam(root + "/../tests/small.bam")
+gw.add_bam(root + "/tests/small.bam")
 
 # Set region to view
 gw.add_region("chr1", 1, 20000)

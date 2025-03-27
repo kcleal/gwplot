@@ -7,6 +7,7 @@ nav_order: 2
 
 # Loading Data
 {: .no_toc }
+---
 
 - TOC
 {:toc}
@@ -14,6 +15,9 @@ nav_order: 2
 ---
 
 ## add_bam
+
+<div class="ml-6" markdown="1">
+
 `add_bam(path)`
 
 Add a BAM file to the visualisation.
@@ -28,6 +32,9 @@ Add a BAM file to the visualisation.
 ```python
 gw.add_bam("sample.bam")
 ```
+
+</div>
+
 ---
 
 ## remove_bam

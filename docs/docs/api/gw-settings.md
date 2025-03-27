@@ -1,12 +1,13 @@
 ---
 layout: default
-title: Config
+title: Display settings
 parent: API Reference
 nav_order: 6
 ---
 
 # Display Settings
 {: .no_toc }
+---
 
 
 - TOC

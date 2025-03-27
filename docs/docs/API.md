@@ -10,7 +10,7 @@ permalink: /api
 ---
 
 ## Gw class
----
+
 
 `Gw(reference, **kwargs)`
 

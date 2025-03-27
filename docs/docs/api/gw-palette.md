@@ -7,6 +7,7 @@ nav_order: 8
 
 # GwPalette Class
 {: .no_toc }
+---
 
 - TOC
 {:toc}

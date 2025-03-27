@@ -1,5 +1,3 @@
-
-
 ---
 layout: default
 title: Interactivity
@@ -9,6 +7,7 @@ nav_order: 7
 
 # Interactive Controls
 {: .no_toc }
+---
 
 - TOC
 {:toc}

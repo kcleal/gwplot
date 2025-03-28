@@ -65,7 +65,7 @@ Process a mouse event.
 
 ---
 
-### flush_log
+## flush_log
 
 <div class="ml-6" markdown="1">
 

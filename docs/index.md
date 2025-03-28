@@ -23,11 +23,7 @@ Features of `gwplot`:
 Install from PyPI:
 
 ```bash
-# Base installation
 pip install gwplot
-
-# Also installs numpy, pillow and pysam
-pip install gwplot[all]
 ```
 
 A quick example:
@@ -63,12 +59,11 @@ a = list(pysam.AlignmentFile("a.bam").fetch(*roi))
 
 with Gw("hg38") as gw:
     
-    # Let Gw know which reference to use and the bam file
+    # Let Gw know which bam file and region to display
     gw.add_bam("a.bam").add_region(*roi)
     
     # Gw uses the bam1_t* pointer straight from pysam
     gw.add_pysam_alignments(a).show()
-
 ```
 
 ![Alt text](/assets/images/splash1.png "Gwplot")

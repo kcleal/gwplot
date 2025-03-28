@@ -39,14 +39,6 @@ the genomic position.
 gw.add_region("chr1", 1000000, 1100000, 1050000, 1060000)
 ```
 
-</div>
-
----
-
-## Using Markers in Regions
-
-<div class="ml-6" markdown="1">
-
 Markers in regions allow you to highlight specific genomic positions within a larger region.
 When you set marker positions using `add_region`, small triangular indicators will appear
 at those positions in the visualisation.
@@ -151,59 +143,6 @@ Remove all data.
 `clear_regions() -> None`
 
 Remove all defined genomic regions.
-
-</div>
-
----
-
-## clear_alignments
-
-<div class="ml-6" markdown="1">
-
-`clear_alignments() -> None`
-
-Remove all loaded alignment data.
-
-</div>
-
----
-
-## Using PyPSAM Alignments (Advanced)
-
-<div class="ml-6" markdown="1">
-
-The `add_pysam_alignments` method allows for integration with the Pysam library,
-enabling you to filter and manipulate alignments before visualisation.
-
-**Complex Example:**
-```python
-import pysam
-from gwplot import Gw
-
-# Open alignment file
-bam = pysam.AlignmentFile("sample.bam")
-
-# Define region of interest
-region = ("chr1", 1000000, 1050000)
-
-# Filter alignments based on custom criteria
-filtered_reads = []
-for read in bam.fetch(*region):
-    # Only keep high-quality reads with specific characteristics
-    if read.mapping_quality > 30 and not read.is_duplicate and not read.is_secondary:
-        filtered_reads.append(read)
-
-# Visualize only the filtered reads
-gw = Gw("hg38")
-gw.add_bam("sample.bam")  # Reference to original BAM still needed
-gw.add_region(*region)
-gw.add_pysam_alignments(filtered_reads)
-gw.save_png("filtered_high_quality_reads.png")
-```
-Notes:
-- Pysam alignments must not be freed before Gw, otherwise you will have a dangling pointer!
-- Pysam alignments can not be mixed with 'normal' Gw alignment tracks.
-- `add_pysam_alignments` can take a region_index and bam_index for multi-panel images. If these are not provided, data is added to the most-recently-added bam and region.
 
 </div>
 

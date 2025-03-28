@@ -204,9 +204,7 @@ img_array = gw.draw().array()
 
 ---
 
-## Advanced Drawing Controls
-
-### make_raster_surface
+## make_raster_surface
 
 <div class="ml-6" markdown="1">
 
@@ -235,7 +233,7 @@ gw.make_raster_surface(1200, 800)
 
 ---
 
-### clear_buffer
+## clear_buffer
 
 <div class="ml-6" markdown="1">
 
@@ -255,7 +253,9 @@ if gw.clear_buffer:
 
 </div>
 
-### set_clear_buffer
+---
+
+## set_clear_buffer
 
 <div class="ml-6" markdown="1">
 
@@ -274,7 +274,9 @@ gw.set_clear_buffer(True)
 
 </div>
 
-### redraw
+---
+
+## redraw
 
 <div class="ml-6" markdown="1">
 
@@ -295,7 +297,9 @@ if gw.redraw:
 
 </div>
 
-### set_redraw
+---
+
+## set_redraw
 
 <div class="ml-6" markdown="1">
 

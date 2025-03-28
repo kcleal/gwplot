@@ -15,7 +15,7 @@ nav_order: 6
 
 ---
 
-### canvas_width
+## canvas_width
 
 <div class="ml-6" markdown="1">
 
@@ -55,7 +55,7 @@ Set the canvas width and recreate the raster surface.
 
 ---
 
-### canvas_height
+## canvas_height
 
 <div class="ml-6" markdown="1">
 
@@ -95,7 +95,7 @@ Set the canvas height and recreate the raster surface.
 
 ---
 
-### canvas_size
+## canvas_size
 
 <div class="ml-6" markdown="1">
 
@@ -136,7 +136,7 @@ Set both canvas width and height and recreate the raster surface.
 
 ---
 
-### theme
+## theme
 
 <div class="ml-6" markdown="1">
 
@@ -295,7 +295,7 @@ gw.save_theme_to_json("my_theme.json")
 
 ---
 
-### font_size
+## font_size
 
 <div class="ml-6" markdown="1">
 
@@ -335,7 +335,7 @@ Set the font size.
 
 ---
 
-### font_name
+## font_name
 
 <div class="ml-6" markdown="1">
 
@@ -375,7 +375,7 @@ Set the font name.
 
 ---
 
-### set_image_number
+## set_image_number
 
 <div class="ml-6" markdown="1">
 
@@ -400,7 +400,7 @@ gw.set_image_number(2, 3)
 
 ---
 
-### __array_interface__
+## __ array_interface __
 
 <div class="ml-6" markdown="1">
 

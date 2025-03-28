@@ -16,11 +16,7 @@ Base installation:
 pip install gwplot
 ```
 
-`gwplot` also has a few optional runtime dependencies including `numpy`, `pillow` and `pysam`. Fetch them using:
-
-```bash
-pip install gwplot[all]
-```
+`gwplot` also has `pillow` as an optional runtime dependency.
 
 ### Building from Source 
 

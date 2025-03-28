@@ -194,9 +194,6 @@ Convert the pixel data to a numpy array using zero-copy interface.
 **Returns:**
 - `numpy.ndarray` or `None`: RGBA image data as a 3D numpy array (height × width × 4) or None if the raster surface hasn't been created
 
-**Raises:**
-- `ImportError`: If Numpy could not be imported
-
 **Example:**
 ```python
 # Get the visualization as a numpy array

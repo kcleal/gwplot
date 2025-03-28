@@ -2,36 +2,18 @@
 import os
 import json
 from typing import Any, Dict, List, Optional, Tuple
-from libcpp.string cimport string
-from libcpp.vector cimport vector
-
-cdef bint HAVE_NUMPY = False
+import numpy as np
 cdef bint HAVE_PILLOW = False
-cdef bint HAVE_PYSAM = False
-try:
-    import numpy as np
-    cimport numpy as np
-    np.import_array()
-    HAVE_NUMPY = True
-except (ImportError, ModuleNotFoundError):
-    pass
-
 try:
     from PIL import Image
     HAVE_PILLOW = True
 except (ImportError, ModuleNotFoundError):
     pass
 
-cdef class AlignedSegment:
-    pass
-
-try:
-    from pysam.libcalignedsegment cimport AlignedSegment
-    HAVE_PYSAM = True
-except (ImportError, ModuleNotFoundError):
-    pass
-
+from libcpp.string cimport string
+from libcpp.vector cimport vector
 from cpython.bytes cimport PyBytes_FromStringAndSize
+from pysam.libcalignedsegment cimport AlignedSegment
 
 __all__ = ["Gw", "GwPalette"]
 
@@ -1496,15 +1478,12 @@ cdef class Gw:
 
         Raises
         ------
-        ImportError
-            If pysam could not be imported
         IndexError
             If the region_index or bam_index are out of range
         UserWarning
             If any normal collections are already present in the Gw object
         """
-        if not HAVE_PYSAM:
-            raise ImportError("Pysam could not be imported")
+
         if not self.raster_surface_created:
             self.make_raster_surface()
         cdef bint needs_clearing = <bint>False
@@ -1974,8 +1953,6 @@ cdef class Gw:
             RGBA image data as a 3D numpy array (height × width × 4)
             or None if the raster surface hasn't been created
         """
-        if not HAVE_NUMPY:
-            raise ImportError("Numpy could not be imported")
         if not self.raster_surface_created:
             return None
         #return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)

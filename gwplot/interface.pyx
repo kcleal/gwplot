@@ -13,13 +13,13 @@ try:
     cimport numpy as np
     np.import_array()
     HAVE_NUMPY = True
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     pass
 
 try:
     from PIL import Image
     HAVE_PILLOW = True
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     pass
 
 cdef class AlignedSegment:
@@ -28,7 +28,7 @@ cdef class AlignedSegment:
 try:
     from pysam.libcalignedsegment cimport AlignedSegment
     HAVE_PYSAM = True
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     pass
 
 from cpython.bytes cimport PyBytes_FromStringAndSize

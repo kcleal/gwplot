@@ -1,14 +1,6 @@
-"""
-This is a Flask server hosting GW with individual sessions for each user
->>> python3 flask_server.py
-
-A reference and bam(s) can be supplied as optional arguments:
->>> python3 flask_server.py ref.fa a.bam b.bam
-
-Then open a browser and goto http://127.0.0.1:5000/
-"""
-
+# Modified Flask server with WebSockets - Complete version
 from flask import Flask, request, render_template, jsonify, session, send_file
+from flask_socketio import SocketIO, emit
 import io
 import os
 from gwplot import Gw, GLFW
@@ -18,6 +10,7 @@ import time
 import uuid
 from collections import defaultdict
 from dataclasses import dataclass
+import base64
 
 @dataclass
 class GwInstance:
@@ -28,8 +21,6 @@ class GwInstance:
 
 
 gw_instances = defaultdict(GwInstance)
-
-
 instance_lock = threading.Lock()
 root = os.path.abspath(os.path.dirname(__file__)).replace("/examples/flask_demo", "")
 
@@ -42,25 +33,17 @@ def flush_gw_log(session_id):
                 gw_instances[session_id].log.append(log_output + "\n")
 
 
-def create_gw_instance(root, args):
+def create_gw_instance(root):
     """Create a new Gw instance with the provided arguments"""
-    t0 = time.time()
-    if args:
-        fa = args[0]
-        plot = Gw(fa, canvas_width=1900, canvas_height=600)
-        for bam in args[1:]:
-            plot.add_bam(bam)
-    else:
-        fa = root + "/tests/ref.fa"
-        plot = Gw(fa, canvas_width=1900, canvas_height=600)
-        plot.add_bam(root + "/tests/small.bam")
-        plot.add_track(root + "/tests/test.gff3")
-        plot.add_region("chr1", 1, 20000)
-    print("Initialize time", time.time() - t0)
+    fa = root + "/tests/ref.fa"
+    plot = Gw(fa, canvas_width=1900, canvas_height=600, theme="igv")
+    plot.add_bam(root + "/tests/small.bam")
+    plot.add_track(root + "/tests/test.gff3")
+    plot.add_region("chr1", 1, 20000)
     return plot
 
 
-def cleanup_old_sessions(max_age=3600):  # 1 hour timeout to cleanup old sessions
+def cleanup_old_sessions(max_age=3600):
     current_time = time.time()
     to_remove = []
     with instance_lock:
@@ -72,24 +55,27 @@ def cleanup_old_sessions(max_age=3600):  # 1 hour timeout to cleanup old session
                 del gw_instances[session_id]
 
 
-# Schedule cleanup to run periodically
 def cleanup_task():
     while True:
-        time.sleep(300)  # Check every 5 minutes
+        time.sleep(300)
         cleanup_old_sessions()
 
 
 def create_app():
     app = Flask(__name__)
+    
+    # Create SocketIO instance with threading mode (more compatible than eventlet for testing)
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+    
     app.config['VERSION'] = int(time.time())
-    app.config['SECRET_KEY'] = os.urandom(24)  # Needed for sessions
+    app.config['SECRET_KEY'] = os.urandom(24)
 
     args = sys.argv[1:]
 
     cleanup_thread = threading.Thread(target=cleanup_task, daemon=True)
     cleanup_thread.start()
 
-    # Define key mappings to send to GW. Other keys will be handled by the browser
+    # Define key mappings to send to GW
     keys = {
         'ArrowRight': (GLFW.KEY_RIGHT, GLFW.get_key_scancode(GLFW.KEY_RIGHT), GLFW.PRESS, 0),
         'ArrowLeft': (GLFW.KEY_LEFT, GLFW.get_key_scancode(GLFW.KEY_LEFT), GLFW.PRESS, 0),
@@ -105,20 +91,17 @@ def create_app():
         'wheel_up': GLFW.KEY_DOWN,
     }
 
-    def get_or_create_gw_instance():
-        """Get existing Gw instance or create a new one for the current session"""
-        if 'session_id' not in session:
-            session['session_id'] = str(uuid.uuid4())
-        session_id = session['session_id']
+    def get_or_create_gw_instance(sid):
+        """Get existing Gw instance or create a new one for the current websocket session"""
         with instance_lock:
-            if session_id not in gw_instances:
-                plot = create_gw_instance(root, args)
-                gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
-
-            return session_id, gw_instances[session_id]
+            if sid not in gw_instances:
+                plot = create_gw_instance(root)
+                gw_instances[sid] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
+            gw_instances[sid].last_access = time.time()
+            return gw_instances[sid]
 
     @app.after_request
-    def add_no_cache_headers(response):  # Try to disable caching
+    def add_no_cache_headers(response):
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
@@ -126,35 +109,75 @@ def create_app():
 
     @app.route('/')
     def home():
-        # Initialize session
-        get_or_create_gw_instance()
         return render_template('index.html', version=app.config['VERSION'])
 
+    def get_image_as_base64(sid, quality=80):
+        """Generate image and return as base64 data URL"""
+        if sid not in gw_instances:
+            return None
+        
+        plot = gw_instances[sid].plot
+        plot.draw()
+        flush_gw_log(sid)
+        
+        # Use JPEG for better network performance
+        # try:
+        #     img_data = plot.encode_as_jpeg(quality=quality)
+        #     img_type = "jpeg"
+        # except AttributeError:
+        #     # Fallback to PNG if JPEG encoding isn't available
+        #     img_data = plot.encode_as_png()
+        #     img_type = "png"
+        img_data = plot.encode_as_jpeg(quality=quality)
+        img_type = "jpeg"
+            
+        img_base64 = base64.b64encode(img_data).decode('utf-8')
+        return f"data:image/{img_type};base64,{img_base64}"
+
+    # Original HTTP endpoints for backward compatibility
     def display_image(session_id):
         t0 = time.time()
         if session_id not in gw_instances:
             return jsonify({"error": "Session not found"})
         plot = gw_instances[session_id].plot
         plot.draw()
-        # print("Draw time", time.time() - t0)
         flush_gw_log(session_id)
-        img_data = plot.encode_as_png()
-        # img_data = plot.encode_as_jpeg(quality=80)  # faster but lower quality
+        
+        # Try to use JPEG for better performance
+        try:
+            img_data = plot.encode_as_jpeg(quality=80)
+            mimetype = 'image/jpeg'
+        except AttributeError:
+            img_data = plot.encode_as_png()
+            mimetype = 'image/png'
+            
         img_size_kb = len(img_data) / 1024
         img_io = io.BytesIO(img_data)
         img_io.seek(0)
-        # print("Display time (direct encoding)", time.time() - t0, img_size_kb)
-        return send_file(img_io, mimetype='image/png', as_attachment=False)
+        return send_file(img_io, mimetype=mimetype, as_attachment=False)
 
     @app.route('/display_image')
     def get_display_image():
-        session_id, _ = get_or_create_gw_instance()
+        if 'session_id' not in session:
+            session['session_id'] = str(uuid.uuid4())
+        session_id = session['session_id']
+        with instance_lock:
+            if session_id not in gw_instances:
+                plot = create_gw_instance(root)
+                gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
         return display_image(session_id)
 
     @app.route('/submit', methods=['POST'])
     def submit():
-        session_id, instance = get_or_create_gw_instance()
-        plot = instance.plot
+        if 'session_id' not in session:
+            session['session_id'] = str(uuid.uuid4())
+        session_id = session['session_id']
+        if session_id not in gw_instances:
+            plot = create_gw_instance(root)
+            gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
+        else:
+            plot = gw_instances[session_id].plot
+            
         user_input = request.form['user_input']
         plot.apply_command(user_input)
         flush_gw_log(session_id)
@@ -165,8 +188,15 @@ def create_app():
 
     @app.route('/key-event', methods=['POST'])
     def key_event():
-        session_id, instance = get_or_create_gw_instance()
-        plot = instance.plot
+        if 'session_id' not in session:
+            session['session_id'] = str(uuid.uuid4())
+        session_id = session['session_id']
+        if session_id not in gw_instances:
+            plot = create_gw_instance(root)
+            gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
+        else:
+            plot = gw_instances[session_id].plot
+            
         key_data = request.get_json()
         if key_data['key'] not in keys:
             return jsonify({"error": "Invalid key"})
@@ -178,13 +208,20 @@ def create_app():
 
     @app.route('/mouse-event', methods=['POST'])
     def mouse_event():
-        session_id, instance = get_or_create_gw_instance()
-        plot = instance.plot
+        if 'session_id' not in session:
+            session['session_id'] = str(uuid.uuid4())
+        session_id = session['session_id']
+        if session_id not in gw_instances:
+            plot = create_gw_instance(root)
+            gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
+        else:
+            plot = gw_instances[session_id].plot
+            
         mouse_data = request.get_json()
         x_pos = mouse_data.get('x')
         y_pos = mouse_data.get('y')
         button = mouse_data.get('button')
-        action = mouse_data.get('action', 'press')  # Default to 'press' for backward compatibility
+        action = mouse_data.get('action', 'press')
         if button not in keys or action not in keys:
             return jsonify({"error": "Invalid key"})
         plot.mouse_event(x_pos, y_pos, keys[button], keys[action])
@@ -195,14 +232,21 @@ def create_app():
 
     @app.route('/update-canvas-size', methods=['POST'])
     def update_canvas_size():
-        session_id, instance = get_or_create_gw_instance()
-        plot = instance.plot
+        if 'session_id' not in session:
+            session['session_id'] = str(uuid.uuid4())
+        session_id = session['session_id']
+        if session_id not in gw_instances:
+            plot = create_gw_instance(root)
+            gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
+        else:
+            plot = gw_instances[session_id].plot
+            
         data = request.get_json()
         width = data.get('width', 800)
         height = data.get('height', 500)
         dpr = data.get('dpr', 1.0)
-        if dpr > 1.0:  # Adjust font size based on DPR for high resolution displays
-            font_size = min(int(12 * min(dpr, 2.0)), 24)  # Cap at 24pt font
+        if dpr > 1.0:
+            font_size = min(int(12 * min(dpr, 2.0)), 24)
             plot.set_font_size(font_size)
         plot.set_canvas_size(int(width), int(height))
         flush_gw_log(session_id)
@@ -216,7 +260,13 @@ def create_app():
 
     @app.route('/get-output')
     def get_output():
-        session_id, _ = get_or_create_gw_instance()
+        if 'session_id' not in session:
+            session['session_id'] = str(uuid.uuid4())
+        session_id = session['session_id']
+        if session_id not in gw_instances:
+            plot = create_gw_instance(root)
+            gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
+            
         if session_id in gw_instances:
             with instance_lock:
                 output = "".join(gw_instances[session_id].log)
@@ -225,7 +275,13 @@ def create_app():
 
     @app.route('/clear-output', methods=['POST'])
     def clear_output():
-        session_id, _ = get_or_create_gw_instance()
+        if 'session_id' not in session:
+            session['session_id'] = str(uuid.uuid4())
+        session_id = session['session_id']
+        if session_id not in gw_instances:
+            plot = create_gw_instance(root)
+            gw_instances[session_id] = GwInstance(plot=plot, log=[], position="", last_access=time.time())
+            
         if session_id in gw_instances:
             with instance_lock:
                 gw_instances[session_id].log.clear()
@@ -240,9 +296,125 @@ def create_app():
             "session_id": session_id,
             "active_sessions": active_sessions
         })
-    return app
+        
+    # WebSocket event handlers
+    @socketio.on('connect')
+    def handle_connect():
+        sid = request.sid
+        instance = get_or_create_gw_instance(sid)
+        # Send initial image
+        image_data = get_image_as_base64(sid)
+        emit('image_update', {'image': image_data, 'log': "".join(instance.log)})
 
+    @socketio.on('key_event')
+    def handle_key_event(data):
+        sid = request.sid
+        instance = get_or_create_gw_instance(sid)
+        plot = instance.plot
+        
+        key = data.get('key')
+        if key not in keys:
+            return
+        
+        plot.key_press(*keys[key])
+        flush_gw_log(sid)
+        
+        if plot.clear_buffer or plot.redraw:
+            # Determine quality based on interaction state
+            quality = 60 if data.get('is_interacting', False) else 80
+            image_data = get_image_as_base64(sid, quality)
+            emit('image_update', {
+                'image': image_data, 
+                'log': "".join(instance.log),
+                'requestId': data.get('requestId')
+            })
+
+    @socketio.on('mouse_event')
+    def handle_mouse_event(data):
+        sid = request.sid
+        instance = get_or_create_gw_instance(sid)
+        plot = instance.plot
+        
+        x_pos = data.get('x')
+        y_pos = data.get('y')
+        button = data.get('button')
+        action = data.get('action', 'press')
+        
+        if button not in keys or action not in keys:
+            return
+            
+        plot.mouse_event(x_pos, y_pos, keys[button], keys[action])
+        flush_gw_log(sid)
+        
+        is_interacting = data.get('is_interacting', False)
+        quality = 60 if is_interacting else 80
+        
+        if keys[action] == GLFW.RELEASE and (plot.clear_buffer or plot.redraw):
+            image_data = get_image_as_base64(sid, quality)
+            emit('image_update', {
+                'image': image_data, 
+                'log': "".join(instance.log),
+                'requestId': data.get('requestId')
+            })
+
+    @socketio.on('update_canvas_size')
+    def handle_canvas_resize(data):
+        sid = request.sid
+        instance = get_or_create_gw_instance(sid)
+        plot = instance.plot
+        
+        width = data.get('width', 800)
+        height = data.get('height', 500)
+        dpr = data.get('dpr', 1.0)
+        
+        if dpr > 1.0:
+            font_size = min(int(12 * min(dpr, 2.0)), 24)
+            plot.set_font_size(font_size)
+            
+        plot.set_canvas_size(int(width), int(height))
+        flush_gw_log(sid)
+        plot.apply_command("refresh")
+        
+        image_data = get_image_as_base64(sid)
+        emit('image_update', {'image': image_data, 'log': "".join(instance.log)})
+
+    @socketio.on('command')
+    def handle_command(data):
+        sid = request.sid
+        instance = get_or_create_gw_instance(sid)
+        plot = instance.plot
+        
+        user_input = data.get('command', '')
+        plot.apply_command(user_input)
+        flush_gw_log(sid)
+        
+        if plot.clear_buffer or plot.redraw:
+            image_data = get_image_as_base64(sid)
+            emit('image_update', {'image': image_data, 'log': "".join(instance.log)})
+        else:
+            emit('log_update', {'log': "".join(instance.log)})
+            
+    @socketio.on('clear_output')
+    def handle_clear_output():
+        sid = request.sid
+        if sid in gw_instances:
+            with instance_lock:
+                gw_instances[sid].log.clear()
+            emit('log_update', {'log': ""})
+            
+    @socketio.on('refresh_image')
+    def handle_refresh_image():
+        sid = request.sid
+        instance = get_or_create_gw_instance(sid)
+        image_data = get_image_as_base64(sid)
+        emit('image_update', {'image': image_data, 'log': "".join(instance.log)})
+
+    return app, socketio
+
+
+# This needs to go here if using gunicorn
+app, socketio = create_app()
 
 if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=False, threaded=True)
+    # Run with threading mode for development
+    socketio.run(app, debug=False)

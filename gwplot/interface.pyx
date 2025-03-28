@@ -1,7 +1,7 @@
 # cython: c_string_type=unicode, c_string_encoding=utf8
 import os
 import json
-from typing import Any, Dict, List, Optional, Tuple, Union, overload
+from typing import Any, Dict, List, Optional, Tuple
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 

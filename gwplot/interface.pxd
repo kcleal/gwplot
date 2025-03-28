@@ -2,10 +2,6 @@
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
-import numpy as np
-cimport numpy as np
-from enum import Enum
-from cython.operator cimport dereference as deref, preincrement as inc
 from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t, int32_t
 
 cdef extern from "utils.h" namespace "Utils" nogil:

@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0", "cython", "numpy"]
+requires = ["setuptools>=61.0", "cython", "numpy>=1.19.3", "pysam>=0.21.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "gwplot"
-version = "0.2.0"
+version = "0.3.0"
 license = { file = "LICENSE" }
 description = "Visualise genomics data fast"
 requires-python = ">=3.9"
@@ -17,18 +17,23 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
 ]
-dependencies = [
+dependencies = [ "setuptools>=61.0" ]
+
+[project.optional-dependencies]
+test = ["matplotlib",
+    "Flask",
+    "pysam>=0.21.0",
     "numpy>=1.19.3",
-    "pillow",
-    "setuptools>=61.0",
-    "cython",
-]
+    "pillow"]
+pysam = ["pysam>=0.21.0"]
+numpy = ["numpy>=1.19.3"]
+pillow = ["pillow"]
+all = ["pysam>=0.21.0",
+    "numpy>=1.19.3",
+    "pillow"]
 
 [tool.setuptools]
 packages = ["gwplot"]
 
 [project.urls]
 Repository = "https://github.com/kcleal/gwplot"
-
-[project.optional-dependencies]
-test = ["matplotlib", "Flask"]

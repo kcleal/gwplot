@@ -6,3 +6,6 @@ from gwplot.interface import (
     GwPalette
 )
 
+import importlib.metadata
+
+__version__ = importlib.metadata.version("gwplot")

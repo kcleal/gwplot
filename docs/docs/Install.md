@@ -10,8 +10,16 @@ nav_order: 2
 
 ### From PyPI
 
+Base installation:
+
 ```bash
 pip install gwplot
+```
+
+`gwplot` also has a few optional runtime dependencies including `numpy`, `pillow` and `pysam`. Fetch them using:
+
+```bash
+pip install gwplot[all]
 ```
 
 ### Building from Source 

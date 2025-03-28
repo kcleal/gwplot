@@ -6,7 +6,7 @@ import numpy as np
 cimport numpy as np
 from enum import Enum
 from cython.operator cimport dereference as deref, preincrement as inc
-from libc.stdint cimport uint8_t
+from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t, int32_t
 
 cdef extern from "utils.h" namespace "Utils" nogil:
     cdef struct Dims:
@@ -73,6 +73,32 @@ cdef extern from "include/core/SkCanvas.h" nogil:
 #     cdef cppclass SkSurface:
 #         pass
 
+cdef extern from "segments.h" namespace "Segs" nogil:
+
+    cdef cppclass Align:
+        Align(bam1_t *src)
+        bam1_t *delegate
+
+    void align_init(Align *self, int parse_mods_threshold)
+    void align_clear(Align *self)
+    void addToCovArray(vector[int] &arr, const Align &align, const uint32_t begin, const uint32_t end)
+    int findY(ReadCollection &rc, vector[Align] &rQ, int linkType, IniOptions &opts, bint joinLeft, int sortReadsBy)
+
+    cdef cppclass ReadCollection:
+        ReadCollection()
+        Region *region;
+        vector[Align] readQueue
+        vector[int] covArr
+        int bamIdx
+        int regionIdx
+        bint ownsBamPtrs
+
+        void makeEmptyMMArray()
+        void clear()
+        void resetDrawState()
+
+
+
 
 cdef extern from "plot_manager.h" namespace "Manager" nogil:
     cdef cppclass GwPlot:
@@ -82,10 +108,13 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         Fonts fonts
         vector[char] pixelMemory
         vector[Region] regions
+        vector[ReadCollection] collections
+
         bint drawToBackWindow, terminalOutput
         bint redraw
         int fb_width, fb_height
         int regionSelection
+        int samMaxY
         float monitorScale, gap, refSpace
         double xPos_fb, yPos_fb  # mouse position
 
@@ -113,6 +142,8 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void fetchRefSeq(Region &rgn)
 
+        void resetCollectionRegionPtrs()
+
         void setScaling()
 
         void setImageSize(int width, int height)
@@ -121,13 +152,13 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void syncImageCacheQueue()
 
-        void drawScreen()
+        void drawScreen(bint force_buffered_reads)
 
         void drawScreenNoBuffer()
 
         void runDrawNoBuffer()
 
-        void runDraw()
+        void runDraw(bint force_buffered_reads)
 
         void rasterToPng(const char* path)
 
@@ -135,9 +166,9 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         vector[uint8_t]* encodeToJpegVector(int quality)
 
-        void saveToPdf(const char* path)
+        void saveToPdf(const char* path, bint force_buffered_reads)
 
-        void saveToSvg(const char * path)
+        void saveToSvg(const char * path, bint force_buffered_reads)
 
         void keyPress(int key, int scancode, int action, int mods)
 
@@ -153,12 +184,42 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         bint collectionsNeedRedrawing()
 
+        size_t sizeOfBams()
+
+        size_t sizeOfRegions();
+
+
+
+cdef extern from "htslib/sam.h":
+    cdef extern from "htslib/sam.h":
+        ctypedef struct bam1_core_t:
+            int32_t tid
+            int32_t pos
+            uint16_t bin
+            uint8_t qual
+            uint8_t l_extranul
+            uint8_t flag
+            uint8_t unused1
+            uint8_t l_qname
+            uint16_t n_cigar
+            int32_t l_qseq
+            int32_t mtid
+            int32_t mpos
+            int32_t isize
+
+        ctypedef struct bam1_t:
+            bam1_core_t core
+            int l_data
+            uint32_t m_data
+            uint8_t *data
+            uint64_t id
 
 cdef class Gw:
 
     cdef GwPlot *thisptr
 
-    cdef Py_ssize_t shape[1]
-    cdef Py_ssize_t strides[1]
+    # cdef Py_ssize_t shape[1]
+    # cdef Py_ssize_t strides[1]
 
     cdef public bint raster_surface_created
+    cdef bint force_buffered_reads

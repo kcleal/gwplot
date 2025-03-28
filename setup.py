@@ -10,6 +10,7 @@ import sysconfig
 import platform
 import subprocess
 import shutil
+import pysam
 
 
 def get_system_prefix():
@@ -93,13 +94,18 @@ if old_skia:
 
 print('CXXFLAGS:', os.environ.get('CXXFLAGS', ''))
 print("Extra compile args:",  extras_args)
+print("Pysam include:", pysam.get_include())
 print("*"*80)
 
 root = os.path.abspath(os.path.dirname(__file__))
 
-include_dirs = [numpy.get_include(), f"{root}/gw/libgw/GW"] + os.environ.get('CPPFLAGS', '').split()
+include_dirs = [numpy.get_include(), f"{root}/gw/libgw/GW"] + \
+                pysam.get_include() + \
+                [i.replace("-I", "") for i in os.environ.get('CPPFLAGS', '').split()]
 libraries = ["hts", "skia", "gw"]
-library_dirs = [numpy.get_include(), f"{root}/gwplot", f"{root}/gw/libgw"] + os.environ.get('LDFLAGS', '').split()
+library_dirs = [numpy.get_include(), f"{root}/gwplot", f"{root}/gw/libgw"] + \
+                pysam.get_include() + \
+                [i.replace("-L", "") for i in os.environ.get('LDFLAGS', '').split()]
 
 extra_link_args = []
 if os_name == 'Darwin':
@@ -178,7 +184,7 @@ class CustomBuildExt(build_ext):
 
 setup(
     name="gwplot",
-    version="0.2.0",
+    version="0.3.0",
     packages=find_packages(where="."),
     ext_modules=ext_modules,
     include_package_data=True,

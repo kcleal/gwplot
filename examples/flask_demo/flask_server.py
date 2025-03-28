@@ -134,21 +134,17 @@ def create_app():
         t0 = time.time()
         if session_id not in gw_instances:
             return jsonify({"error": "Session not found"})
-
         plot = gw_instances[session_id].plot
-        plot.draw_interactive()
-        print("Draw time", time.time() - t0)
+        plot.draw()
+        # print("Draw time", time.time() - t0)
         flush_gw_log(session_id)
-
         img_data = plot.encode_as_png()
         # img_data = plot.encode_as_jpeg(quality=80)  # faster but lower quality
-
         img_size_kb = len(img_data) / 1024
         img_io = io.BytesIO(img_data)
         img_io.seek(0)
-        print("Display time (direct encoding)", time.time() - t0, img_size_kb)
+        # print("Display time (direct encoding)", time.time() - t0, img_size_kb)
         return send_file(img_io, mimetype='image/png', as_attachment=False)
-
 
     @app.route('/display_image')
     def get_display_image():

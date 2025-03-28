@@ -29,6 +29,35 @@ gw.save_png("output.png")
 ```
 ---
 
+# Integration with Pysam, Numpy, Pillow, and Matplotlib
+---
+
+`Gw` can integrate with popular Python libraries:
+
+```python
+from gwplot import Gw
+import matplotlib.pyplot as plt
+import pysam
+
+# Initialise with 'builder pattern'
+gw = Gw("hg38").add_bam("sample.bam").add_region("chr1", 1, 20000)
+
+# Generates a Numpy array using zero-copy interface
+arr = gw.array()
+
+# Generates a PIL.Image and plots using matplotlib
+img = gw.draw_image()
+plt.imshow(img)
+
+# Can accept alignments from Pysam
+gw.clear_alignments()
+
+aligns = list(pysam.AlignmentFile("sample.bam").fetch("chr1", 1, 20000))
+
+gw.add_pysam_alignments(aligns)
+gw.show()
+```
+
 ## Using Built-in Reference Genomes
 
 `gwplot` provides easy access to common reference genomes:
@@ -105,7 +134,7 @@ gw.save_png("customised_visualisation.png")
 Themes and be created, saved and loaded using json file.
 
 ```python
-from gw import GwPalette
+from gwplot import GwPalette
 
 custom_theme = {
     GwPalette.BACKGROUND: (255, 240, 240, 240),
@@ -132,6 +161,7 @@ with Gw("hg38") as gw:
     gw.save_png("output.png")
 # Resources automatically cleaned up when exiting the with block
 ```
+
 ---
 
 ## Using with Jupyter Notebooks
@@ -210,15 +240,16 @@ plot = Gw("hg19", canvas_width=1900, canvas_height=600).\
 
         
 # Gw will cache state between drawing calls and interactions
-plot.draw_interactive()
+plot.draw()
 
-# Mouse-click event at canvas co-ordinates 
+# Mouse-click event at canvas co-ordinates
+# We use the integer keymap from GLFW here
 plot.mouse_event(x_pos=100, y_pos=200, button=GLFW.MOUSE_BUTTON_LEFT, action=GLFW.PRESS)
 # Print any output messages from Gw
 print(plot.flush_log())
 
 # Re-draw
-plot.draw_interactive()
+plot.draw()
 
 img_data = plot.encode_as_png()  # For display to screen
 ```

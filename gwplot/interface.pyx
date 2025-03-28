@@ -1,12 +1,36 @@
 # cython: c_string_type=unicode, c_string_encoding=utf8
 import os
+import json
+from typing import Any, Dict, List, Optional, Tuple, Union, overload
 from libcpp.string cimport string
 from libcpp.vector cimport vector
-import numpy as np
-cimport numpy as np
-np.import_array()
-from PIL import Image
-# from pysam.libcalignedsegment cimport AlignedSegment, bam1_t
+
+cdef bint HAVE_NUMPY = False
+cdef bint HAVE_PILLOW = False
+cdef bint HAVE_PYSAM = False
+try:
+    import numpy as np
+    cimport numpy as np
+    np.import_array()
+    HAVE_NUMPY = True
+except ImportError:
+    pass
+
+try:
+    from PIL import Image
+    HAVE_PILLOW = True
+except ImportError:
+    pass
+
+cdef class AlignedSegment:
+    pass
+
+try:
+    from pysam.libcalignedsegment cimport AlignedSegment
+    HAVE_PYSAM = True
+except ImportError:
+    pass
+
 from cpython.bytes cimport PyBytes_FromStringAndSize
 
 __all__ = ["Gw", "GwPalette"]
@@ -14,16 +38,16 @@ __all__ = ["Gw", "GwPalette"]
 
 class GwPalette:
     """
-    Paint types for GW visualization elements.
+    Paint types for GW visualisation elements.
 
     This class provides constants for all color and paint types
-    used in GW visualizations. Use these constants with the
+    used in GW visualisations. Use these constants with the
     set_paint_ARGB method to customize the appearance of GW.
     """
 
     # Background colors
     BACKGROUND = GwPaint.bgPaint
-    """Main background color for the visualization"""
+    """Main background color for the visualisation"""
 
     BACKGROUND_TILED = GwPaint.bgPaintTiled
     """Tiled background color"""
@@ -173,7 +197,7 @@ cdef class Gw:
     """
     Python interface to GW, a high-performance interactive genome browser.
 
-    GW enables rapid visualization of aligned sequencing reads, data tracks,
+    GW enables rapid visualisation of aligned sequencing reads, data tracks,
     and genome-variation datasets. This wrapper provides access to libgw.
 
     Parameters
@@ -183,13 +207,13 @@ cdef class Gw:
     **kwargs : dict, optional
             Additional parameters to configure the browser
     """
-    def __cinit__(self, str reference, **kwargs):
-        """Initialize the C++ GwPlot object with minimal required parameters."""
+    def __cinit__(self, reference: str, **kwargs: Any) -> None:
+        """Initialise the C++ GwPlot object with minimal required parameters."""
 
         cdef vector[string] bampaths, track_paths
         cdef vector[Region] regions
 
-        # Initialize with defaults
+        # Initialise with defaults
         cdef IniOptions iopts
         iopts.threads = 1
         iopts.theme.setAlphas()
@@ -217,9 +241,9 @@ cdef class Gw:
         if not iopts.genome_tag.empty():
             self.thisptr.loadIdeogramTag()
 
-    def __init__(self, str reference, **kwargs):
+    def __init__(self, reference: str, **kwargs: Any) -> None:
         """
-        Python-level initialization for the GW object with flexible parameters.
+        Python-level initialisation for the GW object with flexible parameters.
 
         Parameters
         ----------
@@ -230,24 +254,55 @@ cdef class Gw:
 
         Examples
         --------
-        >>> # Initialize with multiple options
+        >>> # Initialise with multiple options
         >>> gw = Gw("reference.fa", theme="dark", threads=4,
         ...         sv_arcs=True, canvas_width=800, canvas_height=600)
         """
         # Process kwargs using the appropriate setters
         for key, value in kwargs.items():
             setter_name = f"set_{key}"
+            adder_name = f"add_{key}"
             if hasattr(self, setter_name):
                 setter = getattr(self, setter_name)
                 try:
                     setter(value)
                 except Exception as e:
                     raise ValueError(f"Error setting {key}={value}: {str(e)}")
+            elif hasattr(self, adder_name):
+                adder = getattr(self, adder_name)
+                if isinstance(value, tuple):
+                    try:
+                        adder(*value)
+                    except Exception as e:
+                        raise ValueError(f"Error setting {key}={value}: {str(e)}")
+                else:
+                    try:
+                        adder(value)
+                    except Exception as e:
+                        raise ValueError(f"Error setting {key}={value}: {str(e)}")
             else:
                 raise ValueError(f"Unknown parameter: {key}")
         self.thisptr.opts.theme.setAlphas()
 
-    def __enter__(self):
+    def __repr__(self) -> str:
+        """
+        Return a string representation of the Gw object.
+
+        This representation shows key attributes of the object and
+        approximates the constructor call needed to recreate it.
+        """
+        try:
+            genome_tag = self.thisptr.opts.genome_tag
+            ref_tag = genome_tag if not genome_tag.empty() else "<reference>"
+            return (f"Gw(reference='{ref_tag}', "
+                    f"canvas_width={self.canvas_width}, "
+                    f"canvas_height={self.canvas_height}, "
+                    f"theme='{self.theme}', "
+                    f"threads={self.threads})")
+        except Exception as e:
+            return f"Gw(<error: {str(e)}>)"
+
+    def __enter__(self) -> 'Gw':
         """
         Enter the runtime context for the Gw object.
 
@@ -263,12 +318,11 @@ cdef class Gw:
         >>> with Gw("reference.fa") as gw:
         ...     gw.add_bam("sample.bam")
         ...     gw.add_region("chr1", 1000000, 1100000)
-        ...     gw.draw_image("output.png")
         ... # Resources automatically cleaned up when exiting the with block
         """
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Optional[type], exc_val: Optional[Exception], exc_tb: Optional[Any]) -> None:
         """
         Exit the runtime context for the Gw object.
 
@@ -282,21 +336,11 @@ cdef class Gw:
             Exception instance, if an exception occurred
         exc_tb : traceback
             Exception traceback, if an exception occurred
-
-        Returns
-        -------
-        bool
-            False to propagate exceptions, True to suppress
         """
-        # Perform any necessary cleanup
-        self.clear_alignments()
-        self.clear_regions()
-
-        # Let any exceptions propagate
-        return False
+        pass  # Taken care of in the c++ layer
 
     @staticmethod
-    def onlineGenomeTags():
+    def onlineGenomeTags() -> Dict[str, str]:
         """
         A dict of online reference genome paths
 
@@ -320,7 +364,7 @@ cdef class Gw:
             "saccer3": f"{base}/sacCer3.fa.gz"
         }
 
-    def glfw_init(self):
+    def glfw_init(self) -> 'Gw':
         """
         Initialise GLFW backend.
 
@@ -334,7 +378,7 @@ cdef class Gw:
 
     #todo reset_to_defaults function
 
-    def flush_log(self):
+    def flush_log(self) -> str:
         """
         Returns and clears the GW log.
 
@@ -347,7 +391,7 @@ cdef class Gw:
         return str(s)
 
     @property
-    def clear_buffer(self):
+    def clear_buffer(self) -> bool:
         """
         Whether the read buffer should be cleared on the next draw.
 
@@ -358,8 +402,14 @@ cdef class Gw:
         """
         return not self.thisptr.processed
 
+    def set_clear_buffer(self, state: bool) -> None:
+        """
+        Set the clear_buffer status
+        """
+        self.thisptr.processed = not state
+
     @property
-    def redraw(self):
+    def redraw(self) -> bool:
         """
         Whether a re-draw needs to occur. Check this after some event e.g. command or mouse button.
 
@@ -370,13 +420,13 @@ cdef class Gw:
         """
         return self.thisptr.redraw
 
-    def set_redraw(self, bint state):
+    def set_redraw(self, state: bool) -> None:
         """
         Set the redraw status. For dynamic applications, set this to False after a drawing call
         """
         self.thisptr.redraw = state
 
-    def mouse_event(self, float x_pos, float y_pos, int button, int action):
+    def mouse_event(self, x_pos: float, y_pos: float, button: int, action: int) -> None:
         """
         Parameters
         ----------
@@ -393,7 +443,7 @@ cdef class Gw:
 
 
     @property
-    def canvas_width(self):
+    def canvas_width(self) -> int:
         """
         Get the current canvas width in pixels.
 
@@ -404,7 +454,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.dimensions.x
 
-    def set_canvas_width(self, int width):
+    def set_canvas_width(self, width: int) -> 'Gw':
         """
         Set the canvas width and recreate the raster surface.
 
@@ -424,7 +474,7 @@ cdef class Gw:
         return self
 
     @property
-    def canvas_height(self):
+    def canvas_height(self) -> int:
         """
         Get the current canvas height in pixels.
 
@@ -435,7 +485,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.dimensions.y
 
-    def set_canvas_height(self, int height):
+    def set_canvas_height(self, height: int) -> 'Gw':
         """
         Set the canvas height and recreate the raster surface.
 
@@ -455,7 +505,7 @@ cdef class Gw:
         return self
 
     @property
-    def canvas_size(self):
+    def canvas_size(self) -> Tuple[int, int]:
         """
         Get the current canvas dimensions.
 
@@ -466,7 +516,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.dimensions.x, self.thisptr.opts.dimensions.y
 
-    def set_canvas_size(self, int width, int height):
+    def set_canvas_size(self, width: int, height: int) -> 'Gw':
         """
         Set both canvas width and height and recreate the raster surface.
 
@@ -490,7 +540,7 @@ cdef class Gw:
         return self
 
     @property
-    def font_size(self):
+    def font_size(self) -> int:
         """
         Get the current font size.
 
@@ -501,7 +551,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.font_size
 
-    def set_font_size(self, int size):
+    def set_font_size(self, size: int) -> 'Gw':
         """
         Set the font size.
 
@@ -522,7 +572,7 @@ cdef class Gw:
         return self
 
     @property
-    def font_name(self):
+    def font_name(self) -> str:
         """
         Get the current font name.
 
@@ -533,7 +583,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.font_str
 
-    def set_font_name(self, str name):
+    def set_font_name(self, name: str) -> 'Gw':
         """
         Set the font name.
 
@@ -552,7 +602,7 @@ cdef class Gw:
         return self
 
     @property
-    def theme(self):
+    def theme(self) -> str:
         """
         Get the current theme name.
 
@@ -563,9 +613,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.theme.name
 
-    def set_theme(self, theme_name):
+    def set_theme(self, theme_name: str) -> 'Gw':
         """
-        Set a predefined visualization theme.
+        Set a predefined visualisation theme.
 
         Parameters
         ----------
@@ -588,7 +638,7 @@ cdef class Gw:
         self.thisptr.opts.theme.setAlphas()
         return self
 
-    def apply_theme(self, theme_dict):
+    def apply_theme(self, theme_dict: Dict[int, Tuple[int, int, int, int]]) -> 'Gw':
         """
         Apply a custom theme using a dictionary of paint types and colors.
 
@@ -616,7 +666,7 @@ cdef class Gw:
             self.set_paint_ARBG(paint_type, a, r, g, b)
         return self
 
-    def load_theme_from_json(self, filepath):
+    def load_theme_from_json(self, filepath: str) -> 'Gw':
         """
         Load and apply a theme from a JSON file.
 
@@ -629,6 +679,12 @@ cdef class Gw:
         -------
         Gw
             Self for method chaining
+
+        Raises
+        -------
+        ValueError
+            If the color name is not recognised
+
 
         Examples
         --------
@@ -651,35 +707,27 @@ cdef class Gw:
         Then load it in your code:
         >>> gw = Gw("reference.fa")
         >>> gw.load_theme_from_json("custom_theme.json")
-        >>> gw.add_bam("sample.bam").draw_image()
+        >>> gw.add_bam("sample.bam")
 
         Note: Each color is specified as an ARGB array [alpha, red, green, blue]
         with values from 0-255.
         """
-        import json
 
         # Get a mapping from string names to Paint constants
         paint_by_name = {name: getattr(GwPalette, name) for name in dir(GwPalette)
                          if not name.startswith('_') and name.isupper()}
-
         with open(filepath, 'r') as f:
             theme_data = json.load(f)
-
         theme_dict = {}
         for paint_name, color in theme_data.items():
             if paint_name not in paint_by_name:
-                print(f"Warning: Unknown paint type '{paint_name}', skipping")
-                continue
-
-            try:
-                a, r, g, b = color
-                theme_dict[paint_by_name[paint_name]] = (a, r, g, b)
-            except Exception as e:
-                print(f"Error processing color for '{paint_name}': {str(e)}")
+                raise ValueError(f"Unknown paint type '{paint_name}'")
+            a, r, g, b = color
+            theme_dict[paint_by_name[paint_name]] = (a, r, g, b)
 
         return self.apply_theme(theme_dict)
 
-    def save_theme_to_json(self, filepath):
+    def save_theme_to_json(self, filepath: str) -> 'Gw':
         """
         Save the current theme settings to a JSON file.
 
@@ -710,23 +758,16 @@ cdef class Gw:
         >>> new_gw.load_theme_from_json("my_custom_theme.json")
         """
         import json
-
-        # Get all paint constants from the Paint class
         paint_constants = {name: getattr(GwPalette, name) for name in dir(GwPalette)
                            if not name.startswith('_') and name.isupper()
                            and not callable(getattr(GwPalette, name))}
-
-        # Invert the dictionary to look up names by value
         paint_names = {value: name for name, value in paint_constants.items()}
-
-        # Create a dictionary to store the theme
         theme_data = {}
 
         # Get color values for each paint type
         cdef int a, r, g, b;
         a = 0; r = 0; g = 0; b = 0
         for paint_value, paint_name in paint_names.items():
-            # Get the current ARGB values from the C++ layer
             self.thisptr.opts.theme.getPaintARGB(paint_value, a, r, b, b)
             theme_data[paint_name] = [a, r, g, b]
 
@@ -734,11 +775,10 @@ cdef class Gw:
         with open(filepath, 'w') as f:
             json.dump(theme_data, f, indent=2)
 
-        print(f"Theme saved to {filepath}")
         return self
 
     @property
-    def threads(self):
+    def threads(self) -> int:
         """
         Get the number of threads used for processing.
 
@@ -749,7 +789,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.threads
 
-    def set_threads(self, int threads):
+    def set_threads(self, threads: int) -> 'Gw':
         """
         Set the number of threads for data processing.
 
@@ -767,7 +807,7 @@ cdef class Gw:
         return self
 
     @property
-    def indel_length(self):
+    def indel_length(self) -> int:
         """
         Get the current indel length setting.
 
@@ -778,9 +818,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.indel_length
 
-    def set_indel_length(self, indel_length):
+    def set_indel_length(self, indel_length: int) -> 'Gw':
         """
-        Set the indel length threshold for visualization. Indels with length greater than
+        Set the indel length threshold for visualisation. Indels with length greater than
         this threshold will be labelled with text.
 
         Parameters
@@ -797,7 +837,7 @@ cdef class Gw:
         return self
 
     @property
-    def ylim(self):
+    def ylim(self) -> float:
         """
         Get the current y-axis limit.
 
@@ -808,9 +848,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.ylim
 
-    def set_ylim(self, ylim):
+    def set_ylim(self, ylim: int) -> 'Gw':
         """
-        Set the y-axis limit for visualization.
+        Set the y-axis limit for visualisation.
 
         Parameters
         ----------
@@ -826,7 +866,7 @@ cdef class Gw:
         return self
 
     @property
-    def split_view_size(self):
+    def split_view_size(self) -> int:
         """
         Get the current split view size.
 
@@ -837,9 +877,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.split_view_size
 
-    def set_split_view_size(self, split_view_size):
+    def set_split_view_size(self, split_view_size: int) -> 'Gw':
         """
-        Set the split view size for multi-region visualization.
+        Set the split view size for multi-region visualisation.
 
         Parameters
         ----------
@@ -855,7 +895,7 @@ cdef class Gw:
         return self
 
     @property
-    def pad(self):
+    def pad(self) -> int:
         """
         Get the current padding value.
 
@@ -866,9 +906,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.pad
 
-    def set_pad(self, pad):
+    def set_pad(self, pad: int) -> 'Gw':
         """
-        Set the padding between elements in visualization.
+        Set the padding between elements in visualisation.
 
         Parameters
         ----------
@@ -884,9 +924,10 @@ cdef class Gw:
         return self
 
     @property
-    def max_coverage(self):
+    def max_coverage(self) -> int:
         """
-        Get the maximum coverage display value.
+        The maximum coverage for calculating coverage track.
+        Note, se ylim to set the display coverage value.
 
         Returns
         -------
@@ -895,9 +936,10 @@ cdef class Gw:
         """
         return self.thisptr.opts.max_coverage
 
-    def set_max_coverage(self, max_coverage):
+    def set_max_coverage(self, max_coverage: int) -> 'Gw':
         """
-        Set the maximum coverage value for display scaling.
+        Get the maximum coverage for calculating coverage track.
+        Note, se ylim to set the display coverage value.
 
         Parameters
         ----------
@@ -913,9 +955,9 @@ cdef class Gw:
         return self
 
     @property
-    def max_tlen(self):
+    def max_tlen(self) -> int:
         """
-        Get the maximum template length.
+        Get the maximum template length scale when using tlen-y mode.
 
         Returns
         -------
@@ -924,9 +966,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.max_tlen
 
-    def set_max_tlen(self, max_tlen):
+    def set_max_tlen(self, max_tlen: int) -> 'Gw':
         """
-        Set the maximum template length for paired reads.
+        Set the maximum template length tlen-y mode for paired reads.
 
         Parameters
         ----------
@@ -942,7 +984,7 @@ cdef class Gw:
         return self
 
     @property
-    def log2_cov(self):
+    def log2_cov(self) -> bool:
         """
         Get the log2 coverage display setting.
 
@@ -953,7 +995,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.log2_cov
 
-    def set_log2_cov(self, log2_cov):
+    def set_log2_cov(self, log2_cov: bool) -> 'Gw':
         """
         Set whether to use log2 scale for coverage display.
 
@@ -971,7 +1013,7 @@ cdef class Gw:
         return self
 
     @property
-    def tlen_yscale(self):
+    def tlen_yscale(self) -> bool:
         """
         Get the template length y-scale factor.
 
@@ -982,7 +1024,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.tlen_yscale
 
-    def set_tlen_yscale(self, tlen_yscale):
+    def set_tlen_yscale(self, tlen_yscale: bool) -> 'Gw':
         """
         Set the scaling factor for template length on the y-axis.
 
@@ -996,11 +1038,11 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
-        self.thisptr.opts.tlen_yscale = tlen_yscale
+        self.thisptr.opts.tlen_yscale = <bint>tlen_yscale
         return self
 
     @property
-    def expand_tracks(self):
+    def expand_tracks(self) -> bool:
         """
         Get the expand tracks setting.
 
@@ -1011,9 +1053,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.expand_tracks
 
-    def set_expand_tracks(self, expand_tracks):
+    def set_expand_tracks(self, expand_tracks: bool) -> 'Gw':
         """
-        Set whether to expand data tracks in the visualization.
+        Set whether to expand data tracks in the visualisation.
 
         Parameters
         ----------
@@ -1029,7 +1071,7 @@ cdef class Gw:
         return self
 
     @property
-    def vcf_as_tracks(self):
+    def vcf_as_tracks(self) -> bool:
         """
         Get the VCF as tracks setting.
 
@@ -1040,7 +1082,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.vcf_as_tracks
 
-    def set_vcf_as_tracks(self, vcf_as_tracks):
+    def set_vcf_as_tracks(self, vcf_as_tracks: bool) -> 'Gw':
         """
         Set whether to display VCF files as tracks.
 
@@ -1058,7 +1100,7 @@ cdef class Gw:
         return self
 
     @property
-    def sv_arcs(self):
+    def sv_arcs(self) -> bool:
         """
         Get the structural variant arcs display setting.
 
@@ -1069,7 +1111,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.sv_arcs
 
-    def set_sv_arcs(self, sv_arcs):
+    def set_sv_arcs(self, sv_arcs: bool) -> 'Gw':
         """
         Set whether to display structural variants as arcs.
 
@@ -1087,7 +1129,7 @@ cdef class Gw:
         return self
 
     @property
-    def scroll_speed(self):
+    def scroll_speed(self) -> float:
         """
         Get the scroll speed value.
 
@@ -1098,7 +1140,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.scroll_speed
 
-    def set_scroll_speed(self, scroll_speed):
+    def set_scroll_speed(self, scroll_speed: float) -> 'Gw':
         """
         Set the scroll speed for navigation.
 
@@ -1116,7 +1158,7 @@ cdef class Gw:
         return self
 
     @property
-    def tab_track_height(self):
+    def tab_track_height(self) -> float:
         """
         Get the height of track tabs.
 
@@ -1127,9 +1169,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.tab_track_height
 
-    def set_tab_track_height(self, tab_track_height):
+    def set_tab_track_height(self, tab_track_height: float) -> 'Gw':
         """
-        Set the height of track tabs in the visualization.
+        Set the height of track tabs in the visualisation.
 
         Parameters
         ----------
@@ -1145,18 +1187,18 @@ cdef class Gw:
         return self
 
     @property
-    def start_index(self):
+    def start_index(self) -> int:
         """
-        Get the start index for coordinates.
+        Get the start index in the file when viewing tiled images.
 
         Returns
         -------
         int
-            Current start index (0 or 1)
+            Current start index
         """
         return self.thisptr.opts.start_index
 
-    def set_start_index(self, start_index):
+    def set_start_index(self, start_index: int) -> 'Gw':
         """
         Set the start index for genome coordinates (0 or 1-based).
 
@@ -1174,9 +1216,9 @@ cdef class Gw:
         return self
 
     @property
-    def soft_clip_threshold(self):
+    def soft_clip_threshold(self) -> int:
         """
-        Get the soft clip threshold.
+        Get the soft clip threshold (in base-pairs).
 
         Returns
         -------
@@ -1185,9 +1227,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.soft_clip_threshold
 
-    def set_soft_clip_threshold(self, soft_clip_threshold):
+    def set_soft_clip_threshold(self, soft_clip_threshold: int) -> 'Gw':
         """
-        Set the threshold for highlighting soft-clipped reads.
+        Set the threshold for highlighting soft-clipped reads (in base-pairs).
 
         Parameters
         ----------
@@ -1203,9 +1245,9 @@ cdef class Gw:
         return self
 
     @property
-    def small_indel_threshold(self):
+    def small_indel_threshold(self) -> int:
         """
-        Get the small indel threshold.
+        Get the small indel threshold (in base-pairs).
 
         Returns
         -------
@@ -1214,9 +1256,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.small_indel_threshold
 
-    def set_small_indel_threshold(self, small_indel_threshold):
+    def set_small_indel_threshold(self, small_indel_threshold: int) -> 'Gw':
         """
-        Set the threshold for classifying small indels.
+        Set the threshold for classifying small indels (in base-pairs).
 
         Parameters
         ----------
@@ -1232,9 +1274,9 @@ cdef class Gw:
         return self
 
     @property
-    def snp_threshold(self):
+    def snp_threshold(self) -> int:
         """
-        Get the SNP threshold.
+        Get the SNP threshold (in base-pairs).
 
         Returns
         -------
@@ -1243,9 +1285,9 @@ cdef class Gw:
         """
         return self.thisptr.opts.snp_threshold
 
-    def set_snp_threshold(self, snp_threshold):
+    def set_snp_threshold(self, snp_threshold: int) -> 'Gw':
         """
-        Set the threshold for SNP display and highlighting.
+        Set the threshold for SNP display and highlighting (in base-pairs).
 
         Parameters
         ----------
@@ -1261,9 +1303,10 @@ cdef class Gw:
         return self
 
     @property
-    def variant_distance(self):
+    def variant_distance(self) -> int:
         """
-        Get the variant distance threshold.
+        Get the variant distance threshold (in base-pairs). When fetching data from
+        indexed tracks this threshold determines how much padding is added to each side.
 
         Returns
         -------
@@ -1272,10 +1315,10 @@ cdef class Gw:
         """
         return self.thisptr.opts.variant_distance
 
-    def set_variant_distance(self, variant_distance):
+    def set_variant_distance(self, variant_distance: int) -> 'Gw':
         """
-        Set the distance threshold - regions larger than this threshold will not have single
-        nucleotide variants drawn.
+        Set the variant distance threshold (in base-pairs). When fetching data from
+        indexed tracks this threshold determines how much padding is added to each side.
 
         Parameters
         ----------
@@ -1291,7 +1334,7 @@ cdef class Gw:
         return self
 
     @property
-    def low_memory(self):
+    def low_memory(self) -> int:
         """
         Get the low memory mode distance setting.
 
@@ -1302,7 +1345,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.low_memory
 
-    def set_low_memory(self, low_memory):
+    def set_low_memory(self, low_memory: int) -> 'Gw':
         """
         Set the distance threshold - regions larger than this threshold will be drawn using
         low_memory mode, and no reads will be held in memory.
@@ -1320,7 +1363,7 @@ cdef class Gw:
         self.thisptr.opts.low_memory = low_memory
         return self
 
-    def set_image_number(self, int x, int y):
+    def set_image_number(self, x: int, y: int) -> 'Gw':
         """
         Set the grid dimensions for image view.
 
@@ -1340,7 +1383,7 @@ cdef class Gw:
         self.thisptr.opts.number.y = y
         return self
 
-    def set_paint_ARBG(self, int paint_enum, int a, int r, int g, int b):
+    def set_paint_ARBG(self, paint_enum: int, a: int, r: int, g: int, b: int) -> 'Gw':
         """
         Set the ARGB color for a specific paint type.
 
@@ -1358,6 +1401,11 @@ cdef class Gw:
         b : int
             Blue channel value (0-255)
 
+        Returns
+        -------
+        Gw
+            Self for method chaining
+
         Example
         -------
         >>> # Set normal read color to dark blue
@@ -1366,9 +1414,9 @@ cdef class Gw:
         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
         return self
 
-    def set_active_region_index(self, int index):
+    def set_active_region_index(self, index: int) -> 'Gw':
         """
-        Set the currently active region for visualization.
+        Set the currently active region for visualisation.
 
         Parameters
         ----------
@@ -1384,13 +1432,14 @@ cdef class Gw:
             self.regionSelection = index
         return self
 
-    def clear_alignments(self):
+    def clear_alignments(self) -> None:
         """
         Remove all loaded alignment data.
         """
         self.thisptr.clearCollections()
+        self.force_buffered_reads = <bint>False
 
-    def clear_regions(self):
+    def clear_regions(self) -> None:
         """
         Remove all defined genomic regions.
         """
@@ -1398,16 +1447,16 @@ cdef class Gw:
         for i in range(self.thisptr.regions.size()):
             self.remove_region(i)
 
-    def clear(self):  #todo this is incomplete
+    def clear(self) -> None:  #todo this is incomplete: tracks, variant files
         """
         Remove all data.
         """
         self.clear_alignments()
         self.clear_regions()
 
-    def add_bam(self, path):
+    def add_bam(self, path: str) -> 'Gw':
         """
-        Add a BAM file to the visualization.
+        Add a BAM file to the visualisation.
 
         Parameters
         ----------
@@ -1424,41 +1473,126 @@ cdef class Gw:
         self.thisptr.addBam(b)
         return self
 
-    # def add_pysam_alignments(self, bam_iter):
-    #     """
-    #     WIP. Add alignments from a pysam iterator.
-    #
-    #     Parameters
-    #     ----------
-    #     bam_iter : iterator
-    #         Iterator of pysam AlignedSegment objects
-    #
-    #     Returns
-    #     -------
-    #     Gw
-    #         Self for method chaining
-    #     """
-    #     cdef bam1_t * bam_ptr
-    #     cdef AlignedSegment read
-    #     for read in bam_iter:
-    #         bam_ptr = read._delegate
-    #     return self
-
-    def remove_bam(self, int index):
+    def add_pysam_alignments(self, pysam_alignments: List['AlignedSegment'],
+                            region_index: int = -1,
+                            bam_index: int = -1) -> 'Gw':
         """
-        Remove a BAM file from the visualization.
+        Adds alignments from a pysam list to a region. Creates a raster surface if needed. Calls clear_alignments
+        if non-pysam collections in use
+
+        Parameters
+        ----------
+        pysam_alignment_list : list
+            List of pysam AlignedSegments
+        region_index: int, optional
+            The region index to draw to for multi-region support. If -1, the last added region will be used
+        bam_index: int, optional
+            The bam index to draw to for multi-region support. If -1, the last added bam will be used
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+
+        Raises
+        ------
+        ImportError
+            If pysam could not be imported
+        IndexError
+            If the region_index or bam_index are out of range
+        UserWarning
+            If any normal collections are already present in the Gw object
+        """
+        if not HAVE_PYSAM:
+            raise ImportError("Pysam could not be imported")
+        if not self.raster_surface_created:
+            self.make_raster_surface()
+        cdef bint needs_clearing = <bint>False
+        for i in range(self.thisptr.collections.size()):
+            if not self.thisptr.collections[i].ownsBamPtrs:
+                needs_clearing = <bint>True
+                break
+        if needs_clearing:
+            self.clear_alignments()
+            raise UserWarning("Can not mix pysam collections with normal collections. Current collections have been cleared")
+
+        if self.thisptr.sizeOfBams() == 0:
+            raise IndexError("Add a bam/cram file first")
+        if self.thisptr.sizeOfRegions() == 0:
+            raise IndexError("Add a region first")
+
+        self.force_buffered_reads = <bint>True
+
+        cdef int regionIdx
+        cdef int bamIdx
+        if region_index < 0:
+            regionIdx = self.thisptr.sizeOfRegions() - 1
+        else:
+            regionIdx = region_index
+            assert regionIdx < <int>self.thisptr.sizeOfRegions()
+        if bam_index < 0:
+            bamIdx = self.thisptr.sizeOfBams() - 1
+        else:
+            bamIdx = bam_index
+            assert bamIdx < <int>self.thisptr.sizeOfBams()
+
+        cdef uint32_t start = <uint32_t> self.thisptr.regions[regionIdx].start
+        cdef uint32_t end = <uint32_t> self.thisptr.regions[regionIdx].end
+
+        self.thisptr.collections.push_back(ReadCollection())
+        self.thisptr.collections.back().region = &self.thisptr.regions[regionIdx]
+        self.thisptr.collections.back().ownsBamPtrs = <bint>False
+        if self.thisptr.opts.max_coverage > 0:
+            self.thisptr.collections.back().covArr.resize(end - start + 1)
+        if self.thisptr.opts.snp_threshold > <int>(end - start):
+            self.thisptr.collections.back().makeEmptyMMArray()
+
+        self.thisptr.collections.back().regionIdx = regionIdx
+        self.thisptr.collections.back().bamIdx = bamIdx
+
+        cdef bam1_t* bam_ptr
+        cdef AlignedSegment read
+        cdef vector[Align]* readQueue = &self.thisptr.collections.back().readQueue
+
+        for read in pysam_alignments:
+            bam_ptr = <bam1_t* >read._delegate
+            if bam_ptr[0].core.flag & 4 or bam_ptr[0].core.n_cigar == 0:
+                continue
+            readQueue[0].push_back(Align(bam_ptr))
+            align_init(&readQueue[0].back(), <bint>True)  # todo set parse_mods
+            if self.thisptr.opts.max_coverage > 0:
+                addToCovArray(self.thisptr.collections.back().covArr, readQueue[0].back(), start, end)
+
+        # todo sortReadsBy
+        cdef int maxY = findY(self.thisptr.collections.back(), readQueue[0], self.thisptr.opts.link_op,
+                              self.thisptr.opts, <bint>False, 0)
+
+        self.thisptr.samMaxY = max(maxY, self.thisptr.samMaxY)
+        self.thisptr.processed = <bint>True
+
+        return self
+
+    def remove_bam(self, index: int) -> 'Gw':
+        """
+        Remove a BAM file from the visualisation.
 
         Parameters
         ----------
         index : int
             Index of the BAM file to remove
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
         """
         self.thisptr.removeBam(index)
         return self
 
-    def add_track(self, path, bint vcf_as_track=True, bint bed_as_track=True):
+    def add_track(self, path: str, vcf_as_track: bool = True,
+                 bed_as_track: bool = True) -> 'Gw':
         """
-        Add a genomic data track to the visualization.
+        Add a genomic data track to the visualisation.
 
         Parameters
         ----------
@@ -1479,9 +1613,9 @@ cdef class Gw:
         self.thisptr.addTrack(b, <bint>False, vcf_as_track, bed_as_track)
         return self
 
-    def remove_track(self, int index):
+    def remove_track(self, index: int) -> 'Gw':
         """
-        Remove a data track from the visualization.
+        Remove a data track from the visualisation.
 
         Parameters
         ----------
@@ -1496,9 +1630,11 @@ cdef class Gw:
         self.thisptr.removeTrack(index)
         return self
 
-    def add_region(self, chrom, int start, int end, int marker_start=-1, int marker_end=-1):
+    def add_region(self, chrom: str, start: int, end: int,
+                  marker_start: int = -1,
+                  marker_end: int = -1) -> 'Gw':
         """
-        Add a genomic region for visualization.
+        Add a genomic region for visualisation.
 
         Parameters
         ----------
@@ -1519,20 +1655,20 @@ cdef class Gw:
             Self for method chaining
         """
         cdef string c = chrom.encode("utf-8")
-        cdef Region reg = Region()
-        reg.chrom = c
-        reg.start = start
-        reg.end = end
-        reg.markerPos = marker_start
-        reg.markerPosEnd = marker_end
-        self.thisptr.fetchRefSeq(reg)
-        self.thisptr.regions.push_back(reg)
+        self.thisptr.regions.push_back(Region())
+        self.thisptr.regions.back().chrom = c
+        self.thisptr.regions.back().start = start
+        self.thisptr.regions.back().end = end
+        self.thisptr.regions.back().markerPos = marker_start
+        self.thisptr.regions.back().markerPosEnd = marker_end
+        self.thisptr.fetchRefSeq(self.thisptr.regions.back())
         self.thisptr.regionSelection = <int>self.thisptr.regions.size() - 1
+        self.thisptr.resetCollectionRegionPtrs()
         return self
 
-    def remove_region(self, int index):
+    def remove_region(self, index: int) -> 'Gw':
         """
-        Remove a genomic region from the visualization.
+        Remove a genomic region from the visualisation.
 
         Parameters
         ----------
@@ -1547,7 +1683,7 @@ cdef class Gw:
         self.thisptr.removeRegion(index)
         return self
 
-    def apply_command(self, str command):
+    def apply_command(self, command: str) -> None:
         """
         Apply a GW command string.
 
@@ -1561,7 +1697,7 @@ cdef class Gw:
         self.thisptr.inputText = c
         self.thisptr.commandProcessed()
 
-    def key_press(self, int key, int scancode, int action, int mods):
+    def key_press(self, key: int, scancode: int, action: int, mods: int) -> None:
         """
         Process a key press event.
 
@@ -1580,7 +1716,7 @@ cdef class Gw:
     #todo
     # scroll_left, scroll_right, zoom_out, zoom_in
     # click screen
-    def make_raster_surface(self, width=None, height=None):
+    def make_raster_surface(self, width: int = -1, height: int = -1) -> 'Gw':
         """
         Create a raster surface for rendering.
 
@@ -1601,12 +1737,10 @@ cdef class Gw:
         RuntimeError
             If the raster surface could not be created
         """
-        if width is not None:
-            assert isinstance(width, int)
-            self.thisptr.opts.dimensions.x = <int>width
-        if height is not None:
-            assert isinstance(height, int)
-            self.thisptr.opts.dimensions.y = <int>height
+        if width > 0:
+            self.thisptr.opts.dimensions.x = width
+        if height > 0:
+            self.thisptr.opts.dimensions.y = height
         self.thisptr.setImageSize(self.thisptr.opts.dimensions.x, self.thisptr.opts.dimensions.y)
         size = self.thisptr.makeRasterSurface()
         if size == 0:
@@ -1614,7 +1748,7 @@ cdef class Gw:
         self.raster_surface_created = True
         return self
 
-    def save_png(self, path):
+    def save_png(self, path: str) -> 'Gw':
         """
         Draws and saves the raster canvas to a PNG file.
 
@@ -1628,12 +1762,17 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
-        self.draw()
+        if self.redraw:
+            self.draw()
+        cdef size_t i
+        for i in range(self.thisptr.collections.size()):
+            self.thisptr.collections[i].resetDrawState()
         cdef string c = path.encode("utf-8")
         self.thisptr.rasterToPng(c.c_str())
+        self.thisptr.redraw = <bint>True  # Don't block further interactions
         return self
 
-    def save_pdf(self, path):
+    def save_pdf(self, path: str) -> 'Gw':
         """
         Draws and saves a PDF file using the current configuration.
 
@@ -1648,10 +1787,11 @@ cdef class Gw:
             Self for method chaining
         """
         cdef string c = path.encode("utf-8")
-        self.thisptr.saveToPdf(c.c_str())
+        self.thisptr.saveToPdf(c.c_str(), self.force_buffered_reads)
+        self.thisptr.redraw = <bint> True  # Don't block further interactions
         return self
 
-    def save_svg(self, path):
+    def save_svg(self, path: str) -> 'Gw':
         """
         Saves an SVG file using the current configuration.
 
@@ -1666,13 +1806,13 @@ cdef class Gw:
             Self for method chaining
         """
         cdef string c = path.encode("utf-8")
-        self.thisptr.saveToSvg(c.c_str())
+        self.thisptr.saveToSvg(c.c_str(), self.force_buffered_reads)
+        self.thisptr.redraw = <bint> True  # Don't block further interactions
         return self
 
-
-    def draw_interactive(self, clear_buffer=False):
+    def draw(self, clear_buffer: bool = False) -> 'Gw':
         """
-        Draw the visualization to the raster surface. Caches state for using with interactive functions.
+        Draw the visualisation to the raster surface. Caches state for using with interactive functions.
 
         Creates the raster surface if it doesn't exist yet.
 
@@ -1691,48 +1831,34 @@ cdef class Gw:
         if clear_buffer:
             self.thisptr.processed = False
         self.thisptr.syncImageCacheQueue()
-        self.thisptr.drawScreen()
+        self.thisptr.drawScreen(self.force_buffered_reads)
         return self
 
-    def draw(self):
+    def draw_image(self) -> Image.Image:
         """
-        Draw the visualization to the raster surface.
-
-        Creates the raster surface if it doesn't exist yet.
-
-        Returns
-        -------
-        Gw
-            Self for method chaining
-        """
-        if not self.raster_surface_created:
-            self.make_raster_surface()
-        self.thisptr.processed = False
-        if self.thisptr.opts.link_op == 0:
-            self.thisptr.runDrawNoBuffer()
-        else:
-            self.thisptr.runDraw()
-        return self
-
-    def draw_image(self):
-        """
-        Draw the visualization and return it as a PIL Image.
+        Draw the visualisation and return it as a PIL Image.
 
         Returns
         -------
         PIL.Image
-            The visualization as a PIL Image
+            The visualisation as a PIL Image
         """
+        if not HAVE_PILLOW:
+            raise ImportError("Pillow could not be imported")
         if not self.raster_surface_created:
             self.make_raster_surface()
-        self.thisptr.processed = False
-        if self.thisptr.opts.link_op == 0:
-            self.thisptr.runDrawNoBuffer()
-        else:
-            self.thisptr.runDraw()
+        self.draw()
         return Image.fromarray(self.array())
 
-    def view_region(self, chrom, start, end):
+    def show(self) -> None:
+        """
+        Convineience method for showing the image on screen. Equivalent to gw.draw_image().show()
+        """
+        if not HAVE_PILLOW:
+            raise ImportError("Pillow could not be imported")
+        self.draw_image().show()
+
+    def view_region(self, chrom: str, start: int, end: int) -> 'Gw':
         """
         Clear existing regions and view a specific genomic region.
 
@@ -1754,66 +1880,93 @@ cdef class Gw:
         self.add_region(chrom, start, end)
         return self
 
-    def encode_as_png(self, int compression_level=6):
+    def encode_as_png(self, compression_level: int = 6) -> Optional[bytes]:
         """
         Encode the current canvas as PNG and return the binary data.
 
         Returns:
             bytes: PNG encoded image data
+            or None if the raster surface hasn't been created
         """
+        if not self.raster_surface_created:
+            return None
         cdef vector[uint8_t]* png_vector = self.thisptr.encodeToPngVector(compression_level)
         if not png_vector[0].empty():
             return PyBytes_FromStringAndSize(<char *> png_vector[0].data(), png_vector[0].size())
         return None
 
-    def encode_as_jpeg(self, int quality=80):
+    def encode_as_jpeg(self, quality: int = 80) -> Optional[bytes]:
         """
         Encode the current canvas as JPEG and return the binary data.
 
         Returns:
             bytes: PNG encoded image data
+            or None if the raster surface hasn't been created
+
+        Raises
+        ------
+        RuntimeError
+            If image encoding failed
         """
+        if not self.raster_surface_created:
+            return None
         cdef vector[uint8_t]* jpeg_vector = self.thisptr.encodeToJpegVector(quality)
         if not jpeg_vector[0].empty():
             return PyBytes_FromStringAndSize(<char *> jpeg_vector[0].data(), jpeg_vector[0].size())
-        return None
+        raise RuntimeError("Encoding image failed, size was 0 bytes")
 
-    def __getbuffer__(self, Py_buffer *buffer, int flags):
+    @property
+    def __array_interface__(self) -> Optional[Dict[str, Any]]:
         """
-        Implement the buffer protocol for access to pixel data.
+        Implement the array interface protocol for direct access by Numpy.
 
-        This enables using the object with numpy.array().
-
-        Parameters
-        ----------
-        buffer : Py_buffer*
-            Buffer to fill
-        flags : int
-            Buffer flags
+        Returns:
+            dict: Describes the underlying image buffer
+            or None if the raster surface hasn't been created
         """
-        cdef Py_ssize_t itemsize = sizeof(self.thisptr.pixelMemory[0])
-        self.shape[0] = self.thisptr.pixelMemory.size()
-        self.strides[0] = sizeof(char)
-        buffer.buf = &(self.thisptr.pixelMemory[0])  # char *
-        buffer.format = 'B'
-        buffer.internal = NULL
-        buffer.itemsize = itemsize
-        buffer.len = self.shape[0] * itemsize
-        buffer.ndim = 1
-        buffer.obj = self
-        buffer.readonly = 0
-        buffer.shape = self.shape
-        buffer.strides = self.strides
-        buffer.suboffsets = NULL
+        if not self.raster_surface_created:
+            return None
+        cdef char* data_ptr = self.thisptr.pixelMemory.data()
+        return {
+            'shape': (self.canvas_height, self.canvas_width, 4),
+            'typestr': '|u1',  # unsigned char
+            'data': (<size_t>data_ptr, False),
+            'strides': (self.canvas_width * 4, 4, 1),
+            'version': 3
+        }
 
-    def __dealloc__(self):
-        """ Frees the array. This is called by Python when all the
-        references to the object are gone. Freeing of the array is left to the c++ layer"""
-        pass
+    # def __getbuffer__(self, Py_buffer *buffer, int flags):
+    #     """
+    #     Implement the buffer protocol for access to pixel data.
+    #
+    #     This enables using the object with numpy.array().
+    #
+    #     Parameters
+    #     ----------
+    #     buffer : Py_buffer*
+    #         Buffer to fill
+    #     flags : int
+    #         Buffer flags
+    #     """
+    #     print("Called __getbuffer__")
+    #     cdef Py_ssize_t itemsize = sizeof(self.thisptr.pixelMemory[0])
+    #     self.shape[0] = self.thisptr.pixelMemory.size()
+    #     self.strides[0] = sizeof(char)
+    #     buffer.buf = &(self.thisptr.pixelMemory[0])  # char *
+    #     buffer.format = 'B'
+    #     buffer.internal = NULL
+    #     buffer.itemsize = itemsize
+    #     buffer.len = self.shape[0] * itemsize
+    #     buffer.ndim = 1
+    #     buffer.obj = self
+    #     buffer.readonly = 0
+    #     buffer.shape = self.shape
+    #     buffer.strides = self.strides
+    #     buffer.suboffsets = NULL
 
-    def array(self):
+    def array(self) -> Optional[np.ndarray]:
         """
-        Convert the pixel data to a numpy array.
+        Convert the pixel data to a numpy array using zero-copy interface
 
         Returns
         -------
@@ -1821,6 +1974,13 @@ cdef class Gw:
             RGBA image data as a 3D numpy array (height × width × 4)
             or None if the raster surface hasn't been created
         """
+        if not HAVE_NUMPY:
+            raise ImportError("Numpy could not be imported")
         if not self.raster_surface_created:
             return None
-        return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)
+        #return np.array(self).reshape(self.canvas_height, self.canvas_width, 4)
+        return np.asarray(self)
+
+    def __dealloc__(self):
+        """ Freeing of Gw is left to the c++ layer"""
+        pass

@@ -2,7 +2,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     margin: 0;
     padding: 10px;
-    background-color: #f5f5f5;
+    background-color: #f0eff1;
 }
 
 .container {
@@ -10,11 +10,21 @@ body {
     margin: 0 auto;
 }
 
+/* Canvas styling */
 #genomePlot {
     display: block;
+    max-width: 100%;
+    height: auto;
     margin: 0 auto;
-    border: 1px solid #ccc;
-    background-color: white;
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
 .command-nav-container {
@@ -32,17 +42,18 @@ body {
 }
 
 button {
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: white;
+    padding: 5px 15px;
+    background-color: #ffffff;
+    color: black;
     border: none;
-    border-radius: 4px;
+    /*border: 1px solid #ccc;*/
+    /*border-radius: 12px;*/
     cursor: pointer;
     font-size: 14px;
 }
 
 button:hover {
-    background-color: #0069d9;
+    background-color: #b0aeae;
 }
 
 .command-form {
@@ -53,16 +64,18 @@ button:hover {
 #user_input {
     flex-grow: 1;
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: none;
+    /*border: 1px solid #ccc;*/
+    border-radius: 0px;
     font-size: 14px;
 }
 
 #outputContainer {
     margin-top: 10px;
-    border: 1px solid #ccc;
+    border: none;
+    /*border: 1px solid #ccc;*/
     border-radius: 4px;
-    background-color: white;
+    background-color: #1f2023;
     overflow: hidden;
 }
 
@@ -72,17 +85,17 @@ button:hover {
     overflow-y: auto;
     font-family: monospace;
     white-space: pre-wrap;
-    font-size: 14px;
-    color: #333;
+    font-size: 11px;
+    color: #cbd6f3;
 }
 
 .output-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #ccc;
+    padding: 0px 0px;
+    background-color: #202124;
+    /*border-bottom: 1px solid #c0bebe;*/
 }
 
 .output-title {
@@ -91,9 +104,10 @@ button:hover {
 }
 
 #clearOutput {
-    background-color: #6c757d;
+    background-color: #ffffff;
     font-size: 12px;
     padding: 4px 8px;
+
 }
 
 /* Performance monitor styles */

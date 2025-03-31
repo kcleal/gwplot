@@ -1,9 +1,6 @@
 // WebSocket-based client implementation for genome visualization
-
-// Create socket connection when document loads
 let socket;
-let isInteracting = false;
-let interactionTimer;
+
 
 // Performance monitoring system
 const performanceMonitor = {
@@ -19,17 +16,7 @@ const performanceMonitor = {
         if (!this.frameRateElement) {
             this.frameRateElement = document.createElement('div');
             this.frameRateElement.id = 'fpsCounter';
-            this.frameRateElement.style.position = 'fixed';
-            this.frameRateElement.style.top = '10px';
-            this.frameRateElement.style.right = '10px';
-            this.frameRateElement.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-            this.frameRateElement.style.color = 'white';
-            this.frameRateElement.style.padding = '8px';
-            this.frameRateElement.style.borderRadius = '4px';
-            this.frameRateElement.style.fontFamily = 'monospace';
-            this.frameRateElement.style.fontSize = '14px';
-            this.frameRateElement.style.zIndex = '9999';
-            this.frameRateElement.style.pointerEvents = 'none';
+            // CSS is now handled in styles.css
             this.frameRateElement.textContent = "Initializing performance monitor...";
             document.body.appendChild(this.frameRateElement);
         }
@@ -68,6 +55,23 @@ const performanceMonitor = {
         }
     },
 
+    // Record receiving an image
+    recordImageReceived: function() {
+        // Record a frame render
+        this.recordFrame();
+
+        // End timing for any pending requests
+        const now = performance.now();
+        for (const requestId in this.requestTimes) {
+            const time = now - this.requestTimes[requestId];
+            this.networkTimes.push(time);
+            if (this.networkTimes.length > 60) {
+                this.networkTimes.shift();
+            }
+            delete this.requestTimes[requestId];
+        }
+    },
+
     // Update statistics display
     update: function() {
         const now = performance.now();
@@ -86,7 +90,6 @@ const performanceMonitor = {
                 FPS: ${fps}<br>
                 Network: ${avgNetworkTime.toFixed(1)}ms<br>
                 Render: ${avgRenderTime.toFixed(1)}ms<br>
-                Interacting: ${isInteracting ? "Yes" : "No"}
             `;
 
             this.frameCount = 0;
@@ -101,14 +104,27 @@ const performanceMonitor = {
 const canvasManager = {
     canvas: null,
     context: null,
-    lastImageUrl: null,
 
     init: function() {
         this.canvas = document.getElementById('genomePlot');
+        if (!this.canvas) {
+            console.error("Canvas element 'genomePlot' not found!");
+            return;
+        }
+
+        console.log("Initializing canvas:", this.canvas);
+
         this.context = this.canvas.getContext('2d', {
             alpha: false,
             desynchronized: true // Lower latency where supported
         });
+
+        if (!this.context) {
+            console.error("Failed to get 2d context from canvas!");
+            return;
+        }
+
+        console.log("Canvas context initialized successfully");
 
         // Apply hardware acceleration hints
         this.canvas.style.willChange = 'transform';
@@ -186,78 +202,110 @@ function adjustOutputBoxHeight() {
     outputContainer.style.height = (windowHeight - usedHeight) + 'px';
 }
 
-// Initialize WebSocket connection
+// Process binary image data and draw to canvas
+// Process binary image data and draw to canvas
+function processBinaryImage(binaryData) {
+    console.log("Processing binary image data:", {
+        type: Object.prototype.toString.call(binaryData),
+        byteLength: binaryData.byteLength || (binaryData.length ? binaryData.length : "unknown"),
+        isEmpty: !binaryData || binaryData.byteLength === 0 || binaryData.length === 0
+    });
+
+    const renderStartTime = performance.now();
+
+    // Create a blob from the binary data
+    const blob = new Blob([binaryData], {type: 'image/jpeg'});
+    console.log("Created blob:", blob.size, "bytes");
+
+    // Use createImageBitmap for efficient rendering
+    createImageBitmap(blob).then(bitmap => {
+        console.log("Bitmap created successfully:", {
+            width: bitmap.width,
+            height: bitmap.height
+        });
+
+        // Ensure canvas dimensions match the bitmap
+        if (canvasManager.canvas.width !== bitmap.width ||
+            canvasManager.canvas.height !== bitmap.height) {
+            console.log("Resizing canvas to match bitmap dimensions");
+            canvasManager.canvas.width = bitmap.width;
+            canvasManager.canvas.height = bitmap.height;
+        }
+
+        // Clear the canvas before drawing
+        canvasManager.context.clearRect(0, 0, canvasManager.canvas.width, canvasManager.canvas.height);
+
+        // Draw the bitmap on the canvas
+        canvasManager.context.drawImage(bitmap, 0, 0);
+        console.log("Bitmap drawn to canvas");
+
+        // Record render time
+        const renderTime = performance.now() - renderStartTime;
+        performanceMonitor.recordRenderTime(renderTime);
+
+        // Adjust output box height after rendering
+        adjustOutputBoxHeight();
+
+        // Update performance metrics
+        performanceMonitor.recordImageReceived();
+    }).catch(err => {
+        console.error('Error creating image bitmap:', err);
+    });
+}
+
+// Request a fresh image from the server
+function requestImage() {
+    socket.emit('refresh_image');
+}
+
+// Initialize Socket.IO connection
 function initializeWebSocket() {
-    // Connect to the server - use the current host
+    // Create Socket.IO connection
     socket = io();
 
-    // Handle initial connection
-    socket.on('connect', () => {
-        console.log('Connected to WebSocket server');
-    });
+    // Handle binary data
+    socket.on('image_update', function(binaryData, jsonData) {
+        console.log("Received image_update event", {
+            binaryDataReceived: !!binaryData,
+            jsonDataReceived: !!jsonData,
+            jsonDataContent: jsonData
+        });
 
-    // Handle disconnection
-    socket.on('disconnect', () => {
-        console.log('Disconnected from WebSocket server');
-    });
+        // First argument is binary data, second has the JSON metadata
+        processBinaryImage(binaryData);
 
-    // Handle image updates from server
-    socket.on('image_update', (data) => {
-        const requestId = data.requestId;
-        if (requestId) {
-            performanceMonitor.endTiming(requestId);
-        }
-
-        if (data.image) {
-            canvasManager.updateCanvas(data.image);
-        }
-
-        if (data.log) {
-            updateOutputBox(data.log);
+        // Handle any other data like logs
+        if (jsonData && jsonData.log) {
+            console.log("Log:", jsonData.log);
+            // Make sure to update the output box with the log content
+            updateOutputBox(jsonData.log);
         }
     });
 
-    // Handle log updates
-    socket.on('log_update', (data) => {
-        if (data.log !== undefined) {
-            updateOutputBox(data.log);
-        }
+    // Connection events
+    socket.on('connect', function() {
+        console.log('Socket.IO connection established');
+        requestImage(); // Request initial image
+    });
+
+    socket.on('disconnect', function() {
+        console.log('Socket.IO connection closed');
+    });
+
+    socket.on('connect_error', function(error) {
+        console.error('Socket.IO connection error:', error);
     });
 }
 
-// Track user interaction state
-function setInteracting(state) {
-    // Clear any existing timer
-    if (interactionTimer) {
-        clearTimeout(interactionTimer);
-    }
-
-    isInteracting = state;
-
-    // If interaction ended, wait for a small delay before setting to false
-    // This ensures we don't rapidly toggle between high/low quality
-    if (!state) {
-        interactionTimer = setTimeout(() => {
-            isInteracting = false;
-        }, 300);
-    }
-}
 
 // Send key events to server via WebSocket
 function sendKeyToServer(key) {
     const requestId = Date.now().toString();
     performanceMonitor.startTiming(requestId);
 
-    // Mark as interacting when using arrow keys
-    const isNavigationKey = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(key);
-    if (isNavigationKey) {
-        setInteracting(true);
-    }
-
     socket.emit('key_event', {
         key: key,
         requestId: requestId,
-        is_interacting: isInteracting
     });
 }
 
@@ -266,20 +314,12 @@ function sendMouseEventToServer(x, y, button, action) {
     const requestId = Date.now().toString();
     performanceMonitor.startTiming(requestId);
 
-    // Set interacting state based on mouse action
-    if (action === 'press') {
-        setInteracting(true);
-    } else if (action === 'release') {
-        setInteracting(false);
-    }
-
     socket.emit('mouse_event', {
         x: x,
         y: y,
         button: button,
         action: action,
         requestId: requestId,
-        is_interacting: isInteracting
     });
 }
 
@@ -423,9 +463,9 @@ function setupKeyboardHandling() {
             }
         }
 
-        // Toggle FPS counter with F key
-        if (e.key === 'f' && e.ctrlKey) {
-            e.preventDefault();
+        // Toggle FPS counter with F key - Fixed bug: 'e' was used instead of 'event'
+        if (event.key === 'f' && event.ctrlKey) {
+            event.preventDefault();
             const fpsElement = document.getElementById('fpsCounter');
             if (fpsElement) {
                 fpsElement.style.display = fpsElement.style.display === 'none' ? 'block' : 'none';

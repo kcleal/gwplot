@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genome Visualization WebSocket</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <script src="../static/js/main.js"></script>
+<!--    <link rel="stylesheet" href="/static/css/styles.css">-->
+<!--    <script src="/static/js/main.js"></script>-->
+</head>
+<body>
+    <div class="container">
+        <canvas id="genomePlot"></canvas>
+
+        <div class="command-nav-container">
+            <div class="nav-buttons">
+                <button id="btn-left" title="Pan Left">
+                    <img src="../static/svg/arrow_left_alt_24.svg" alt="Left" class="icon-img">
+                </button>
+                <button id="btn-right" title="Pan Right">
+                    <img src="../static/svg/arrow_right_alt_24.svg" alt="Left" class="icon-img">
+                </button>
+                <button id="btn-zoom-in" title="Zoom In">
+                    <img src="../static/svg/zoom_in_24.svg" alt="Left" class="icon-img">
+                </button>
+                <button id="btn-zoom-out" title="Zoom Out">
+                    <img src="../static/svg/zoom_out_24.svg" alt="Left" class="icon-img">
+                </button>
+                <button id="btn-up" title="Previous Track">
+                    <img src="../static/svg/arrow_upward_alt_24.svg" alt="Left" class="icon-img">
+                </button>
+                <button id="btn-down" title="Next Track">
+                    <img src="../static/svg/arrow_downward_alt_24.svg" alt="Left" class="icon-img">
+                </button>
+            </div>
+
+            <form id="commandForm" class="command-form">
+                <input type="text" id="user_input" placeholder="Enter GW command..." autocomplete="off">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="outputContainer">
+            <div class="output-header">
+                <span class="output-title">Output</span>
+                <button id="clearOutput" title="Clear Output">Clear</button>
+            </div>
+            <div id="outputBox"></div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1863,22 +1863,8 @@ cdef class Gw:
         """
         Encode the current canvas as PNG and return the binary data.
 
-        Returns:
-            bytes: PNG encoded image data
-            or None if the raster surface hasn't been created
-        """
-        if not self.raster_surface_created:
-            return None
-        cdef vector[uint8_t]* png_vector = self.thisptr.encodeToPngVector(compression_level)
-        if not png_vector[0].empty():
-            return PyBytes_FromStringAndSize(<char *> png_vector[0].data(), png_vector[0].size())
-        return None
-
-    def encode_as_jpeg(self, quality: int = 80) -> Optional[bytes]:
-        """
-        Encode the current canvas as JPEG and return the binary data.
-
-        Returns:
+        Returns
+        -------
             bytes: PNG encoded image data
             or None if the raster surface hasn't been created
 
@@ -1889,9 +1875,30 @@ cdef class Gw:
         """
         if not self.raster_surface_created:
             return None
-        cdef vector[uint8_t]* jpeg_vector = self.thisptr.encodeToJpegVector(quality)
-        if not jpeg_vector[0].empty():
-            return PyBytes_FromStringAndSize(<char *> jpeg_vector[0].data(), jpeg_vector[0].size())
+        cdef pair[const uint8_t *, size_t] png_data = self.thisptr.encodeToPng(compression_level)
+        if png_data.first != NULL and png_data.second > 0:
+            return PyBytes_FromStringAndSize(<char *> png_data.first, png_data.second)
+        raise RuntimeError("Encoding image failed, size was 0 bytes")
+
+    def encode_as_jpeg(self, quality: int = 80) -> Optional[bytes]:
+        """
+        Encode the current canvas as JPEG and return the binary data.
+
+        Returns
+        -------
+            bytes: PNG encoded image data
+            or None if the raster surface hasn't been created
+
+        Raises
+        ------
+        RuntimeError
+            If image encoding failed
+        """
+        if not self.raster_surface_created:
+            return None
+        cdef pair[const uint8_t *, size_t] jpeg_data = self.thisptr.encodeToJpeg(quality)
+        if jpeg_data.first != NULL and jpeg_data.second > 0:
+            return PyBytes_FromStringAndSize(<char *> jpeg_data.first, jpeg_data.second)
         raise RuntimeError("Encoding image failed, size was 0 bytes")
 
     @property
@@ -1899,7 +1906,8 @@ cdef class Gw:
         """
         Implement the array interface protocol for direct access by Numpy.
 
-        Returns:
+        Returns
+        -------
             dict: Describes the underlying image buffer
             or None if the raster surface hasn't been created
         """

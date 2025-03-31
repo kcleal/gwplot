@@ -2,6 +2,7 @@
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp.utility cimport pair
 from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t, int32_t
 
 cdef extern from "utils.h" namespace "Utils" nogil:
@@ -158,9 +159,9 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void rasterToPng(const char* path)
 
-        vector[uint8_t]* encodeToPngVector(int compression_level)
+        pair[const uint8_t*, size_t] encodeToPng(int compression_level)
 
-        vector[uint8_t]* encodeToJpegVector(int quality)
+        pair[const uint8_t*, size_t] encodeToJpeg(int quality)
 
         void saveToPdf(const char* path, bint force_buffered_reads)
 
@@ -213,9 +214,6 @@ cdef extern from "htslib/sam.h":
 cdef class Gw:
 
     cdef GwPlot *thisptr
-
-    # cdef Py_ssize_t shape[1]
-    # cdef Py_ssize_t strides[1]
 
     cdef public bint raster_surface_created
     cdef bint force_buffered_reads

@@ -14,12 +14,24 @@ const throttleManager = {
     activeKeys: {}, // Track which keys are currently active/held
     lastFrameTime: 0, // Track last frame time
     targetFrameTime: 1000 / 60, // Target 60 FPS
-
+    requestTimeout: 350, // Timeout after 350ms seconds
+    timeoutTimer: null, // Timer reference for timeout handling
 
     // Record a new request being sent
     recordRequest: function(key) {
         this.lastRequestTime = performance.now();
         this.isWaitingForResponse = true;
+
+        // Clear any existing timeout
+        if (this.timeoutTimer) {
+            clearTimeout(this.timeoutTimer);
+        }
+
+        // Set a new timeout
+        this.timeoutTimer = setTimeout(() => {
+            console.warn(`Request timeout after ${this.requestTimeout}ms`);
+            this.handleTimeout();
+        }, this.requestTimeout);
 
         // If this is a key event, mark it as the active key
         if (key) {
@@ -29,6 +41,12 @@ const throttleManager = {
 
     // Record a response received
     recordResponse: function(responseTime) {
+        // Clear the timeout timer
+        if (this.timeoutTimer) {
+            clearTimeout(this.timeoutTimer);
+            this.timeoutTimer = null;
+        }
+
         // Add the new sample
         this.responseTimeSamples.push(responseTime);
 
@@ -68,6 +86,22 @@ const throttleManager = {
             this.lastFrameTime = now;
             this.processPendingRequests();
         }
+    },
+
+    // Handle request timeout
+    handleTimeout: function() {
+        console.warn("Request timed out! Releasing the waiting state.");
+        this.timeoutTimer = null;
+
+        // Mark that we're no longer waiting for a response
+        this.isWaitingForResponse = false;
+
+        // Process any pending requests
+        this.lastFrameTime = performance.now();
+        this.processPendingRequests();
+
+        // Request a fresh image to ensure we're in sync
+        requestImage();
     },
 
     // Register a key as active (being held down)
@@ -339,11 +373,18 @@ function adjustOutputBoxHeight() {
 
 // Process binary image data and draw to canvas
 function processBinaryImage(binaryData) {
-    console.log("Processing binary image data:", {
+    console.log("Processing binary data:", {
         type: Object.prototype.toString.call(binaryData),
         byteLength: binaryData.byteLength || (binaryData.length ? binaryData.length : "unknown"),
         isEmpty: !binaryData || binaryData.byteLength === 0 || binaryData.length === 0
     });
+
+    // Safety check for empty data
+    if (!binaryData || binaryData.byteLength === 0) {
+        console.warn("Empty binary data received, requesting new image");
+        setTimeout(requestImage, 100);
+        return;
+    }
 
     const renderStartTime = performance.now();
 
@@ -351,60 +392,112 @@ function processBinaryImage(binaryData) {
     const blob = new Blob([binaryData], {type: 'image/jpeg'});
     console.log("Created blob:", blob.size, "bytes");
 
-    // Use createImageBitmap for efficient rendering
-    createImageBitmap(blob).then(bitmap => {
-        console.log("Bitmap created successfully:", {
-            width: bitmap.width,
-            height: bitmap.height
-        });
+    // Check for empty blob
+    if (blob.size === 0) {
+        console.warn("Created empty blob, requesting new image");
+        setTimeout(requestImage, 100);
+        return;
+    }
 
+    // Detect Safari for special handling
+    // const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    //
+    // if (isSafari) {
+    //     // Safari approach: Use Image object instead of createImageBitmap
+    //     const img = new Image();
+    //     const objectUrl = URL.createObjectURL(blob);
+    //
+    //     img.onload = function() {
+    //         const canvas = canvasManager.canvas;
+    //         const context = canvasManager.context;
+    //
+    //         // Set canvas dimensions to match image
+    //         canvas.width = img.width;
+    //         canvas.height = img.height;
+    //
+    //         // Calculate CSS dimensions to maintain aspect ratio
+    //         const containerWidth = Math.max(window.innerWidth - 20, 300);
+    //         const containerHeight = Math.max(Math.floor(window.innerHeight * 0.6), 300);
+    //         const containerRatio = containerWidth / containerHeight;
+    //         const imageRatio = img.width / img.height;
+    //
+    //         let cssWidth, cssHeight;
+    //         if (imageRatio > containerRatio) {
+    //             cssWidth = containerWidth;
+    //             cssHeight = containerWidth / imageRatio;
+    //         } else {
+    //             cssHeight = containerHeight;
+    //             cssWidth = containerHeight * imageRatio;
+    //         }
+    //
+    //         // Apply CSS dimensions
+    //         canvas.style.width = cssWidth + 'px';
+    //         canvas.style.height = cssHeight + 'px';
+    //
+    //         // Draw the image
+    //         context.clearRect(0, 0, canvas.width, canvas.height);
+    //         context.drawImage(img, 0, 0);
+    //
+    //         // Cleanup
+    //         URL.revokeObjectURL(objectUrl);
+    //
+    //         // Update performance metrics
+    //         const renderTime = performance.now() - renderStartTime;
+    //         performanceMonitor.recordRenderTime(renderTime);
+    //         adjustOutputBoxHeight();
+    //         performanceMonitor.recordImageReceived();
+    //     };
+    //
+    //     img.onerror = function(err) {
+    //         console.error("Image loading error:", err);
+    //         URL.revokeObjectURL(objectUrl);
+    //         setTimeout(requestImage, 500);
+    //     };
+    //
+    //     img.src = objectUrl;
+    // }
+    // else {
+    // Standard approach for other browsers using createImageBitmap
+    createImageBitmap(blob).then(bitmap => {
         const canvas = canvasManager.canvas;
         const context = canvasManager.context;
-        const dimensions = getCanvasDimensions();
 
-        // Set the canvas's internal dimensions to match the image
+        // Set canvas dimensions
         canvas.width = bitmap.width;
         canvas.height = bitmap.height;
 
-        // Calculate CSS dimensions to maintain aspect ratio while fitting the container
+        // Calculate CSS dimensions for proper scaling
+        const dimensions = getCanvasDimensions();
         const containerRatio = dimensions.containerWidth / dimensions.containerHeight;
         const imageRatio = bitmap.width / bitmap.height;
 
         let cssWidth, cssHeight;
-
         if (imageRatio > containerRatio) {
-            // Image is wider than container (relative to heights)
             cssWidth = dimensions.containerWidth;
             cssHeight = dimensions.containerWidth / imageRatio;
         } else {
-            // Image is taller than container (relative to widths)
             cssHeight = dimensions.containerHeight;
             cssWidth = dimensions.containerHeight * imageRatio;
         }
 
-        // Apply CSS dimensions to fit container while maintaining aspect ratio
+        // Apply CSS dimensions
         canvas.style.width = cssWidth + 'px';
         canvas.style.height = cssHeight + 'px';
 
-        // Clear and draw the bitmap at its native resolution
+        // Draw the bitmap
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(bitmap, 0, 0);
 
-        console.log(`Canvas physical size: ${canvas.width}x${canvas.height}`);
-        console.log(`Canvas display size: ${cssWidth}x${cssHeight}`);
-
-        // Record render time
+        // Update performance metrics
         const renderTime = performance.now() - renderStartTime;
         performanceMonitor.recordRenderTime(renderTime);
-
-        // Adjust output box height after rendering
         adjustOutputBoxHeight();
-
-        // Update performance metrics
         performanceMonitor.recordImageReceived();
     }).catch(err => {
         console.error('Error creating image bitmap:', err);
+        setTimeout(requestImage, 500);
     });
+    // }
 }
 
 // Request a fresh image from the server
@@ -483,10 +576,6 @@ function updateCanvasSize() {
     // Set CSS dimensions for the display container
     canvas.style.width = dimensions.containerWidth + 'px';
     canvas.style.height = dimensions.containerHeight + 'px';
-
-    // Set the actual dimensions of the canvas element
-    // We'll let the server dictate the actual rendering size
-    // But we inform it of our container size and DPR
 
     console.log(`Updating canvas size: ${dimensions.containerWidth}x${dimensions.containerHeight} (DPR: ${dimensions.dpr})`);
 
@@ -706,30 +795,125 @@ function setupVisibilityHandling() {
     });
 }
 
-// Initialize WebSocket connection
+// Initialize WebSocket connection with reconnection support
 function initializeWebSocket() {
-    // Create WebSocket connection
+    // Close any existing connection
+    if (socket && socket.readyState !== WebSocket.CLOSED) {
+        socket.close();
+    }
+
+    // Create WebSocket connection with proper protocol detection
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/ws`;
     socket = new WebSocket(wsUrl);
 
-    const dimensions = getCanvasDimensions();
+    // Track connection attempts
+    let connectionAttempts = 0;
+    const maxAttempts = 5;
+    const baseRetryDelay = 1000; // Start with 1 second
+    let dimensionsSent = false;
 
     // Handle connection open
     socket.onopen = function() {
         console.log('WebSocket connection established');
+        connectionAttempts = 0; // Reset counter on successful connection
+
+        // Send dimensions immediately after connection is established
+        // Safari needs a slight delay after connection
+        setTimeout(() => {
+            sendCanvasDimensions();
+            dimensionsSent = true;
+        }, 100);
+    };
+
+    // Function to send canvas dimensions
+    function sendCanvasDimensions() {
+        const dimensions = getCanvasDimensions();
+        console.log(`Sending initial canvas dimensions: ${dimensions.containerWidth}x${dimensions.containerHeight} (DPR: ${dimensions.dpr})`);
+
         sendWebSocketMessage({
-            type: 'update_canvas_size',
+            type: "update_canvas_size",
             width: dimensions.containerWidth,
             height: dimensions.containerHeight,
             dpr: dimensions.dpr
         });
-    };
+    }
+
+    // Setup ping-pong for connection keepalive (important for Safari)
+    let pingInterval;
+
+    function startPingInterval() {
+        // Clear any existing interval
+        if (pingInterval) {
+            clearInterval(pingInterval);
+        }
+
+        // Send a ping every 20 seconds to keep the connection alive
+        pingInterval = setInterval(() => {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                sendWebSocketMessage({
+                    type: "pong"
+                });
+            } else {
+                clearInterval(pingInterval);
+            }
+        }, 20000);
+    }
 
     // Handle binary data and text messages
     socket.onmessage = function(event) {
+        // Start the ping interval if it's not already started
+        if (!pingInterval) {
+            startPingInterval();
+        }
+
+        // Handle JSON messages first
+        if (!(event.data instanceof Blob)) {
+            try {
+                const jsonData = JSON.parse(event.data);
+                console.log("Received JSON data:", jsonData);
+
+                // Handle connection confirmation
+                if (jsonData.status === "connected" && !dimensionsSent) {
+                    // Send dimensions if not already sent
+                    sendCanvasDimensions();
+                    dimensionsSent = true;
+                }
+
+                // Handle ping message
+                if (jsonData.type === "ping") {
+                    sendWebSocketMessage({
+                        type: "pong"
+                    });
+                    return;
+                }
+
+                // Handle error messages
+                if (jsonData.status === "error") {
+                    console.warn("Server error:", jsonData.message);
+
+                    // If we need to send dimensions, do so
+                    if (jsonData.message.includes("dimensions")) {
+                        sendCanvasDimensions();
+                        dimensionsSent = true;
+                    }
+                }
+
+                // Update output log
+                if (jsonData.log !== undefined) {
+                    updateOutputBox(jsonData.log);
+                }
+
+                return;
+            } catch (e) {
+                console.error("Error parsing WebSocket message:", e);
+                console.log("Raw message:", event.data);
+                return;
+            }
+        }
+
+        // Handle binary data (image)
         if (event.data instanceof Blob) {
-            // Binary data (image)
             console.log("Received binary data", event.data.size, "bytes");
 
             // Calculate response time
@@ -748,41 +932,63 @@ function initializeWebSocket() {
                 delete performanceMonitor.requestTimes[oldestRequestId];
             }
 
-            // Process the image data
-            event.data.arrayBuffer().then(buffer => {
-                processBinaryImage(buffer);
-
-                // Record response AFTER image is processed
-                throttleManager.recordResponse(responseTime);
-            });
-        } else {
-            // JSON data handling (unchanged)
+            // Process the image data - with browser compatibility
             try {
-                const jsonData = JSON.parse(event.data);
-                console.log("Received JSON data:", jsonData);
-
-                if (jsonData.log !== undefined) {
-                    updateOutputBox(jsonData.log);
-                }
-            } catch (e) {
-                console.error("Error parsing WebSocket message:", e);
-                console.log("Raw message:", event.data);
+                event.data.arrayBuffer().then(buffer => {
+                    if (buffer.byteLength > 0) {
+                        processBinaryImage(buffer);
+                        // Record response AFTER image is processed
+                        throttleManager.recordResponse(responseTime);
+                    } else {
+                        console.warn("Received empty binary data");
+                        // Still record response to avoid blocking
+                        throttleManager.recordResponse(responseTime);
+                    }
+                }).catch(error => {
+                    console.error("Error processing binary data:", error);
+                    throttleManager.recordResponse(responseTime);
+                    // Force a fresh image on error
+                    setTimeout(requestImage, 500);
+                });
+            } catch (error) {
+                console.error("Exception handling binary data:", error);
+                throttleManager.recordResponse(responseTime);
             }
         }
     };
 
-    // Connection events
+    // Connection events with exponential backoff for reconnection
     socket.onclose = function(event) {
         console.log('WebSocket connection closed:', event.code, event.reason);
-        // Attempt to reconnect after a delay
+        clearInterval(pingInterval);
+        dimensionsSent = false;
+
+        // Don't attempt reconnection if we've exceeded max attempts
+        if (connectionAttempts >= maxAttempts) {
+            console.error(`Failed to connect after ${maxAttempts} attempts.`);
+            updateOutputBox("Connection to server lost. Please refresh the page.");
+            return;
+        }
+
+        // Calculate delay with exponential backoff
+        const delay = baseRetryDelay * Math.pow(1.5, connectionAttempts);
+        connectionAttempts++;
+
+        console.log(`Attempting reconnection ${connectionAttempts}/${maxAttempts} in ${delay}ms...`);
+
+        // Update UI to show reconnection status
+        updateOutputBox(`Connection lost. Reconnecting (attempt ${connectionAttempts}/${maxAttempts})...`);
+
+        // Attempt to reconnect after the delay
         setTimeout(function() {
             console.log('Attempting to reconnect WebSocket...');
             initializeWebSocket();
-        }, 3000);
+        }, delay);
     };
 
     socket.onerror = function(error) {
         console.error('WebSocket error:', error);
+        // Let onclose handle reconnection
     };
 }
 

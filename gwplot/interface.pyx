@@ -423,7 +423,6 @@ cdef class Gw:
         self.thisptr.yPos_fb = y_pos
         self.thisptr.mouseButton(button, action, 0)
 
-
     @property
     def canvas_width(self) -> int:
         """

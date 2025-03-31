@@ -77,20 +77,17 @@ def cleanup_task():
         cleanup_old_sessions()
 
 
-# Define key mappings to send to GW
 keys = {
-    'ArrowRight': (GLFW.KEY_RIGHT, GLFW.get_key_scancode(GLFW.KEY_RIGHT), GLFW.PRESS, 0),
-    'ArrowLeft': (GLFW.KEY_LEFT, GLFW.get_key_scancode(GLFW.KEY_LEFT), GLFW.PRESS, 0),
-    'ArrowUp': (GLFW.KEY_UP, GLFW.get_key_scancode(GLFW.KEY_UP), GLFW.PRESS, 0),
-    'ArrowDown': (GLFW.KEY_DOWN, GLFW.get_key_scancode(GLFW.KEY_DOWN), GLFW.PRESS, 0),
-    'PageUp': (GLFW.KEY_PAGE_UP, GLFW.get_key_scancode(GLFW.KEY_PAGE_UP), GLFW.PRESS, 0),
-    'PageDown': (GLFW.KEY_PAGE_DOWN, GLFW.get_key_scancode(GLFW.KEY_PAGE_DOWN), GLFW.PRESS, 0),
-    'left': GLFW.MOUSE_BUTTON_LEFT,
-    'right': GLFW.MOUSE_BUTTON_RIGHT,
-    'press': GLFW.PRESS,
-    'release': GLFW.RELEASE,
-    'wheel_down': GLFW.KEY_UP,
-    'wheel_up': GLFW.KEY_DOWN,
+    'ArrowRight': (GLFW.KEY_RIGHT, GLFW.get_key_scancode(GLFW.KEY_RIGHT)),
+    'ArrowLeft': (GLFW.KEY_LEFT, GLFW.get_key_scancode(GLFW.KEY_LEFT)),
+    'ArrowUp': (GLFW.KEY_UP, GLFW.get_key_scancode(GLFW.KEY_UP)),
+    'ArrowDown': (GLFW.KEY_DOWN, GLFW.get_key_scancode(GLFW.KEY_DOWN)),
+    'PageUp': (GLFW.KEY_PAGE_UP, GLFW.get_key_scancode(GLFW.KEY_PAGE_UP)),
+    'PageDown': (GLFW.KEY_PAGE_DOWN, GLFW.get_key_scancode(GLFW.KEY_PAGE_DOWN)),
+    'left': (GLFW.MOUSE_BUTTON_LEFT, GLFW.get_key_scancode(GLFW.MOUSE_BUTTON_LEFT)),
+    'right': (GLFW.MOUSE_BUTTON_RIGHT, GLFW.get_key_scancode(GLFW.MOUSE_BUTTON_RIGHT)),
+    'wheel_down': (GLFW.KEY_UP, GLFW.get_key_scancode(GLFW.KEY_UP)),
+    'wheel_up': (GLFW.KEY_DOWN, GLFW.get_key_scancode(GLFW.KEY_DOWN)),
 }
 
 
@@ -291,31 +288,91 @@ manager = ConnectionManager()
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    print(f"WebSocket endpoint", flush=True)
     client_id = str(uuid.uuid4())
+
+    # Accept the connection before any other operations
     await manager.connect(websocket, client_id)
+
     try:
-        # Initialize instance and send first image
+        # Set reasonable ping interval to keep the connection alive
+        ping_interval = 20  # seconds
+        last_ping_time = time.time()
+
+        # Send initial empty response to confirm connection
+        await manager.send_json(client_id, {"status": "connected"})
+
+        # Wait for client to send dimensions before creating an instance
+        instance = None
+
         while True:
+            # Use a shorter timeout for receive_json to allow for periodic pings
+            current_time = time.time()
+            if current_time - last_ping_time > ping_interval:
+                # Send heartbeat ping to keep connection alive
+                await manager.send_json(client_id, {"type": "ping"})
+                last_ping_time = current_time
+
+            # Receive data with a timeout
             data = await websocket.receive_json()
+
+            # Handle ping response
+            if data.get("type") == "pong":
+                continue
+
+            # Process events based on type
             event_type = data.get("type")
-            if event_type == "dpr":
+
+            # Handle canvas size update - this should be the first real message we receive
+            if event_type == "update_canvas_size":
                 width = data.get("width", 800)
                 height = data.get("height", 500)
                 dpr = data.get("dpr", 1.0)
-                instance = get_or_create_gw_instance(client_id, width * dpr, height * dpr)
+
+                # Safari reports different DPR than other browsers sometimes
+                if dpr < 0.1 or dpr > 5.0:
+                    dpr = 2.0  # Fallback for unreasonable values
+
+                # Calculate physical dimensions
+                physical_width = int(width * dpr)
+                physical_height = int(height * dpr)
+
+                # Set minimum dimensions to prevent zero-sized canvas
+                physical_width = max(physical_width, 50)
+                physical_height = max(physical_height, 50)
+
+                # Create or get instance with the correct dimensions
+                instance = get_or_create_gw_instance(client_id, physical_width, physical_height)
+
                 if dpr > 1.0:
                     font_size = min(int(12 * min(dpr, 2.0)), 24)
                     instance.plot.set_font_size(font_size)
 
+                # Set the physical dimensions and refresh
+                instance.plot.set_canvas_size(physical_width, physical_height)
+                flush_gw_log(client_id)
+                instance.plot.apply_command("refresh")
+
+                # Generate and send the image
                 image_data = get_image(client_id)
                 await manager.send_binary(client_id, image_data)
                 await manager.send_json(client_id, {"log": "".join(instance.log)})
 
+            # For all other events, ensure we have an instance
+            elif instance is None:
+                # If no instance exists, request dimensions first
+                await manager.send_json(client_id, {
+                    "status": "error",
+                    "message": "Please send canvas dimensions first"
+                })
+
+            # Handle key events
             elif event_type == "key_event":
                 key = data.get("key")
                 if key in keys:
-                    instance = get_or_create_gw_instance(client_id)
-                    instance.plot.key_press(*keys[key])
+                    glfw_action = GLFW.PRESS if data.get("action", "press") == "press" else GLFW.RELEASE
+                    glfw_key, scancode = keys[key]
+                    instance.plot.key_press(glfw_key, scancode, glfw_action, 0)
                     flush_gw_log(client_id)
                     if instance.plot.clear_buffer or instance.plot.redraw:
                         image_data = get_image(client_id)
@@ -327,13 +384,21 @@ async def websocket_endpoint(websocket: WebSocket):
                 y_pos = data.get("y")
                 button = data.get("button")
                 action = data.get("action", "press")
-
-                if button in keys and action in keys:
-                    instance = get_or_create_gw_instance(client_id)
-                    instance.plot.mouse_event(x_pos, y_pos, keys[button], keys[action])
+                if button == "left":
+                    glfw_action = GLFW.PRESS if action == "press" else GLFW.RELEASE
+                    instance.plot.mouse_event(x_pos, y_pos, GLFW.MOUSE_BUTTON_LEFT, glfw_action)
                     flush_gw_log(client_id)
-
-                    if keys[action] == GLFW.RELEASE and (instance.plot.clear_buffer or instance.plot.redraw):
+                    if glfw_action == GLFW.RELEASE and (instance.plot.clear_buffer or instance.plot.redraw):
+                        image_data = get_image(client_id)
+                        await manager.send_binary(client_id, image_data)
+                        await manager.send_json(client_id, {"log": "".join(instance.log)})
+                elif button == "wheel_up" or button == "wheel_down":
+                    glfw_action = GLFW.PRESS if data.get("action", "press") == "press" else GLFW.RELEASE
+                    arrow_key = "ArrowUp" if button == "wheel_up" else "ArrowDown"
+                    glfw_key, scancode = keys[arrow_key]
+                    instance.plot.key_press(glfw_key, scancode, glfw_action, 0)
+                    flush_gw_log(client_id)
+                    if instance.plot.clear_buffer or instance.plot.redraw:
                         image_data = get_image(client_id)
                         await manager.send_binary(client_id, image_data)
                         await manager.send_json(client_id, {"log": "".join(instance.log)})
@@ -342,7 +407,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 width = data.get("width", 800)
                 height = data.get("height", 500)
                 dpr = data.get("dpr", 1.0)
-                instance = get_or_create_gw_instance(client_id)
                 # Calculate physical dimensions
                 physical_width = int(width * dpr)
                 physical_height = int(height * dpr)
@@ -360,7 +424,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
             elif event_type == "command":
                 user_input = data.get("command", "")
-                instance = get_or_create_gw_instance(client_id)
                 instance.plot.apply_command(user_input)
                 flush_gw_log(client_id)
 
@@ -372,21 +435,21 @@ async def websocket_endpoint(websocket: WebSocket):
                     await manager.send_json(client_id, {"log": "".join(instance.log)})
 
             elif event_type == "clear_output":
-                instance = get_or_create_gw_instance(client_id)
                 with instance_lock:
                     instance.log.clear()
                 await manager.send_json(client_id, {"log": ""})
 
             elif event_type == "refresh_image":
-                instance = get_or_create_gw_instance(client_id)
                 image_data = get_image(client_id)
                 await manager.send_binary(client_id, image_data)
                 await manager.send_json(client_id, {"log": "".join(instance.log)})
 
+
     except WebSocketDisconnect:
+        print(f"WebSocket disconnected for client {client_id}")
         manager.disconnect(client_id)
     except Exception as e:
-        print(f"WebSocket error: {e}")
+        print(f"WebSocket error for client {client_id}: {str(e)}")
         manager.disconnect(client_id)
 
 

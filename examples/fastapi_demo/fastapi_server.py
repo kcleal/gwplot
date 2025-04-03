@@ -1,12 +1,13 @@
 """
 This is a demo of using gwplot with FastAPI.
 
->>> uvicorn fastapi_server:app --reload
+>>> uvicorn fastapi_server:app --host 0.0.0.0 --port 80
 
 Or:
 
-granian --interface asgi --workers 4 --runtime-threads 4 fastapi_server:app
+>>> granian --interface asgi --workers 4 --runtime-threads 4 fastapi_server:app
 
+If deploying, use supervisor and nginx
 """
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Cookie, Depends
 from fastapi.responses import JSONResponse, HTMLResponse
@@ -49,7 +50,7 @@ def flush_gw_log(session_id):
                 gw_instances[session_id].log.append(log_output + "\n")
 
 
-def create_gw_instance(root, width, height):
+def create_gw_instance(root, width=800, height=500):
     """Create a new Gw instance with the provided arguments"""
     fa = root + "/tests/ref.fa"
     plot = Gw(fa, canvas_width=width, canvas_height=height, theme="slate", threads=1)

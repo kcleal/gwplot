@@ -76,7 +76,7 @@ cdef extern from "segments.h" namespace "Segs" nogil:
         Align(bam1_t *src)
         bam1_t *delegate
 
-    void align_init(Align *self, int parse_mods_threshold)
+    void align_init(Align *self, int parse_mods_threshold, bint add_clip_space)
     void align_clear(Align *self)
     void addToCovArray(vector[int] &arr, const Align &align, const uint32_t begin, const uint32_t end)
     int findY(ReadCollection &rc, vector[Align] &rQ, int linkType, IniOptions &opts, bint joinLeft, int sortReadsBy)

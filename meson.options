@@ -1,0 +1,5 @@
+option('old_skia',
+  type: 'boolean',
+  value: false,
+  description: 'Use old Skia version'
+)

@@ -1537,7 +1537,7 @@ cdef class Gw:
             if bam_ptr[0].core.flag & 4 or bam_ptr[0].core.n_cigar == 0:
                 continue
             readQueue[0].push_back(Align(bam_ptr))
-            align_init(&readQueue[0].back(), <bint>True)  # todo set parse_mods
+            align_init(&readQueue[0].back(), <bint>True, <bint>self.thisptr.opts.soft_clip_threshold > 0)  # todo set parse_mods
             if self.thisptr.opts.max_coverage > 0:
                 addToCovArray(self.thisptr.collections.back().covArr, readQueue[0].back(), start, end)
 

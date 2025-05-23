@@ -1,3 +1,0 @@
-include gwplot/libgw.*
-include gwplot/libskia.a
-include tests/*

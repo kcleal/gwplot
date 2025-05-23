@@ -3,10 +3,6 @@ This is a demo of using gwplot with FastAPI.
 
 >>> uvicorn fastapi_server:app --host 0.0.0.0 --port 80
 
-Or:
-
->>> granian --interface asgi --workers 4 --runtime-threads 4 fastapi_server:app
-
 If deploying, use supervisor and nginx
 """
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Cookie, Depends

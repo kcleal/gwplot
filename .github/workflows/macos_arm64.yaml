@@ -42,6 +42,13 @@ jobs:
           python -m pip install build wheel delocate meson-python cython
           python -m pip install numpy pysam
 
+      - name: Build libgw
+        run: |
+          cd gw
+          make prep
+          make shared -j4
+          cd ../
+
       - name: Build wheel file
         run: |
           pip wheel . --wheel-dir dist --no-build-isolation -v

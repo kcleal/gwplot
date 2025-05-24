@@ -19,6 +19,7 @@ jobs:
           CIBW_BUILD: "cp310-manylinux* cp311-manylinux* cp312-manylinux* cp313-manylinux*"
 
           CIBW_ENVIRONMENT: |
+            OLD_SKIA=0
             BUILD_FREETYPE=1
             CPPFLAGS="-I/usr/local/include"
             LDFLAGS="-L/usr/local/lib"

@@ -4,11 +4,11 @@ on: workflow_dispatch #[push, pull_request]
 
 jobs:
   build_macOS_arm64:
-    runs-on: macos-14
+    runs-on: macos-15
     env:
-      _PYTHON_HOST_PLATFORM: "macosx-14.0-arm64"
+      _PYTHON_HOST_PLATFORM: "macosx-15.0-arm64"
       ARCHFLAGS: "-arch arm64"
-      MACOSX_DEPLOYMENT_TARGET: "14.0"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
     strategy:
       matrix:
         python-version: [ '3.9', '3.10', '3.11', '3.12', '3.13' ]
@@ -44,10 +44,18 @@ jobs:
 
       - name: Build libgw
         run: |
-          cd gw
-          make prep
-          make shared -j4
-          cd ../
+          cd ./gw
+          make prep > /dev/null 2>&1
+          CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
+
+          cp libgw/*.* $(brew --prefix)/lib
+          cp libgw/libskia.a ../gwplot/
+          cp -rf libgw/GW $(brew --prefix)/include
+          cd ..
+          ls $(brew --prefix)/include/GW
+          ls -lh $(brew --prefix)/lib/libgw*
+          ls -lh $(brew --prefix)/lib/libskia.a
+          ls -lh ./gwplot
 
       - name: Build wheel file
         run: |

@@ -1,3 +1,8 @@
+option('prefix_path',
+  type: 'string',
+  value: '',
+  description: 'Custom prefix path for include/lib directories (overrides auto-detection)'
+)
 option('old_skia',
   type: 'boolean',
   value: false,

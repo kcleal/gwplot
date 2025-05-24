@@ -7,25 +7,23 @@ project('gwplot', 'c', 'cpp', 'cython',
   meson_version: '>=1.1.0'
 )
 
-# -----------------------------------------------------------------------------
+
 # Python
 # -----------------------------------------------------------------------------
 py = import('python').find_installation(pure: false)
 py_dep = py.dependency()
 
-# -----------------------------------------------------------------------------
+
 # System / environment detection
 # -----------------------------------------------------------------------------
 system   = host_machine.system()
 old_skia = get_option('old_skia')
-
-# Build-script environment variables
 build_env = environment()
 build_env.set('MESON_SOURCE_ROOT', meson.current_source_dir())
 build_env.set('MESON_BUILD_ROOT',  meson.current_build_dir())
 build_env.set('OLD_SKIA',          old_skia.to_string())
 
-# -----------------------------------------------------------------------------
+
 # Paths
 # -----------------------------------------------------------------------------
 fs              = import('fs')
@@ -52,18 +50,8 @@ if not fs.exists(gw_lib_dir)
   run_command('mkdir', ['-p', gw_lib_include_dir], check: true)
 endif
 
-# -----------------------------------------------------------------------------
-# Include directories
-# -----------------------------------------------------------------------------
-inc_dirs = include_directories('gwplot')
 
-gw_inc = [
-  include_directories('gw/libgw'),
-  include_directories('gw/libgw/GW'),
-]
-
-# -----------------------------------------------------------------------------
-# Build gw library via custom target
+# Build libgw library via custom target
 # -----------------------------------------------------------------------------
 build_gw_py = files('build_gw.py')
 libgw_stamp = custom_target('build_gw',
@@ -73,10 +61,9 @@ libgw_stamp = custom_target('build_gw',
   build_by_default: true,
 )
 
+
+# Python header dependencies
 # -----------------------------------------------------------------------------
-# Dependencies
-# -----------------------------------------------------------------------------
-#   – Python-level deps
 numpy_dep = dependency('numpy')
 
 #   – pysam include folders
@@ -96,31 +83,28 @@ foreach inc : pysam_inc_cmd.stdout().strip().split(':')
   endif
 endforeach
 
-# -----------------------------------------------------------------------------
-# libgw dependency object (for consumers)
-# -----------------------------------------------------------------------------
-libgw_dep = declare_dependency(
-  link_args: ['-L' + gw_lib_dir, '-lgw', '-lskia', '-L' + gw_source_dir / 'lib/skia'],
-  include_directories: gw_inc,
-)
 
+# Extra include/lib search prefixes for Homebrew / conda
 # -----------------------------------------------------------------------------
-# Extra include/lib search prefixes (Homebrew, conda, …)
-# -----------------------------------------------------------------------------
-sys_prefix = ''
-if fs.exists('/opt/homebrew')
-  sys_prefix = '/opt/homebrew'
-elif fs.exists('/usr/local')
-  sys_prefix = '/usr/local'
+custom_prefix = get_option('prefix_path')
+
+if custom_prefix != ''
+  sys_prefix = custom_prefix
+else
+  prefix_candidates = [
+    '/opt/homebrew',
+    '/usr/local',
+    run_command('sh', ['-c', 'echo $CONDA_PREFIX'], check: false).stdout().strip(),
+    run_command('sh', ['-c', 'echo $PREFIX'], check: false).stdout().strip(),
+  ]
+  sys_prefix = ''
+  foreach candidate : prefix_candidates
+    if candidate != '' and fs.exists(candidate)
+      sys_prefix = candidate
+      break
+    endif
+  endforeach
 endif
-
-foreach var : ['CONDA_PREFIX', 'PREFIX']
-  env_prefix = run_command('sh', ['-c', 'echo $' + var], check: false).stdout().strip()
-  if env_prefix != '' and fs.exists(env_prefix)
-    sys_prefix = env_prefix
-    break
-  endif
-endforeach
 
 extra_inc_dirs = []
 extra_lib_dirs = []
@@ -133,7 +117,7 @@ if sys_prefix != ''
   endif
 endif
 
-# -----------------------------------------------------------------------------
+
 # Compiler / linker flags
 # -----------------------------------------------------------------------------
 cpp_args = [
@@ -162,20 +146,48 @@ if system == 'darwin'
   ]
 endif
 
+skia_archive = gw_lib_dir / 'libskia.a'
+if system == 'darwin'
+  skia_link = ['-Wl,-force_load,' + skia_archive]
+else
+  skia_link = ['-Wl,--whole-archive', skia_archive,
+               '-Wl,--no-whole-archive']
+endif
+link_args += skia_link
+
 # Runtime search path for libgw at import time
 rpath_dirs = system == 'darwin' ? ['@loader_path', '@loader_path/.'] : ['$ORIGIN', '$ORIGIN/.']
 
+
+# GLFW
 # -----------------------------------------------------------------------------
+glfw_dep = dependency('glfw', required: true)
+
+
+# libgw dependency object
+# -----------------------------------------------------------------------------
+gw_inc = [
+  include_directories('gw/libgw'),
+  include_directories('gw/libgw/GW'),
+]
+libgw_dep = declare_dependency(
+  link_args: ['-L' + gw_lib_dir, '-lgw'],
+  include_directories: gw_inc,
+  dependencies: [glfw_dep],
+)
+
+
 # Cython
 # -----------------------------------------------------------------------------
 cython = find_program('cython3', 'cython', required: true)
 
-# -----------------------------------------------------------------------------
+
 # gwplot extension modules
 # -----------------------------------------------------------------------------
+inc_dirs = include_directories('gwplot')
+
 foreach ext : ['glfw_interface', 'interface']
   pyx_file = files('gwplot' / ext + '.pyx')
-
   cpp_file = custom_target(
     ext + '_cpp',
     input:  pyx_file,
@@ -186,7 +198,7 @@ foreach ext : ['glfw_interface', 'interface']
   py.extension_module(ext,
     cpp_file,                    # generated C++ from Cython
     libgw_stamp,                 # order-only dependency (headers & lib)
-    dependencies: [py_dep, numpy_dep, libgw_dep],
+    dependencies: [py_dep, numpy_dep, libgw_dep, glfw_dep],
     include_directories: [inc_dirs] + pysam_inc_dirs + gw_inc + extra_inc_dirs,
     cpp_args: cpp_args,
     link_args: link_args,
@@ -198,28 +210,22 @@ foreach ext : ['glfw_interface', 'interface']
   )
 endforeach
 
-# -----------------------------------------------------------------------------
+
 # Install pure-Python bits
 # -----------------------------------------------------------------------------
 py.install_sources('gwplot/__init__.py', subdir: 'gwplot')
-
 foreach pxd : ['gwplot/interface.pxd', 'gwplot/glfw_interface.pxd']
   if fs.exists(pxd)
     py.install_sources(pxd, subdir: 'gwplot')
   endif
 endforeach
 
-# -----------------------------------------------------------------------------
-# Post-install: copy the shared library next to the Python package
-# -----------------------------------------------------------------------------
-install_script = '''
-import shutil, os
-from pathlib import Path
-src  = Path("@0@")
-dest = Path("@1@") / "gwplot" / src.name
-print(f"Installing {src} → {dest}")
-dest.parent.mkdir(parents=True, exist_ok=True)
-shutil.copy2(src, dest)
-'''.format(libgw_path, py.get_install_dir())
 
-meson.add_install_script('python3', '-c', install_script)
+# Runtime libraries
+# -----------------------------------------------------------------------------
+install_data(libgw_path,
+             install_dir: py.get_install_dir() / 'gwplot')
+
+install_data(gw_lib_dir / 'libskia.a',
+             install_dir: py.get_install_dir() / 'gwplot')
+

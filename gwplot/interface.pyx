@@ -284,7 +284,7 @@ cdef class Gw:
         except Exception as e:
             return f"Gw(<error: {str(e)}>)"
 
-    def __enter__(self) -> 'Gw':
+    def __enter__(self):
         """
         Enter the runtime context for the Gw object.
 
@@ -346,7 +346,7 @@ cdef class Gw:
             "saccer3": f"{base}/sacCer3.fa.gz"
         }
 
-    def glfw_init(self) -> 'Gw':
+    def glfw_init(self):
         """
         Initialise GLFW backend.
 
@@ -435,7 +435,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.dimensions.x
 
-    def set_canvas_width(self, width: int) -> 'Gw':
+    def set_canvas_width(self, width: int):
         """
         Set the canvas width and recreate the raster surface.
 
@@ -466,7 +466,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.dimensions.y
 
-    def set_canvas_height(self, height: int) -> 'Gw':
+    def set_canvas_height(self, height: int):
         """
         Set the canvas height and recreate the raster surface.
 
@@ -497,7 +497,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.dimensions.x, self.thisptr.opts.dimensions.y
 
-    def set_canvas_size(self, width: int, height: int) -> 'Gw':
+    def set_canvas_size(self, width: int, height: int):
         """
         Set both canvas width and height and recreate the raster surface.
 
@@ -532,7 +532,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.font_size
 
-    def set_font_size(self, size: int) -> 'Gw':
+    def set_font_size(self, size: int):
         """
         Set the font size.
 
@@ -564,7 +564,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.font_str
 
-    def set_font_name(self, name: str) -> 'Gw':
+    def set_font_name(self, name: str):
         """
         Set the font name.
 
@@ -594,7 +594,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.theme.name
 
-    def set_theme(self, theme_name: str) -> 'Gw':
+    def set_theme(self, theme_name: str):
         """
         Set a predefined visualisation theme.
 
@@ -619,7 +619,7 @@ cdef class Gw:
         self.thisptr.opts.theme.setAlphas()
         return self
 
-    def apply_theme(self, theme_dict: Dict[int, Tuple[int, int, int, int]]) -> 'Gw':
+    def apply_theme(self, theme_dict: Dict[int, Tuple[int, int, int, int]]):
         """
         Apply a custom theme using a dictionary of paint types and colors.
 
@@ -647,7 +647,7 @@ cdef class Gw:
             self.set_paint_ARBG(paint_type, a, r, g, b)
         return self
 
-    def load_theme_from_json(self, filepath: str) -> 'Gw':
+    def load_theme_from_json(self, filepath: str):
         """
         Load and apply a theme from a JSON file.
 
@@ -708,7 +708,7 @@ cdef class Gw:
 
         return self.apply_theme(theme_dict)
 
-    def save_theme_to_json(self, filepath: str) -> 'Gw':
+    def save_theme_to_json(self, filepath: str):
         """
         Save the current theme settings to a JSON file.
 
@@ -770,7 +770,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.threads
 
-    def set_threads(self, threads: int) -> 'Gw':
+    def set_threads(self, threads: int):
         """
         Set the number of threads for data processing.
 
@@ -799,7 +799,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.indel_length
 
-    def set_indel_length(self, indel_length: int) -> 'Gw':
+    def set_indel_length(self, indel_length: int):
         """
         Set the indel length threshold for visualisation. Indels with length greater than
         this threshold will be labelled with text.
@@ -829,7 +829,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.ylim
 
-    def set_ylim(self, ylim: int) -> 'Gw':
+    def set_ylim(self, ylim: int):
         """
         Set the y-axis limit for visualisation.
 
@@ -858,7 +858,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.split_view_size
 
-    def set_split_view_size(self, split_view_size: int) -> 'Gw':
+    def set_split_view_size(self, split_view_size: int):
         """
         Set the split view size for multi-region visualisation.
 
@@ -887,7 +887,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.pad
 
-    def set_pad(self, pad: int) -> 'Gw':
+    def set_pad(self, pad: int):
         """
         Set the padding between elements in visualisation.
 
@@ -917,7 +917,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.max_coverage
 
-    def set_max_coverage(self, max_coverage: int) -> 'Gw':
+    def set_max_coverage(self, max_coverage: int):
         """
         Get the maximum coverage for calculating coverage track.
         Note, se ylim to set the display coverage value.
@@ -947,7 +947,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.max_tlen
 
-    def set_max_tlen(self, max_tlen: int) -> 'Gw':
+    def set_max_tlen(self, max_tlen: int):
         """
         Set the maximum template length tlen-y mode for paired reads.
 
@@ -976,7 +976,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.log2_cov
 
-    def set_log2_cov(self, log2_cov: bool) -> 'Gw':
+    def set_log2_cov(self, log2_cov: bool):
         """
         Set whether to use log2 scale for coverage display.
 
@@ -1005,7 +1005,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.tlen_yscale
 
-    def set_tlen_yscale(self, tlen_yscale: bool) -> 'Gw':
+    def set_tlen_yscale(self, tlen_yscale: bool):
         """
         Set the scaling factor for template length on the y-axis.
 
@@ -1034,7 +1034,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.expand_tracks
 
-    def set_expand_tracks(self, expand_tracks: bool) -> 'Gw':
+    def set_expand_tracks(self, expand_tracks: bool):
         """
         Set whether to expand data tracks in the visualisation.
 
@@ -1063,7 +1063,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.vcf_as_tracks
 
-    def set_vcf_as_tracks(self, vcf_as_tracks: bool) -> 'Gw':
+    def set_vcf_as_tracks(self, vcf_as_tracks: bool):
         """
         Set whether to display VCF files as tracks.
 
@@ -1092,7 +1092,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.sv_arcs
 
-    def set_sv_arcs(self, sv_arcs: bool) -> 'Gw':
+    def set_sv_arcs(self, sv_arcs: bool):
         """
         Set whether to display structural variants as arcs.
 
@@ -1121,7 +1121,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.scroll_speed
 
-    def set_scroll_speed(self, scroll_speed: float) -> 'Gw':
+    def set_scroll_speed(self, scroll_speed: float):
         """
         Set the scroll speed for navigation.
 
@@ -1150,7 +1150,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.tab_track_height
 
-    def set_tab_track_height(self, tab_track_height: float) -> 'Gw':
+    def set_tab_track_height(self, tab_track_height: float):
         """
         Set the height of track tabs in the visualisation.
 
@@ -1179,7 +1179,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.start_index
 
-    def set_start_index(self, start_index: int) -> 'Gw':
+    def set_start_index(self, start_index: int):
         """
         Set the start index for genome coordinates (0 or 1-based).
 
@@ -1208,7 +1208,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.soft_clip_threshold
 
-    def set_soft_clip_threshold(self, soft_clip_threshold: int) -> 'Gw':
+    def set_soft_clip_threshold(self, soft_clip_threshold: int):
         """
         Set the threshold for highlighting soft-clipped reads (in base-pairs).
 
@@ -1237,7 +1237,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.small_indel_threshold
 
-    def set_small_indel_threshold(self, small_indel_threshold: int) -> 'Gw':
+    def set_small_indel_threshold(self, small_indel_threshold: int):
         """
         Set the threshold for classifying small indels (in base-pairs).
 
@@ -1266,7 +1266,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.snp_threshold
 
-    def set_snp_threshold(self, snp_threshold: int) -> 'Gw':
+    def set_snp_threshold(self, snp_threshold: int):
         """
         Set the threshold for SNP display and highlighting (in base-pairs).
 
@@ -1296,7 +1296,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.variant_distance
 
-    def set_variant_distance(self, variant_distance: int) -> 'Gw':
+    def set_variant_distance(self, variant_distance: int):
         """
         Set the variant distance threshold (in base-pairs). When fetching data from
         indexed tracks this threshold determines how much padding is added to each side.
@@ -1326,7 +1326,7 @@ cdef class Gw:
         """
         return self.thisptr.opts.low_memory
 
-    def set_low_memory(self, low_memory: int) -> 'Gw':
+    def set_low_memory(self, low_memory: int):
         """
         Set the distance threshold - regions larger than this threshold will be drawn using
         low_memory mode, and no reads will be held in memory.
@@ -1344,7 +1344,7 @@ cdef class Gw:
         self.thisptr.opts.low_memory = low_memory
         return self
 
-    def set_image_number(self, x: int, y: int) -> 'Gw':
+    def set_image_number(self, x: int, y: int):
         """
         Set the grid dimensions for image view.
 
@@ -1364,7 +1364,7 @@ cdef class Gw:
         self.thisptr.opts.number.y = y
         return self
 
-    def set_paint_ARBG(self, paint_enum: int, a: int, r: int, g: int, b: int) -> 'Gw':
+    def set_paint_ARBG(self, paint_enum: int, a: int, r: int, g: int, b: int):
         """
         Set the ARGB color for a specific paint type.
 
@@ -1395,7 +1395,7 @@ cdef class Gw:
         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
         return self
 
-    def set_active_region_index(self, index: int) -> 'Gw':
+    def set_active_region_index(self, index: int):
         """
         Set the currently active region for visualisation.
 
@@ -1435,7 +1435,7 @@ cdef class Gw:
         self.clear_alignments()
         self.clear_regions()
 
-    def add_bam(self, path: str) -> 'Gw':
+    def add_bam(self, path: str):
         """
         Add a BAM file to the visualisation.
 
@@ -1456,7 +1456,7 @@ cdef class Gw:
 
     def add_pysam_alignments(self, pysam_alignments: List['AlignedSegment'],
                             region_index: int = -1,
-                            bam_index: int = -1) -> 'Gw':
+                            bam_index: int = -1):
         """
         Adds alignments from a pysam list to a region. Creates a raster surface if needed. Calls clear_alignments
         if non-pysam collections in use
@@ -1550,7 +1550,7 @@ cdef class Gw:
 
         return self
 
-    def remove_bam(self, index: int) -> 'Gw':
+    def remove_bam(self, index: int):
         """
         Remove a BAM file from the visualisation.
 
@@ -1568,7 +1568,7 @@ cdef class Gw:
         return self
 
     def add_track(self, path: str, vcf_as_track: bool = True,
-                 bed_as_track: bool = True) -> 'Gw':
+                 bed_as_track: bool = True):
         """
         Add a genomic data track to the visualisation.
 
@@ -1591,7 +1591,7 @@ cdef class Gw:
         self.thisptr.addTrack(b, <bint>False, vcf_as_track, bed_as_track)
         return self
 
-    def remove_track(self, index: int) -> 'Gw':
+    def remove_track(self, index: int):
         """
         Remove a data track from the visualisation.
 
@@ -1610,7 +1610,7 @@ cdef class Gw:
 
     def add_region(self, chrom: str, start: int, end: int,
                   marker_start: int = -1,
-                  marker_end: int = -1) -> 'Gw':
+                  marker_end: int = -1):
         """
         Add a genomic region for visualisation.
 
@@ -1644,7 +1644,7 @@ cdef class Gw:
         self.thisptr.resetCollectionRegionPtrs()
         return self
 
-    def remove_region(self, index: int) -> 'Gw':
+    def remove_region(self, index: int):
         """
         Remove a genomic region from the visualisation.
 
@@ -1694,7 +1694,7 @@ cdef class Gw:
     #todo
     # scroll_left, scroll_right, zoom_out, zoom_in
     # click screen
-    def make_raster_surface(self, width: int = -1, height: int = -1) -> 'Gw':
+    def make_raster_surface(self, width: int = -1, height: int = -1):
         """
         Create a raster surface for rendering.
 
@@ -1726,7 +1726,7 @@ cdef class Gw:
         self.raster_surface_created = True
         return self
 
-    def save_png(self, path: str) -> 'Gw':
+    def save_png(self, path: str):
         """
         Draws and saves the raster canvas to a PNG file.
 
@@ -1750,7 +1750,7 @@ cdef class Gw:
         self.thisptr.redraw = <bint>True  # Don't block further interactions
         return self
 
-    def save_pdf(self, path: str) -> 'Gw':
+    def save_pdf(self, path: str):
         """
         Draws and saves a PDF file using the current configuration.
 
@@ -1769,7 +1769,7 @@ cdef class Gw:
         self.thisptr.redraw = <bint> True  # Don't block further interactions
         return self
 
-    def save_svg(self, path: str) -> 'Gw':
+    def save_svg(self, path: str):
         """
         Saves an SVG file using the current configuration.
 
@@ -1788,7 +1788,7 @@ cdef class Gw:
         self.thisptr.redraw = <bint> True  # Don't block further interactions
         return self
 
-    def draw(self, clear_buffer: bool = False) -> 'Gw':
+    def draw(self, clear_buffer: bool = False):
         """
         Draw the visualisation to the raster surface. Caches state for using with interactive functions.
 
@@ -1836,7 +1836,7 @@ cdef class Gw:
             raise ImportError("Pillow could not be imported")
         self.draw_image().show()
 
-    def view_region(self, chrom: str, start: int, end: int) -> 'Gw':
+    def view_region(self, chrom: str, start: int, end: int):
         """
         Clear existing regions and view a specific genomic region.
 

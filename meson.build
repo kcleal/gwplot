@@ -161,10 +161,7 @@ rpath_dirs = system == 'darwin' ? ['@loader_path', '@loader_path/.'] : ['$ORIGIN
 
 # GLFW
 # -----------------------------------------------------------------------------
-glfw_dep = dependency('glfw3', required: false)
-if not glfw_dep.found()
-  glfw_dep = dependency('glfw', required: true)
-endif
+glfw_dep = dependency(['glfw3', 'glfw'], required: true)
 
 
 # libgw dependency object

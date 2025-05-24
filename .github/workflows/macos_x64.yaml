@@ -29,12 +29,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: Install build dependencies
         run: |
-          brew update
-          brew upgrade
-          brew --prefix
           brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
+          brew install meson ninja
+          python -m pip install build wheel delocate meson-python cython
+          python -m pip install numpy pysam
 
       - name: Checkout gw
         run: |
@@ -59,12 +59,6 @@ jobs:
           ls -lh $(brew --prefix)/lib/libgw*
           ls -lh $(brew --prefix)/lib/libskia.a
           ls -lh ./gwplot
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install wheel setuptools delocate
-          python -m pip install -r requirements.txt
 
       - name: Build wheel file
         run: |

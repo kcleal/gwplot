@@ -9,6 +9,8 @@ jobs:
       _PYTHON_HOST_PLATFORM: "macosx-15.0-arm64"
       ARCHFLAGS: "-arch arm64"
       MACOSX_DEPLOYMENT_TARGET: "15.0"
+      CPPFLAGS: "-I/usr/local/include"
+      LDFLAGS: "-L/usr/local/lib"
     strategy:
       matrix:
         python-version: [ '3.9', '3.10', '3.11', '3.12', '3.13' ]
@@ -26,7 +28,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Checkout gw submodule
+      - name: Install build dependencies
+        run: |
+          brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
+          brew install meson ninja
+          python -m pip install build wheel delocate meson-python cython
+          python -m pip install numpy pysam
+
+      - name: Checkout gw
         run: |
           git submodule init
           git submodule update
@@ -35,19 +44,12 @@ jobs:
           git branch
           cd ../
 
-      - name: Install build dependencies
-        run: |
-          brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
-          brew install meson ninja
-          python -m pip install build wheel delocate meson-python cython
-          python -m pip install numpy pysam
-
-      - name: Build libgw
+      - name: Build gw submodule
         run: |
           cd ./gw
           make prep > /dev/null 2>&1
           CPPFLAGS+="-I$(brew --prefix)/include" LDFLAGS+="-L$(brew --prefix)/lib" make shared -j3
-
+          echo "LibGW compiled"
           cp libgw/*.* $(brew --prefix)/lib
           cp libgw/libskia.a ../gwplot/
           cp -rf libgw/GW $(brew --prefix)/include
@@ -59,35 +61,29 @@ jobs:
 
       - name: Build wheel file
         run: |
-          pip wheel . --wheel-dir dist --no-build-isolation -v
+          CPPFLAGS+="-I$(brew --prefix)/include -I$(brew --prefix)/include/GW" LDFLAGS+="-L$(brew --prefix)/lib" pip wheel . --wheel-dir dist
 
       - name: Delocate wheel file
         run: |
-          delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
+          DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$(brew --prefix)/lib" delocate-wheel --require-archs arm64 -w dist -v dist/*.whl
 
       - name: Install and test wheel
         run: |
           mkdir -p test_env
           cd test_env
           cp ../dist/gwplot*.whl .
-
           python -m wheel unpack gwplot*.whl --dest wheel_contents
           echo "Unpacked wheel contents:"
           ls -Ra wheel_contents
-
           echo "Checking interface.so dependencies:"
           otool -L wheel_contents/gwplot-*/gwplot/interface.*.so
-
           echo "Checking libgw dependencies:"
-          otool -L wheel_contents/gwplot-*/gwplot/libgw.*dylib
-
+          otool -L wheel_contents/gwplot-*/gwplot/.dylibs/libgw.*dylib
           PYTHON_VERSION=${{ matrix.python-version }}
           PYTHON_VERSION_NO_DOT=$(echo $PYTHON_VERSION | tr -d '.')
           python${PYTHON_VERSION} -m venv .venv
           source .venv/bin/activate
-
           python -m pip install *cp${PYTHON_VERSION_NO_DOT}*.whl
-
           python -c "import gwplot"
 
       - name: Archive wheel files

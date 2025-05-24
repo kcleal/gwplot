@@ -161,7 +161,19 @@ rpath_dirs = system == 'darwin' ? ['@loader_path', '@loader_path/.'] : ['$ORIGIN
 
 # GLFW
 # -----------------------------------------------------------------------------
-glfw_dep = dependency(['glfw3', 'glfw'], required: true)
+glfw_dep = dependency(['glfw3', 'glfw'], required: false)
+glfw_manual_link = []
+if not glfw_dep.found()
+  cc = meson.get_compiler('c')
+  if cc.find_library('glfw3', required: false).found()
+    glfw_manual_link = ['-lglfw3']
+  elif cc.find_library('glfw', required: false).found()
+    glfw_manual_link = ['-lglfw']
+  else
+    error('GLFW library not found. Please install glfw3 or glfw development packages.')
+  endif
+  link_args += glfw_manual_link
+endif
 
 
 # libgw dependency object
@@ -228,4 +240,3 @@ install_data(libgw_path,
 
 install_data(gw_lib_dir / 'libskia.a',
              install_dir: py.get_install_dir() / 'gwplot')
-

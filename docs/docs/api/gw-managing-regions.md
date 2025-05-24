@@ -106,19 +106,48 @@ gw.view_region("chr1", 1000000, 1100000)
 
 ---
 
-## set_active_region_index
+## add_pysam_alignments
 
 <div class="ml-6" markdown="1">
 
-`set_active_region_index(index: int) -> 'Gw'`
+`add_pysam_alignments(self, pysam_alignments: List['AlignedSegment'],
+                            region_index: int = -1,
+                            bam_index: int = -1) -> 'Gw'`
 
-Set the currently active region for visualisation.
+Add a list of pysam alignments to Gw. Before using this function, you must add a
+at least one region to Gw using `add_region` function, and a bam/cram file using `add_bam`.
+
+Internally, the bam1_t data pointer is passed straight to Gw, so no copies made during drawing.
+However, this means input pysam_alignments must 'outlive' any drawing calls made by Gw.
+
+If using multiple regions or bams, use the `region_index` and `bam_index` arguments to 
+indicate which panel to use for drawing the pysam alignment.
+
+Note, this function assumes alignments are in position sorted order.
 
 **Parameters:**
-- `index` (int): Index of the region to activate
+- `pysam_alignments` List['AlignedSegment']: List of alignments
+- `region_index` (int): Region index to draw to (the column on the canvas)
+- `bam_index` (int): Bam index to draw to (the row on the canvas)
 
 **Returns:**
 - `Gw`: Self for method chaining
+
+**Example:**
+```python
+from gwplot import Gw
+import pysam
+
+region1 = ("chr1", 1, 20000)
+gw = Gw("ref.fa").add_bam("small.bam").add_region(*region1)
+
+# Use pysam to fetch some alignments
+af = pysam.AlignmentFile("small.bam")
+aligns = list(af.fetch(*region1))
+
+gw.add_pysam_alignments(aligns)
+gw.show()
+```
 
 </div>
 
@@ -143,6 +172,19 @@ Remove all data.
 `clear_regions() -> None`
 
 Remove all defined genomic regions.
+
+</div>
+
+---
+
+## draw_background
+
+<div class="ml-6" markdown="1">
+
+`draw_background() -> None`
+
+Draws the background colour. Can be useful for clearing the canvas without removing 
+the underlying data.
 
 </div>
 

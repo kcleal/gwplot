@@ -1419,6 +1419,9 @@ cdef class Gw:
         """
         self.thisptr.clearCollections()
         self.force_buffered_reads = <bint>False
+        self.thisptr.redraw = <bint>True
+        self.thisptr.processed = <bint>False
+        self.thisptr.clearImageCacheQueue()
 
     def clear_regions(self) -> None:
         """
@@ -1427,6 +1430,7 @@ cdef class Gw:
         cdef size_t i
         for i in range(self.thisptr.regions.size()):
             self.remove_region(i)
+        self.thisptr.clearImageCacheQueue()
 
     def clear(self) -> None:  #todo this is incomplete: tracks, variant files
         """
@@ -1434,6 +1438,14 @@ cdef class Gw:
         """
         self.clear_alignments()
         self.clear_regions()
+        self.thisptr.clearImageCacheQueue()
+
+    def draw_background(self) -> None:
+        """
+        Draws the background colour
+        """
+        self.thisptr.drawBackground()
+
 
     def add_bam(self, path: str):
         """
@@ -1458,8 +1470,8 @@ cdef class Gw:
                             region_index: int = -1,
                             bam_index: int = -1):
         """
-        Adds alignments from a pysam list to a region. Creates a raster surface if needed. Calls clear_alignments
-        if non-pysam collections in use
+        Adds alignments from a pysam list to a region. Alignments are assumed to be sorted by
+        position. Creates a raster surface if needed.
 
         Parameters
         ----------
@@ -1479,20 +1491,16 @@ cdef class Gw:
         ------
         IndexError
             If the region_index or bam_index are out of range
-        UserWarning
+        RuntimeError
             If any normal collections are already present in the Gw object
         """
 
         if not self.raster_surface_created:
             self.make_raster_surface()
-        cdef bint needs_clearing = <bint>False
+
         for i in range(self.thisptr.collections.size()):
-            if not self.thisptr.collections[i].ownsBamPtrs:
-                needs_clearing = <bint>True
-                break
-        if needs_clearing:
-            self.clear_alignments()
-            raise UserWarning("Can not mix pysam collections with normal collections. Current collections have been cleared")
+            if self.thisptr.collections[i].ownsBamPtrs:
+                raise RuntimeError("Can not mix pysam collections with normal collections")
 
         if self.thisptr.sizeOfBams() == 0:
             raise IndexError("Add a bam/cram file first")
@@ -1661,7 +1669,7 @@ cdef class Gw:
         self.thisptr.removeRegion(index)
         return self
 
-    def apply_command(self, command: str) -> None:
+    def apply_command(self, command: str):
         """
         Apply a GW command string.
 
@@ -1674,6 +1682,7 @@ cdef class Gw:
         cdef string c = command.encode("utf-8")
         self.thisptr.inputText = c
         self.thisptr.commandProcessed()
+        return self
 
     def key_press(self, key: int, scancode: int, action: int, mods: int) -> None:
         """

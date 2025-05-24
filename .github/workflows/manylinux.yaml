@@ -20,6 +20,7 @@ jobs:
 
           CIBW_ENVIRONMENT: |
             OLD_SKIA=1
+            BUILD_FREETYPE=1
             CXXFLAGS+=" -D OLD_SKIA "
             CPPFLAGS="-I/usr/local/include"
             LDFLAGS="-L/usr/local/lib"

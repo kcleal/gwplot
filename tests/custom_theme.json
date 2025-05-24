@@ -1,0 +1,278 @@
+{
+  "BACKGROUND": [
+    255,
+    240,
+    0,
+    240
+  ],
+  "BACKGROUND_MENU": [
+    255,
+    0,
+    0,
+    0
+  ],
+  "BACKGROUND_TILED": [
+    255,
+    40,
+    0,
+    40
+  ],
+  "BIGWIG": [
+    255,
+    20,
+    0,
+    190
+  ],
+  "COVERAGE": [
+    255,
+    95,
+    0,
+    105
+  ],
+  "DELETION": [
+    255,
+    255,
+    0,
+    0
+  ],
+  "DELETION_MQ0": [
+    102,
+    185,
+    0,
+    25
+  ],
+  "DUPLICATION": [
+    255,
+    24,
+    0,
+    198
+  ],
+  "DUPLICATION_MQ0": [
+    102,
+    24,
+    0,
+    198
+  ],
+  "HYDROXYMETHYLATED_C": [
+    227,
+    215,
+    0,
+    23
+  ],
+  "INSERTION": [
+    255,
+    158,
+    0,
+    250
+  ],
+  "INVERSION_FORWARD": [
+    255,
+    49,
+    0,
+    118
+  ],
+  "INVERSION_FORWARD_MQ0": [
+    102,
+    49,
+    0,
+    118
+  ],
+  "INVERSION_REVERSE": [
+    255,
+    49,
+    0,
+    0
+  ],
+  "INVERSION_REVERSE_MQ0": [
+    102,
+    49,
+    0,
+    0
+  ],
+  "LINE_BRIGHT": [
+    255,
+    255,
+    0,
+    255
+  ],
+  "LINE_COVERAGE": [
+    255,
+    162,
+    0,
+    192
+  ],
+  "LINE_GTF_JOINS": [
+    255,
+    50,
+    0,
+    80
+  ],
+  "LINE_JOINS": [
+    255,
+    142,
+    0,
+    142
+  ],
+  "LINE_LABEL": [
+    255,
+    182,
+    0,
+    182
+  ],
+  "LINE_LIGHT_JOINS": [
+    255,
+    82,
+    0,
+    82
+  ],
+  "MARKERS": [
+    255,
+    220,
+    0,
+    220
+  ],
+  "MATE_PRIMARY": [
+    255,
+    0,
+    0,
+    0
+  ],
+  "MATE_SECONDARY": [
+    255,
+    0,
+    0,
+    0
+  ],
+  "MATE_UNMAPPED": [
+    255,
+    255,
+    0,
+    0
+  ],
+  "METHYLATED_C": [
+    227,
+    30,
+    0,
+    230
+  ],
+  "NORMAL_READ": [
+    255,
+    100,
+    0,
+    100
+  ],
+  "NORMAL_READ_MQ0": [
+    102,
+    90,
+    0,
+    95
+  ],
+  "NUCLEOTIDE_A": [
+    255,
+    106,
+    0,
+    79
+  ],
+  "NUCLEOTIDE_C": [
+    255,
+    77,
+    0,
+    245
+  ],
+  "NUCLEOTIDE_G": [
+    255,
+    226,
+    0,
+    19
+  ],
+  "NUCLEOTIDE_N": [
+    255,
+    128,
+    0,
+    128
+  ],
+  "NUCLEOTIDE_T": [
+    255,
+    232,
+    0,
+    99
+  ],
+  "OTHER_MODIFICATION": [
+    127,
+    255,
+    0,
+    0
+  ],
+  "REGION_OF_INTEREST": [
+    180,
+    230,
+    0,
+    45
+  ],
+  "SELECTED_ELEMENT": [
+    255,
+    255,
+    0,
+    255
+  ],
+  "SOFT_CLIP": [
+    255,
+    0,
+    0,
+    128
+  ],
+  "SOFT_CLIP_MQ0": [
+    102,
+    0,
+    0,
+    128
+  ],
+  "SPLIT_READ": [
+    255,
+    109,
+    0,
+    199
+  ],
+  "TEXT_BACKGROUND": [
+    255,
+    10,
+    0,
+    20
+  ],
+  "TEXT_DELETION": [
+    255,
+    227,
+    0,
+    227
+  ],
+  "TEXT_INSERTION": [
+    255,
+    227,
+    0,
+    227
+  ],
+  "TEXT_LABELS": [
+    255,
+    0,
+    0,
+    0
+  ],
+  "TRACK": [
+    200,
+    227,
+    0,
+    255
+  ],
+  "TRANSLOCATION": [
+    255,
+    225,
+    0,
+    185
+  ],
+  "TRANSLOCATION_MQ0": [
+    102,
+    225,
+    0,
+    185
+  ]
+}

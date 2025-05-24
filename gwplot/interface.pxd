@@ -149,6 +149,10 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void syncImageCacheQueue()
 
+        void clearImageCacheQueue()
+
+        void drawBackground()
+
         void drawScreen(bint force_buffered_reads)
 
         void drawScreenNoBuffer()

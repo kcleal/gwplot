@@ -46,7 +46,7 @@ jobs:
 
       - name: Build wheel file
         run: |
-          python -m build --wheel --outdir dist
+          pip wheel . --wheel-dir dist --no-build-isolation -v
 
       - name: Delocate wheel file
         run: |

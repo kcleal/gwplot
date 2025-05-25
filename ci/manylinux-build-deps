@@ -84,9 +84,6 @@ if [[ "$BUILD_FREETYPE" == "1" ]]; then
   ./configure --prefix=/usr/local --enable-freetype-config --enable-static --disable-shared
   make clean && make -j3 && make install
 
-  # Then build shared version for auditwheel to potentially pick up
-#  ./configure --prefix=/usr --enable-freetype-config --disable-static --enable-shared
-#  make clean && make -j3 && make install
 
   # Make sure the static library is available for linking
   cp /usr/local/lib/libfreetype.a /usr/local/lib/
@@ -95,6 +92,50 @@ if [[ "$BUILD_FREETYPE" == "1" ]]; then
 
   # Force statically compiled freetype
   sed -i 's/-lfreetype/\/usr\/local\/lib\/libfreetype.a/g' gw/Makefile
+
+  echo "Building fontconfig with custom FreeType..."
+
+  curl -L -o fontconfig.tar.xz https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.xz
+  tar -xf fontconfig.tar.xz && rm fontconfig.tar.xz
+  cd fontconfig-*
+
+  # Set environment to use our custom FreeType
+  export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+  export FREETYPE_CFLAGS="-I/usr/local/include/freetype2"
+  export FREETYPE_LIBS="-L/usr/local/lib -lfreetype"
+
+  # Configure fontconfig
+  ./configure --prefix=/usr/local \
+              --enable-static \
+              --enable-shared \
+              --with-freetype-config=/usr/local/bin/freetype-config \
+              FREETYPE_CFLAGS="$FREETYPE_CFLAGS" \
+              FREETYPE_LIBS="$FREETYPE_LIBS"
+
+  make -j3 && make install
+
+  # Verify fontconfig is using our FreeType
+  echo "fontconfig dependencies:"
+  ldd /usr/local/lib/libfontconfig.so | grep freetype || echo "No freetype dependency found"
+
+  cd ../
+
+  # Step 3: Update system library paths to prefer our versions
+  echo "Setting up library paths..."
+
+  # Create symlinks so the system finds our libraries first
+  ln -sf /usr/local/lib/libfreetype.so.6 /usr/lib64/libfreetype.so.6 || true
+  ln -sf /usr/local/lib/libfreetype.so /usr/lib64/libfreetype.so || true
+  ln -sf /usr/local/lib/libfontconfig.so.1 /usr/lib64/libfontconfig.so.1 || true
+  ln -sf /usr/local/lib/libfontconfig.so /usr/lib64/libfontconfig.so || true
+
+  # Update ld cache
+  echo "/usr/local/lib" > /etc/ld.so.conf.d/custom-libs.conf
+  ldconfig
+
+  # Set build environment
+  export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+  export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 else
   yum install -y freetype-devel
@@ -116,5 +157,18 @@ ls -lh /usr/local/lib/libskia.a
 ls -lh /usr/local/include/GW
 pwd
 ls -lh ./gwplot
+
+echo "=== DEBUGGING LIBGW SYMBOLS ==="
+echo "Checking if FT_Get_Color_Glyph_Layer is in libgw:"
+nm -D libgw/libgw.so | grep FT_Get_Color_Glyph_Layer || echo "Symbol NOT found in libgw"
+
+echo "All FreeType symbols in libgw:"
+nm -D libgw/libgw.so | grep "^[0-9a-f]* [TW] FT_" | head -10 || echo "No FreeType symbols found"
+
+echo "libgw dependencies:"
+ldd libgw/libgw.so | grep freetype || echo "No freetype dependency"
+
+echo "fontconfig dependency:"
+ldd libgw/libgw.so | grep fontconfig || echo "No fontconfig dependency"
 
 echo "MANYLINUX-DEPS DONE"

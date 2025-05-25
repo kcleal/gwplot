@@ -76,6 +76,8 @@ make -j3 && make install
 cd ../
 
 if [[ "$BUILD_FREETYPE" == "1" ]]; then
+  rm /lib64/libfontconfig.so*
+  rm /lib64/libfreetype.so*
 
   curl -L -o freetype.tar.xz https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz
   ls -lh
@@ -83,13 +85,16 @@ if [[ "$BUILD_FREETYPE" == "1" ]]; then
   cd freetype*
 
   # Build static version
-  ./configure --prefix=/usr/local --enable-freetype-config --enable-static --disable-shared
+  CFLAGS="-fPIC" CXXFLAGS="-fPIC"  ./configure --prefix=/usr/local --enable-freetype-config --disable-static --enable-shared
   make clean && make -j3 && make install
-  cp /usr/local/lib/libfreetype.a /usr/local/lib/
+#  cp /usr/local/lib/libfreetype.so* /usr/local/lib/
+  ln -sf /usr/local/lib/libfreetype.so.6 /usr/lib64/libfreetype.so.6
+  ln -sf /usr/local/lib/libfreetype.so /usr/lib64/libfreetype.so
+  
   cd ../
 
   # Force statically compiled freetype
-  sed -i 's/-lfreetype/\/usr\/local\/lib\/libfreetype.a/g' gw/Makefile
+#  sed -i 's/-lfreetype/\/usr\/local\/lib\/libfreetype.a/g' gw/Makefile
 
   echo "Building fontconfig with custom FreeType..."
 
@@ -104,8 +109,7 @@ if [[ "$BUILD_FREETYPE" == "1" ]]; then
 
   # Configure fontconfig
   ./configure --prefix=/usr/local \
-              --enable-static \
-              --enable-shared \
+              --disable-static --enable-shared \
               FREETYPE_CFLAGS="$FREETYPE_CFLAGS" \
               FREETYPE_LIBS="$FREETYPE_LIBS"
 

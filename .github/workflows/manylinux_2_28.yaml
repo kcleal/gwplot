@@ -18,13 +18,12 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           CIBW_BUILD: "cp310-manylinux* cp311-manylinux* cp312-manylinux* cp313-manylinux*"
 
-          CIBW_ENVIRONMENT: |
+          CIBW_ENVIRONMENT_LINUX: |
             BUILD_GLFW=0
             BUILD_FREETYPE=1
             CPPFLAGS="-I/usr/local/include"
             LDFLAGS="-L/usr/local/lib"
 
-          CIBW_ENVIRONMENT_PASS_LINUX: BUILD_GLFW BUILD_FREETYPE CXXFLAGS CPPFLAGS LDFLAGS
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
           CIBW_BEFORE_BUILD_LINUX: |
             python -m pip install pysam>=0.23.0 numpy>=1.19.3 cython>=3.0.0

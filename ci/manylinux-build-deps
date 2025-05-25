@@ -1,7 +1,14 @@
 #!/bin/bash
 
 echo "STARTING MANYLINUX-DEPS"
+echo "=== Environment Variables ==="
+echo "BUILD_FREETYPE: $BUILD_FREETYPE"
+echo "BUILD_GLFW: $BUILD_GLFW"
+echo "CPPFLAGS: $CPPFLAGS"
+echo "LDFLAGS: $LDFLAGS"
+echo "================================"
 env
+echo "================================"
 
 yum install -y epel-release
 
@@ -66,8 +73,7 @@ cd htslib
 make -j3 && make install
 cd ../
 
-# freetype - build both static and shared
-if [ -n "$BUILD_FREETYPE" ]; then
+if [[ "$BUILD_FREETYPE" == "1" ]]; then
 
   echo "Removing system FreeType packages..."
   yum remove -y freetype freetype-devel || true

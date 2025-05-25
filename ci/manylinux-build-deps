@@ -25,7 +25,9 @@ yum install -y fontconfig-devel libjpeg-turbo-devel libpng-devel \
     libuuid-devel librsvg2-devel \
     libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
     wayland-devel wayland-protocols-devel \
-    harfbuzz brotli-devel, gperf
+    harfbuzz brotli-devel gperf
+
+BUILD_DIR=$PWD
 
 # GLFW
 if [[ "$BUILD_GLFW" == "1" ]]; then
@@ -83,11 +85,7 @@ if [[ "$BUILD_FREETYPE" == "1" ]]; then
   # Build static version
   ./configure --prefix=/usr/local --enable-freetype-config --enable-static --disable-shared
   make clean && make -j3 && make install
-
-
-  # Make sure the static library is available for linking
   cp /usr/local/lib/libfreetype.a /usr/local/lib/
-
   cd ../
 
   # Force statically compiled freetype
@@ -113,33 +111,11 @@ if [[ "$BUILD_FREETYPE" == "1" ]]; then
 
   make -j3 && make install
 
-#  # Verify fontconfig is using our FreeType
-#  echo "fontconfig dependencies:"
-#  ldd /usr/local/lib/libfontconfig.so | grep freetype || echo "No freetype dependency found"
-#
-#  cd ../
-#
-#  # Step 3: Update system library paths to prefer our versions
-#  echo "Setting up library paths..."
-#
-#  # Create symlinks so the system finds our libraries first
-#  ln -sf /usr/local/lib/libfreetype.so.6 /usr/lib64/libfreetype.so.6 || true
-#  ln -sf /usr/local/lib/libfreetype.so /usr/lib64/libfreetype.so || true
-#  ln -sf /usr/local/lib/libfontconfig.so.1 /usr/lib64/libfontconfig.so.1 || true
-#  ln -sf /usr/local/lib/libfontconfig.so /usr/lib64/libfontconfig.so || true
-#
-#  # Update ld cache
-#  echo "/usr/local/lib" > /etc/ld.so.conf.d/custom-libs.conf
-#  ldconfig
-#
-#  # Set build environment
-#  export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
-#  export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-
 else
   yum install -y freetype-devel
 fi
 
+cd $BUILD_DIR
 pwd
 ls
 

@@ -75,27 +75,27 @@ cd ../
 
 if [[ "$BUILD_FREETYPE" == "1" ]]; then
 
-  echo "Removing system FreeType packages..."
-  yum remove -y freetype freetype-devel || true
-  rm -f /usr/lib64/libfreetype.so* /lib64/libfreetype.so* || true
-
   curl -L -o freetype.tar.xz https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz
   ls -lh
   tar -xvf freetype.tar.xz > /dev/null 2>&1 && rm freetype.tar.xz
   cd freetype*
 
-  # Build static version first
+  # Build static version
   ./configure --prefix=/usr/local --enable-freetype-config --enable-static --disable-shared
   make clean && make -j3 && make install
 
   # Then build shared version for auditwheel to potentially pick up
-  ./configure --prefix=/usr --enable-freetype-config --disable-static --enable-shared
-  make clean && make -j3 && make install
+#  ./configure --prefix=/usr --enable-freetype-config --disable-static --enable-shared
+#  make clean && make -j3 && make install
 
   # Make sure the static library is available for linking
   cp /usr/local/lib/libfreetype.a /usr/local/lib/
 
   cd ../
+
+  # Force statically compiled freetype
+  sed -i 's/-lfreetype/\/usr\/local\/lib\/libfreetype.a/g' gw/Makefile
+
 else
   yum install -y freetype-devel
 fi

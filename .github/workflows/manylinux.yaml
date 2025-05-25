@@ -27,7 +27,7 @@ jobs:
             bash ci/manylinux-build-deps
 
           CIBW_BEFORE_BUILD_LINUX: |
-            python -m pip install pysam==0.22.1 numpy>=1.19.3 "cython>=3.0.0,<3.1"
+            python -m pip install pysam==0.21.0 numpy>=1.19.3 cython==3.0.1
 
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
           CIBW_TEST_COMMAND: bash {package}/ci/manylinux-test {wheel}

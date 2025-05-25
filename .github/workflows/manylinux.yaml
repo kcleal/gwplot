@@ -22,14 +22,13 @@ jobs:
             export OLD_SKIA=1
             export BUILD_GLFW=1
             export BUILD_FREETYPE=0
-            export CXXFLAGS+=" -D OLD_SKIA "
             export CPPFLAGS="-I/usr/local/include ${CPPFLAGS:-}"
             export LDFLAGS="-L/usr/local/lib ${LDFLAGS:-}"
             bash ci/manylinux-build-deps
 
           CIBW_BEFORE_BUILD_LINUX: |
             python -m pip install numpy>=1.19.3 "cython>=3.0.0,<3.1"
-            python -m pip install --no-binary=pysam pysam>=0.23.0
+            python -m pip install --no-binary=pysam --force-reinstall --no-cache-dir pysam>=0.23.0
 
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
           CIBW_TEST_COMMAND: bash {package}/ci/manylinux-test {wheel}

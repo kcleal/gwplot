@@ -19,14 +19,18 @@ jobs:
           CIBW_BUILD: "cp310-manylinux* cp311-manylinux* cp312-manylinux* cp313-manylinux*"
 
           CIBW_ENVIRONMENT: |
-            OLD_SKIA=0
+            BUILD_GLFW=0
             BUILD_FREETYPE=1
             CPPFLAGS="-I/usr/local/include"
             LDFLAGS="-L/usr/local/lib"
 
-          CIBW_ENVIRONMENT_PASS_LINUX: OLD_SKIA CXXFLAGS CPPFLAGS LDFLAGS BUILD_FREETYPE
+          CIBW_ENVIRONMENT_PASS_LINUX: BUILD_GLFW BUILD_FREETYPE CXXFLAGS CPPFLAGS LDFLAGS
           CIBW_BEFORE_ALL_LINUX: bash ci/manylinux-build-deps
-          CIBW_BEFORE_BUILD_LINUX: pip install pysam>=0.21.0 numpy>=1.19.3 cython>=3.0.0
+          CIBW_BEFORE_BUILD_LINUX: |
+            python -m pip install pysam>=0.23.0 numpy>=1.19.3 cython>=3.0.0
+            echo "Python executable: $(which python)"
+            python -c "import pysam; print('pysam installed at:', pysam.__file__)"
+
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel -v repair -w {dest_dir} {wheel}"
           CIBW_TEST_COMMAND: bash {package}/ci/manylinux-test {wheel}
 

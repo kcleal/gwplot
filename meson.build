@@ -66,6 +66,21 @@ libgw_stamp = custom_target('build_gw',
 # -----------------------------------------------------------------------------
 numpy_dep = dependency('numpy')
 
+debug_cmd = run_command(py, ['-c', '''
+import sys
+print("Python path:", sys.executable)
+print("Python version:", sys.version)
+try:
+    import pysam
+    print("pysam found at:", pysam.__file__)
+    print("pysam version:", pysam.__version__)
+except ImportError as e:
+    print("pysam import error:", e)
+    print("sys.path:", sys.path)
+'''], check: false)
+message('Debug output:', debug_cmd.stdout())
+message('Debug stderr:', debug_cmd.stderr())
+
 pysam_inc_cmd = run_command(py, ['-c', '''
 import pysam, sys
 inc = pysam.get_include()

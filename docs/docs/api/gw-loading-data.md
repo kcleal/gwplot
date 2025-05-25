@@ -59,26 +59,36 @@ Remove a BAM file from the visualisation.
 
 <div class="ml-6" markdown="1">
 
-`add_pysam_alignments(pysam_alignments: List['AlignedSegment'], region_index: int = -1, bam_index: int = -1) -> 'Gw'`
+`add_pysam_alignments(self, pysam_alignments: List['AlignedSegment'],
+                            region_index: int = -1,
+                            bam_index: int = -1) -> 'Gw'`
 
-Adds alignments from a pysam list to a region. Creates a raster surface if needed. Calls clear_alignments if non-pysam collections in use.
+Add a list of pysam alignments to Gw. Before using this function, you must add a
+at least one region to Gw using `add_region` function, and a bam/cram file using `add_bam`.
+
+Internally, the bam1_t data pointer is passed straight to Gw, so no copies are made during drawing.
+However, this means input pysam_alignments must 'outlive' any drawing calls made by Gw.
+
+If using multiple regions or bams, use the `region_index` and `bam_index` arguments to 
+indicate which panel to use for drawing the pysam alignment.
+
+Note, this function assumes alignments are in position sorted order. Also, 
+pysam alignments can not be mixed with ‘normal’ Gw alignment tracks.
 
 **Parameters:**
-- `pysam_alignments` (List[AlignedSegment]): List of pysam AlignedSegments
-- `region_index` (int, optional): The region index to draw to for multi-region support. If -1, the last added region will be used
-- `bam_index` (int, optional): The bam index to draw to for multi-region support. If -1, the last added bam will be used
+- `pysam_alignments` List['AlignedSegment']: List of alignments
+- `region_index` (int): Region index to draw to (the column on the canvas)
+- `bam_index` (int): Bam index to draw to (the row on the canvas)
 
 **Returns:**
 - `Gw`: Self for method chaining
 
-**Raises:**
+**Raises**:
+
 - `IndexError`: If the region_index or bam_index are out of range
-- `UserWarning`: If any normal collections are already present in the Gw object
+- `RuntimeError`: If any normal collections are already present in the Gw object
 
-The `add_pysam_alignments` method allows for integration with the Pysam library,
-enabling you to filter and manipulate alignments before visualisation.
-
-**Complex Example:**
+**Example:**
 ```python
 import pysam
 from gwplot import Gw
@@ -101,24 +111,8 @@ gw = Gw("hg38")
 gw.add_bam("sample.bam")  # Reference to original BAM still needed
 gw.add_region(*region)
 gw.add_pysam_alignments(filtered_reads)
-gw.save_png("filtered_high_quality_reads.png")
+gw.show()
 ```
-Notes:
-- Pysam alignments must not be freed before Gw, otherwise you will have a dangling pointer!
-- Pysam alignments can not be mixed with 'normal' Gw alignment tracks.
-- If a region_index and bam_index are not provided, data is added to the most-recently-added region and bam.
-
-</div>
-
----
-
-## clear_alignments
-
-<div class="ml-6" markdown="1">
-
-`clear_alignments() -> None`
-
-Remove all loaded alignment data.
 
 </div>
 
@@ -166,6 +160,42 @@ Remove a data track from the visualisation.
 
 **Returns:**
 - `Gw`: Self for method chaining
+
+</div>
+
+---
+
+## clear
+
+<div class="ml-6" markdown="1">
+
+`clear() -> None`
+
+Remove all data.
+
+</div>
+
+---
+
+## clear_alignments
+
+<div class="ml-6" markdown="1">
+
+`clear_alignments() -> None`
+
+Remove all loaded alignment data.
+
+</div>
+
+---
+
+## clear_regions
+
+<div class="ml-6" markdown="1">
+
+`clear_regions() -> None`
+
+Remove all defined genomic regions.
 
 </div>
 

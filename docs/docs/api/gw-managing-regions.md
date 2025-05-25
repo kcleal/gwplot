@@ -117,13 +117,14 @@ gw.view_region("chr1", 1000000, 1100000)
 Add a list of pysam alignments to Gw. Before using this function, you must add a
 at least one region to Gw using `add_region` function, and a bam/cram file using `add_bam`.
 
-Internally, the bam1_t data pointer is passed straight to Gw, so no copies made during drawing.
+Internally, the bam1_t data pointer is passed straight to Gw, so no copies are made during drawing.
 However, this means input pysam_alignments must 'outlive' any drawing calls made by Gw.
 
 If using multiple regions or bams, use the `region_index` and `bam_index` arguments to 
 indicate which panel to use for drawing the pysam alignment.
 
-Note, this function assumes alignments are in position sorted order.
+Note, this function assumes alignments are in position sorted order. Also, 
+pysam alignments can not be mixed with ‘normal’ Gw alignment tracks.
 
 **Parameters:**
 - `pysam_alignments` List['AlignedSegment']: List of alignments
@@ -133,19 +134,34 @@ Note, this function assumes alignments are in position sorted order.
 **Returns:**
 - `Gw`: Self for method chaining
 
+**Raises**:
+
+- `IndexError`: If the region_index or bam_index are out of range
+- `RuntimeError`: If any normal collections are already present in the Gw object
+
 **Example:**
 ```python
-from gwplot import Gw
 import pysam
+from gwplot import Gw
 
-region1 = ("chr1", 1, 20000)
-gw = Gw("ref.fa").add_bam("small.bam").add_region(*region1)
+# Open alignment file
+bam = pysam.AlignmentFile("sample.bam")
 
-# Use pysam to fetch some alignments
-af = pysam.AlignmentFile("small.bam")
-aligns = list(af.fetch(*region1))
+# Define region of interest
+region = ("chr1", 1000000, 1050000)
 
-gw.add_pysam_alignments(aligns)
+# Filter alignments based on custom criteria
+filtered_reads = []
+for read in bam.fetch(*region):
+    # Only keep high-quality reads with specific characteristics
+    if read.mapping_quality > 30 and not read.is_duplicate and not read.is_secondary:
+        filtered_reads.append(read)
+
+# Visualize only the filtered reads
+gw = Gw("hg38")
+gw.add_bam("sample.bam")  # Reference to original BAM still needed
+gw.add_region(*region)
+gw.add_pysam_alignments(filtered_reads)
 gw.show()
 ```
 
@@ -160,6 +176,18 @@ gw.show()
 `clear() -> None`
 
 Remove all data.
+
+</div>
+
+---
+
+## clear_alignments
+
+<div class="ml-6" markdown="1">
+
+`clear_alignments() -> None`
+
+Remove all loaded alignment data.
 
 </div>
 

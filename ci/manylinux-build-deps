@@ -66,15 +66,25 @@ cd htslib
 make -j3 && make install
 cd ../
 
-# freetype
+# freetype - build both static and shared
 if [ -n "$BUILD_FREETYPE" ]; then
   pwd
   curl -L -o freetype.tar.xz https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz
   ls -lh
   tar -xvf freetype.tar.xz > /dev/null 2>&1 && rm freetype.tar.xz
   cd freetype*
-  ./configure --prefix=/usr --enable-freetype-config --disable-static
-  make -j3 && make install
+
+  # Build static version first
+  ./configure --prefix=/usr/local --enable-freetype-config --enable-static --disable-shared
+  make clean && make -j3 && make install
+
+  # Then build shared version for auditwheel to potentially pick up
+  ./configure --prefix=/usr --enable-freetype-config --disable-static --enable-shared
+  make clean && make -j3 && make install
+
+  # Make sure the static library is available for linking
+  cp /usr/local/lib/libfreetype.a /usr/local/lib/
+
   cd ../
 fi
 

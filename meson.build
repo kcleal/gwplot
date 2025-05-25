@@ -66,7 +66,6 @@ libgw_stamp = custom_target('build_gw',
 # -----------------------------------------------------------------------------
 numpy_dep = dependency('numpy')
 
-#   – pysam include folders
 pysam_inc_cmd = run_command(py, ['-c', '''
 import pysam, sys
 inc = pysam.get_include()

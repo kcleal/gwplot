@@ -34,7 +34,7 @@ jobs:
           brew install meson ninja
           python -m pip install build wheel delocate meson-python cython
           python -m pip install numpy pysam
-          bash ci/osx-build-deps
+          sudo bash ci/osx-build-deps
 
       - name: Checkout gw
         run: |

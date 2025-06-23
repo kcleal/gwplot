@@ -28,9 +28,9 @@ filt = [i for i in aligns if i.mapq > 20]
 filt2 = filt[:100]
 
 # Drawing panels
-gw.add_pysam_alignments(aligns, region_index=0, bam_index=0)
-gw.add_pysam_alignments(filt, region_index=1, bam_index=0)
-gw.add_pysam_alignments(filt2, region_index=1, bam_index=1)
+gw.add_pysam_alignments(aligns, col=0, row=0)
+gw.add_pysam_alignments(filt, col=1, row=0)
+gw.add_pysam_alignments(filt2, col=1, row=1)
 
 gw.show()
 

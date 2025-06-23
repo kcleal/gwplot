@@ -201,6 +201,7 @@ cdef class Gw:
         iopts.theme.setAlphas()
         cdef string theme = string(b"dark")
         iopts.setTheme(theme)
+        reference = os.path.expanduser(reference)
         tmp = bytes(reference.encode("utf-8"))
         cdef string tag = string(tmp)
         if not os.path.exists(reference): # Try and use genome_tag
@@ -1462,13 +1463,14 @@ cdef class Gw:
             Self for method chaining
         """
         cdef string b
+        path = os.path.expanduser(path)
         b = path.encode("utf-8")
         self.thisptr.addBam(b)
         return self
 
     def add_pysam_alignments(self, pysam_alignments: List['AlignedSegment'],
-                            region_index: int = -1,
-                            bam_index: int = -1):
+                            col: int = -1,
+                            row: int = -1):
         """
         Adds alignments from a pysam list to a region. Alignments are assumed to be sorted by
         position. Creates a raster surface if needed.
@@ -1477,9 +1479,9 @@ cdef class Gw:
         ----------
         pysam_alignment_list : list
             List of pysam AlignedSegments
-        region_index: int, optional
+        col: int, optional
             The region index to draw to for multi-region support. If -1, the last added region will be used
-        bam_index: int, optional
+        row: int, optional
             The bam index to draw to for multi-region support. If -1, the last added bam will be used
 
         Returns
@@ -1490,7 +1492,7 @@ cdef class Gw:
         Raises
         ------
         IndexError
-            If the region_index or bam_index are out of range
+            If the col or row are out of range
         RuntimeError
             If any normal collections are already present in the Gw object
         """
@@ -1511,15 +1513,15 @@ cdef class Gw:
 
         cdef int regionIdx
         cdef int bamIdx
-        if region_index < 0:
+        if col < 0:
             regionIdx = self.thisptr.sizeOfRegions() - 1
         else:
-            regionIdx = region_index
+            regionIdx = col
             assert regionIdx < <int>self.thisptr.sizeOfRegions()
-        if bam_index < 0:
+        if row < 0:
             bamIdx = self.thisptr.sizeOfBams() - 1
         else:
-            bamIdx = bam_index
+            bamIdx = row
             assert bamIdx < <int>self.thisptr.sizeOfBams()
 
         cdef uint32_t start = <uint32_t> self.thisptr.regions[regionIdx].start
@@ -1595,6 +1597,7 @@ cdef class Gw:
             Self for method chaining
         """
         cdef string b
+        path = os.path.expanduser(path)
         b = path.encode("utf-8")
         self.thisptr.addTrack(b, <bint>False, vcf_as_track, bed_as_track)
         return self

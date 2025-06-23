@@ -31,10 +31,11 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          brew install fontconfig freetype glfw htslib jpeg-turbo libpng xz
+          brew install fontconfig freetype jpeg-turbo libpng xz
           brew install meson ninja
           python -m pip install build wheel delocate meson-python cython
           python -m pip install numpy pysam
+          bash ci/osx-build-deps
 
       - name: Checkout gw
         run: |

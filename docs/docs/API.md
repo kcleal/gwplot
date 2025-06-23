@@ -120,8 +120,8 @@ Remove a BAM file from the visualisation.
 <div class="ml-6" markdown="1">
 
 `add_pysam_alignments(self, pysam_alignments: List['AlignedSegment'],
-                            region_index: int = -1,
-                            bam_index: int = -1) -> 'Gw'`
+                            col: int = -1,
+                            row: int = -1) -> 'Gw'`
 
 Add a list of pysam alignments to Gw. Before using this function, you must add a
 at least one region to Gw using `add_region` function, and a bam/cram file using `add_bam`.
@@ -129,7 +129,7 @@ at least one region to Gw using `add_region` function, and a bam/cram file using
 Internally, the bam1_t data pointer is passed straight to Gw, so no copies are made during drawing.
 However, this means input pysam_alignments must 'outlive' any drawing calls made by Gw.
 
-If using multiple regions or bams, use the `region_index` and `bam_index` arguments to 
+If using multiple regions or bams, use the `col` and `row` arguments to 
 indicate which panel to use for drawing the pysam alignment.
 
 Note, this function assumes alignments are in position sorted order. Also, 
@@ -137,15 +137,15 @@ pysam alignments can not be mixed with ‘normal’ Gw alignment tracks.
 
 **Parameters:**
 - `pysam_alignments` List['AlignedSegment']: List of alignments
-- `region_index` (int): Region index to draw to (the column on the canvas)
-- `bam_index` (int): Bam index to draw to (the row on the canvas)
+- `col` (int): Region index to draw to (the column on the canvas)
+- `row` (int): Bam index to draw to (the row on the canvas)
 
 **Returns:**
 - `Gw`: Self for method chaining
 
 **Raises**:
 
-- `IndexError`: If the region_index or bam_index are out of range
+- `IndexError`: If the ocl or row are out of range
 - `RuntimeError`: If any normal collections are already present in the Gw object
 
 **Example:**

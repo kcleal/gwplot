@@ -10,6 +10,9 @@ echo "STARTING OSX-DEPS"
 #cp -rf include/GLFW* /usr/local/include
 #cd ../
 PREFIX=$(brew --prefix)
+export CPPFLAGS="-I${PREFIX}/include"
+export LDFLAGS="-L${PREFIX}/lib"
+export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
 
 #git clone --depth 1 https://github.com/ebiggers/libdeflate.git && \
 #    cd libdeflate && CFLAGS+=' -fPIC -O3 ' cmake -B build && CFLAGS+=' -fPIC -O3 ' cmake --build build && \
@@ -34,8 +37,8 @@ make prep
 #cp lib/libgw/* /usr/local/lib/
 make shared -j3
 
-ls $PREFIX/lib/libhts*
+ls $PREFIX/lib/hts*
 ls $PREFIX/lib/libglfw*
-ls $PREFIX/include
+ls $PREFIX/include/GLFW*
 
 echo "OSX-DEPS DONE"

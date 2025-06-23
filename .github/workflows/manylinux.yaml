@@ -17,7 +17,10 @@ jobs:
           CIBW_ARCHS: "x86_64"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
           CIBW_BUILD: "cp310-manylinux* cp311-manylinux* cp312-manylinux* cp313-manylinux*"
-          CIBW_ENVIRONMENT: "OLD_SKIA=1 MESON_BUILD_ARGS=-Dold_skia=true"
+          CIBW_ENVIRONMENT: |
+            OLD_SKIA=1
+            MESON_SETUP_ARGS=-Dold_skia=true
+
           CIBW_BEFORE_ALL_LINUX: |
             export OLD_SKIA=1
             export BUILD_GLFW=1

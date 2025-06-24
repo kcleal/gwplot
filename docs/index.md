@@ -18,6 +18,7 @@ Features of `gwplot`:
 - **Multi-regions and data tracks** for comparative genomics
 - **Flexible output formats** including PNG, PDF, SVG, JPEG, and NumPy arrays for further processing
 - **Built-in access** to common reference genomes
+- **Integration** with pysam, matplotlib, jupyter and pillow
 - **Interactive mode** for creating dynamic apps
 
 Install from PyPI:
@@ -60,10 +61,12 @@ a = list(pysam.AlignmentFile("a.bam").fetch(*roi))
 with Gw("hg38") as gw:
     
     # Let Gw know which bam file and region to display
-    gw.add_bam("a.bam").add_region(*roi)
+    gw.add_bam("a.bam")
+    gw.add_region(*roi)
     
     # Gw uses the bam1_t* pointer straight from pysam
-    gw.add_pysam_alignments(a).show()
+    gw.add_pysam_alignments(a)
+    gw.show()
 ```
 
 ![Alt text](/assets/images/splash1.png "Gwplot")

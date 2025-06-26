@@ -9,6 +9,7 @@ from pathlib import Path
 import multiprocessing
 jobs = multiprocessing.cpu_count()
 
+
 def main():
     # Get arguments from environment or command line
     source_dir = Path(os.environ.get('MESON_SOURCE_ROOT', '.')).absolute()
@@ -63,17 +64,17 @@ def main():
 
     print(f"Successfully built {lib_name}, copying to {build_dir}")
 
-    shutil.copy(lib_path, build_dir / 'libgw.dylib')
-    shutil.copy( gw_dir / 'libgw/libskia.a',  build_dir / 'libskia.a')
+    shutil.copy(lib_path, build_dir / lib_name)
+    shutil.copy(gw_dir / 'libgw/libskia.a', build_dir / 'libskia.a')
 
     # Create a stamp file to indicate successful build
-    # stamp_file = build_dir / 'libgw.stamp'
     stamp_file = build_dir / 'libgw.stamp'
     stamp_file.touch()
     stamp_file = build_dir / 'libskia.stamp'
     stamp_file.touch()
 
     return 0
+
 
 if __name__ == '__main__':
     sys.exit(main())

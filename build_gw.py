@@ -4,6 +4,7 @@
 import os
 import subprocess
 import sys
+import shutil
 from pathlib import Path
 import multiprocessing
 jobs = multiprocessing.cpu_count()
@@ -60,10 +61,16 @@ def main():
         print(f"Error: Expected library not found at {lib_path}")
         sys.exit(1)
 
-    print(f"Successfully built {lib_name}")
+    print(f"Successfully built {lib_name}, copying to {build_dir}")
+
+    shutil.copy(lib_path, build_dir / 'libgw.dylib')
+    shutil.copy( gw_dir / 'libgw/libskia.a',  build_dir / 'libskia.a')
 
     # Create a stamp file to indicate successful build
+    # stamp_file = build_dir / 'libgw.stamp'
     stamp_file = build_dir / 'libgw.stamp'
+    stamp_file.touch()
+    stamp_file = build_dir / 'libskia.stamp'
     stamp_file.touch()
 
     return 0

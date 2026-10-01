@@ -10,7 +10,7 @@ build-backend = "mesonpy"
 
 [project]
 name = "gwplot"
-version = "0.4.1"
+version = "0.5.0"
 license = { file = "LICENSE" }
 description = "Visualise genomics data fast"
 requires-python = ">=3.9"

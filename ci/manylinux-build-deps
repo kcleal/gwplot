@@ -25,7 +25,7 @@ yum install -y fontconfig-devel libjpeg-turbo-devel libpng-devel \
     libuuid-devel librsvg2-devel \
     libX11-devel mesa-libEGL-devel mesa-libGLES-devel \
     wayland-devel wayland-protocols-devel \
-    harfbuzz brotli-devel gperf
+    harfbuzz brotli-devel gperf ncurses-devel
 
 BUILD_DIR=$PWD
 

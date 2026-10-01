@@ -62,7 +62,8 @@ lib_build = custom_target(
   env              : build_env,
   build_by_default : true,
   install          : true,
-  install_dir      : py.get_install_dir() / 'gwplot',
+  # libgw goes next to the extension modules (found via $ORIGIN);   
+  install_dir      : [py.get_install_dir() / 'gwplot', false],
 )
 
 libgw_target   = lib_build               # first output is the shared lib
@@ -145,6 +146,11 @@ if system == 'darwin'
     '-framework', 'CoreText',
   ]
 endif
+if system == 'linux'
+  # Skia (whole-archived into libgw) uses EGL, GLES and FreeType, but with a linker that
+  # defaults to --as-needed (e.g. Ubuntu) libgw is linked without depending on them
+  link_args += ['-Wl,--no-as-needed', '-lEGL', '-lGLESv2', '-lfreetype', '-Wl,--as-needed']
+endif
 
 # Set up proper RPATH for finding libgw at runtime
 if system == 'darwin'
@@ -176,6 +182,7 @@ endif
 gw_inc = [
   include_directories('gw/libgw'),
   include_directories('gw/libgw/GW'),
+  include_directories('gw/lib/dear_imgui'),  # imgui.h, not copied into libgw/GW by gw's Makefile
 ]
 
 # Create a proper dependency for libgw
@@ -214,6 +221,11 @@ foreach ext : ['glfw_interface', 'interface']
   elif system == 'darwin'
     ext_link_args += ['-Wl,-rpath,@loader_path', '-L' + meson.current_build_dir(), '-lgw']
   endif
+  if ext == 'interface'
+    # libgw does not export Skia's symbols, so link the Skia classes used by the bindings
+    # (e.g. SkPaint) statically. Custom target outputs listed as sources are not linked
+    ext_link_args += [meson.current_build_dir() / 'libskia.a']
+  endif
 
   py.extension_module(
     ext,
@@ -241,18 +253,8 @@ endforeach
 # Install pure-Python bits
 # -----------------------------------------------------------------------------
 py.install_sources('gwplot/__init__.py', subdir: 'gwplot')
-foreach pxd : ['gwplot/interface.pxd', 'gwplot/glfw_interface.pxd']
+foreach pxd : ['gwplot/interface.pxd', 'gwplot/glfw_interface.pxd', 'gwplot/interface.pyi', 'gwplot/glfw_interface.pyi', 'gwplot/py.typed']
   if fs.exists(pxd)
     py.install_sources(pxd, subdir: 'gwplot')
   endif
 endforeach
-
-
-# Runtime libraries - Make sure libgw is installed alongside the Python modules
-# -----------------------------------------------------------------------------
-install_data(libgw_path,
-             install_dir: py.get_install_dir() / 'gwplot')
-
-# Also install libskia.a if needed at runtime (probably not needed)
-install_data(gw_lib_dir / 'libskia.a',
-              install_dir: py.get_install_dir() / 'gwplot')

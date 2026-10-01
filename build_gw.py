@@ -19,6 +19,13 @@ def main():
     gw_dir = source_dir / 'gw'
     skia_dir = gw_dir / 'lib' / 'skia'
 
+    # The bindings target the gw 2.x API (e.g. Region::markers, ImGui)
+    version_src = (gw_dir / 'src' / 'gw_version.cpp').read_text()
+    gw_version = version_src.split('GW_VERSION[] = "', 1)[1].split('"', 1)[0]
+    if gw_version.split('.')[0] != '2':
+        print(f"Error: gwplot requires gw 2.x, but the gw submodule is version {gw_version}")
+        sys.exit(1)
+
     # Determine library name based on platform
     import platform
     system = platform.system()

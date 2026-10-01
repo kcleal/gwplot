@@ -13,7 +13,11 @@ cdef extern from "utils.h" namespace "Utils" nogil:
         Region() nogil
         string chrom
         int start, end
-        int markerPos, markerPosEnd
+        vector[pair[int,int]] markers  # (start, end) marker pairs drawn in this region
+
+    cdef struct Marker:
+        string chrom
+        int start, end
 
 
 cdef extern from "themes.h" namespace "Themes" nogil:
@@ -22,8 +26,8 @@ cdef extern from "themes.h" namespace "Themes" nogil:
         bgPaint, bgPaintTiled, bgMenu, fcNormal, fcDel, fcDup, fcInvF, fcInvR, fcTra, fcIns, fcSoftClip,
         fcA, fcT, fcC, fcG, fcN, fcCoverage, fcTrack, fcNormal0, fcDel0, fcDup0, fcInvF0, fcInvR0, fcTra0,
         fcSoftClip0, fcBigWig, fcRoi, mate_fc, mate_fc0, ecMateUnmapped, ecSplit, ecSelected,
-        lcJoins, lcCoverage, lcLightJoins, lcGTFJoins, lcLabel, lcBright, tcDel, tcIns, tcLabels, tcBackground,
-        fcMarkers, fc5mc, fc5hmc, fcOther
+        lcJoins, lcCoverage, lcLightJoins, lcGTFJoins, lcLabel, lcBright, lcGap, tcDel, tcIns, tcLabels, tcBackground,
+        fcMarkers, fc5mc, fc5hmc, fcOther, fcCodonStart, fcCodonStop, fcCodonOther, bgCodonSelected
 
     cdef cppclass BaseTheme:
         BaseTheme() nogil
@@ -41,8 +45,9 @@ cdef extern from "themes.h" namespace "Themes" nogil:
 
         int canvas_width, canvas_height;
         int indel_length, ylim, split_view_size, threads, pad, link_op, max_coverage, max_tlen
-        bint log2_cov, tlen_yscale, expand_tracks, vcf_as_tracks, sv_arcs
-        float scroll_speed, tab_track_height
+        bint log2_cov, tlen_yscale, expand_tracks, vcf_as_tracks, sv_arcs, data_labels, scale_bar
+        float scroll_speed
+        double tab_track_height
         int scroll_right, scroll_left, scroll_down, scroll_up
         int next_region_view, previous_region_view
         int zoom_out, zoom_in
@@ -54,6 +59,7 @@ cdef extern from "themes.h" namespace "Themes" nogil:
     cdef cppclass Fonts:
         Fonts() nogil
         int fontTypefaceSize;
+        float overlayHeight;
         void setTypeface(string &fontStr, int size)
         void setOverlayHeight(float yScale)
 
@@ -62,6 +68,15 @@ cdef extern from "themes.h" namespace "Themes" nogil:
 cdef extern from "include/core/SkCanvas.h" nogil:
     cdef cppclass SkCanvas:
         pass
+
+
+# gw uses ImGui for popups and themes; a context must exist before commandProcessed() is called
+cdef extern from "imgui.h" nogil:
+    ctypedef struct ImGuiContext:
+        pass
+    ImGuiContext* ImGui_CreateContext "ImGui::CreateContext"()
+    void ImGui_DestroyContext "ImGui::DestroyContext"(ImGuiContext* ctx)
+    void ImGui_SetCurrentContext "ImGui::SetCurrentContext"(ImGuiContext* ctx)
 
 
 # cdef extern from "include/core/SkSurface.h" nogil:
@@ -88,6 +103,8 @@ cdef extern from "segments.h" namespace "Segs" nogil:
         vector[int] covArr
         int bamIdx
         int regionIdx
+        int vScroll
+        int maxCoverage
         bint ownsBamPtrs
 
         void makeEmptyMMArray()
@@ -95,6 +112,13 @@ cdef extern from "segments.h" namespace "Segs" nogil:
         void resetDrawState()
 
 
+cdef extern from "hts_funcs.h" namespace "HGW" nogil:
+    cdef cppclass GwTrack:
+        double px_height
+        double height_fraction
+        string name
+        int bamIndex
+        int kind
 
 
 cdef extern from "plot_manager.h" namespace "Manager" nogil:
@@ -105,19 +129,22 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         Fonts fonts
         vector[char] pixelMemory
         vector[Region] regions
+        vector[Marker] markers  # persistent markers, drawn in every region on the same chromosome
         vector[ReadCollection] collections
+        vector[GwTrack] tracks
 
         bint drawToBackWindow, terminalOutput
         bint redraw
         int fb_width, fb_height
         int regionSelection
         int samMaxY
-        float monitorScale, gap, refSpace
+        float monitorScale, gap, refSpace, totalTabixY, topMenuSpace
         double xPos_fb, yPos_fb  # mouse position
 
         bint processed
 
         string inputText
+        string selectedAlign, selectedIntron, selectedFeature
 
         void initBack(int width, int height)
 
@@ -127,7 +154,7 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void removeBam(int index)
 
-        void addTrack(string &track_path, bint print_message, bint vcf_as_track, bint bed_as_track)
+        bint addTrack(string &track_path, bint print_message, bint vcf_as_track, bint bed_as_track)
 
         void removeTrack(int index)
 
@@ -135,7 +162,7 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void removeRegion(int index)
 
-        void commandProcessed()
+        bint commandProcessed()
 
         void fetchRefSeq(Region &rgn)
 
@@ -175,13 +202,15 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         void windowResize(int x, int y)
 
-        void loadIdeogramTag()
+        bint loadIdeogramTag()
 
         string flushLog()
 
         void mouseButton(int button, int action, int mods)
 
         void mousePos(double x, double y)
+
+        void setVScroll(int value)
 
         bint collectionsNeedRedrawing()
 
@@ -218,6 +247,8 @@ cdef extern from "htslib/sam.h":
 cdef class Gw:
 
     cdef GwPlot *thisptr
+
+    cdef ImGuiContext *imgui_ctx
 
     cdef public bint raster_surface_created
     cdef bint force_buffered_reads

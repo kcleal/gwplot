@@ -148,6 +148,9 @@ class GwPalette:
     LINE_BRIGHT = GwPaint.lcBright
     """Bright line color for emphasis"""
 
+    LINE_GAP = GwPaint.lcGap
+    """Line color for gaps (e.g. deletions and spliced regions)"""
+
     # Text colors
     TEXT_DELETION = GwPaint.tcDel
     """Text color for deletion annotations"""
@@ -173,6 +176,19 @@ class GwPalette:
 
     OTHER_MODIFICATION = GwPaint.fcOther
     """Color for other base modifications"""
+
+    # Translation track
+    CODON_START = GwPaint.fcCodonStart
+    """Start codon color in the translation track"""
+
+    CODON_STOP = GwPaint.fcCodonStop
+    """Stop codon color in the translation track"""
+
+    CODON_OTHER = GwPaint.fcCodonOther
+    """Color for other codons in the translation track"""
+
+    CODON_SELECTED_BG = GwPaint.bgCodonSelected
+    """Background color of a selected codon in the translation track"""
 
 
 cdef class Gw:
@@ -214,12 +230,17 @@ cdef class Gw:
 
         ref = reference.encode("utf-8")
 
+        # gw calls into ImGui from some commands (e.g. "theme" applies an ImGui style), so a
+        # context must exist. This only allocates state; no window or GL context is needed
+        self.imgui_ctx = ImGui_CreateContext()
+
         # Create the C++ object
         self.thisptr = new GwPlot(ref, bampaths, iopts, regions, track_paths)
         self.thisptr.drawToBackWindow = <bint> True
         self.thisptr.redraw = <bint> True
         self.thisptr.terminalOutput = <bint> False
         self.raster_surface_created = False
+        self.force_buffered_reads = <bint> False
         self.thisptr.opts.theme.setAlphas()
         if not iopts.genome_tag.empty():
             self.thisptr.loadIdeogramTag()
@@ -347,6 +368,18 @@ cdef class Gw:
             "saccer3": f"{base}/sacCer3.fa.gz"
         }
 
+    @staticmethod
+    def online_genome_tags() -> Dict[str, str]:
+        """
+        Alias of onlineGenomeTags.
+
+        Returns
+        -------
+        dict
+            Keys are genome-tag, values are genome-path
+        """
+        return Gw.onlineGenomeTags()
+
     def glfw_init(self):
         """
         Initialise GLFW backend.
@@ -372,6 +405,61 @@ cdef class Gw:
         """
         cdef string s = self.thisptr.flushLog()
         return str(s)
+
+    @property
+    def selected_align(self) -> str:
+        """
+        SAM text of the most recently clicked read.
+
+        Returns
+        -------
+        str
+            SAM record, or an empty string if nothing is selected
+        """
+        return str(self.thisptr.selectedAlign)
+
+    def clear_selected_align(self) -> None:
+        """
+        Clear the selected read. Call before a mouse event to detect a click on empty space.
+        """
+        self.thisptr.selectedAlign.clear()
+
+    @property
+    def selected_intron(self) -> str:
+        """
+        The most recently clicked intron as tab-separated chrom, start, end, strand, count.
+
+        Returns
+        -------
+        str
+            Intron record, or an empty string if nothing is selected
+        """
+        return str(self.thisptr.selectedIntron)
+
+    def clear_selected_intron(self) -> None:
+        """
+        Clear the selected intron. Call before a mouse event to detect a click on empty space.
+        """
+        self.thisptr.selectedIntron.clear()
+
+    @property
+    def selected_feature(self) -> str:
+        """
+        The most recently clicked annotation, coverage or reference element, as a
+        tab-separated record "TITLE\\tkey\\tvalue...".
+
+        Returns
+        -------
+        str
+            Feature record, or an empty string if nothing is selected
+        """
+        return str(self.thisptr.selectedFeature)
+
+    def clear_selected_feature(self) -> None:
+        """
+        Clear the selected feature. Call before a mouse event to detect a click on empty space.
+        """
+        self.thisptr.selectedFeature.clear()
 
     @property
     def clear_buffer(self) -> bool:
@@ -417,9 +505,12 @@ cdef class Gw:
             Mouse x-position
         y_pos : int
             Mouse y-position
-        button : str
-            "left", "right"
+        button : int
+            Mouse button, e.g. GLFW.MOUSE_BUTTON_LEFT
+        action : int
+            GLFW.PRESS or GLFW.RELEASE
         """
+        ImGui_SetCurrentContext(self.imgui_ctx)
         self.thisptr.xPos_fb = x_pos
         self.thisptr.yPos_fb = y_pos
         self.thisptr.mouseButton(button, action, 0)
@@ -750,7 +841,7 @@ cdef class Gw:
         cdef int a, r, g, b;
         a = 0; r = 0; g = 0; b = 0
         for paint_value, paint_name in paint_names.items():
-            self.thisptr.opts.theme.getPaintARGB(paint_value, a, r, b, b)
+            self.thisptr.opts.theme.getPaintARGB(paint_value, a, r, g, b)
             theme_data[paint_name] = [a, r, g, b]
 
         # Write the theme to a JSON file
@@ -819,13 +910,13 @@ cdef class Gw:
         return self
 
     @property
-    def ylim(self) -> float:
+    def ylim(self) -> int:
         """
         Get the current y-axis limit.
 
         Returns
         -------
-        float
+        int
             Current y-axis limit
         """
         return self.thisptr.opts.ylim
@@ -836,7 +927,7 @@ cdef class Gw:
 
         Parameters
         ----------
-        ylim : float
+        ylim : int
             New y-axis limit
 
         Returns
@@ -845,7 +936,71 @@ cdef class Gw:
             Self for method chaining
         """
         self.thisptr.opts.ylim = ylim
+        self.thisptr.samMaxY = ylim
         return self
+
+    @property
+    def sam_max_y(self) -> int:
+        """
+        Get the highest read row currently laid out.
+
+        Returns
+        -------
+        int
+            Highest read row
+        """
+        return self.thisptr.samMaxY
+
+    @property
+    def vscroll(self) -> int:
+        """
+        Get the current vertical read-scroll offset.
+
+        Returns
+        -------
+        int
+            Scroll offset in read rows, 0 if no reads are loaded
+        """
+        if self.thisptr.collections.size() > 0:
+            return self.thisptr.collections[0].vScroll
+        return 0
+
+    def set_vscroll(self, value: int):
+        """
+        Set the vertical read-scroll offset and re-run the read layout.
+
+        Parameters
+        ----------
+        value : int
+            Scroll offset in read rows, clamped to >= 0
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.setVScroll(value)
+        return self
+
+    @property
+    def pileup_depth(self) -> int:
+        """
+        Get the peak read depth across loaded alignments.
+
+        Read layout stops at ylim, so the deepest coverage column is used as an estimate of
+        the total number of read rows, e.g. to size a vertical scroll bar.
+
+        Returns
+        -------
+        int
+            Maximum coverage over all read collections
+        """
+        cdef int m = 0
+        cdef size_t i
+        for i in range(self.thisptr.collections.size()):
+            if self.thisptr.collections[i].maxCoverage > m:
+                m = self.thisptr.collections[i].maxCoverage
+        return m
 
     @property
     def split_view_size(self) -> int:
@@ -1053,6 +1208,35 @@ cdef class Gw:
         return self
 
     @property
+    def data_labels(self) -> bool:
+        """
+        Get the data labels setting.
+
+        Returns
+        -------
+        bool
+            True if file name labels are drawn on the canvas
+        """
+        return self.thisptr.opts.data_labels
+
+    def set_data_labels(self, data_labels: bool):
+        """
+        Set whether to draw file name labels on the canvas.
+
+        Parameters
+        ----------
+        data_labels : bool
+            True to draw labels
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.opts.data_labels = <bint>data_labels
+        return self
+
+    @property
     def vcf_as_tracks(self) -> bool:
         """
         Get the VCF as tracks setting.
@@ -1142,31 +1326,196 @@ cdef class Gw:
     @property
     def tab_track_height(self) -> float:
         """
-        Get the height of track tabs.
+        Get the fraction of the canvas height used by data tracks.
 
         Returns
         -------
-        int
-            Current track tab height
+        float
+            Current track height fraction
         """
         return self.thisptr.opts.tab_track_height
 
     def set_tab_track_height(self, tab_track_height: float):
         """
-        Set the height of track tabs in the visualisation.
+        Set the fraction of the canvas height used by data tracks. Loaded tracks are
+        rescaled together, keeping their relative heights.
 
         Parameters
         ----------
-        tab_track_height : int
-            New track tab height
+        tab_track_height : float
+            New track height fraction, between 0.0 and 1.0
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+
+        Raises
+        ------
+        ValueError
+            If tab_track_height is outside 0.0 - 1.0
+        """
+        if not 0.0 <= tab_track_height <= 1.0:
+            raise ValueError("tab_track_height must be between 0.0 and 1.0")
+        return self.apply_command(f"tab-track-height {float(tab_track_height)!r}")
+
+    def set_track_height(self, index: int, height: float):
+        """
+        Set the height of a single data track, as a fraction of the canvas height.
+        Other tracks keep their heights.
+
+        Parameters
+        ----------
+        index : int
+            Track index, see get_tracks
+        height : float
+            Height fraction, clamped to 0.02 - 0.9
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+
+        Raises
+        ------
+        IndexError
+            If index is out of range
+        """
+        if index < 0 or index >= <int>self.thisptr.tracks.size():
+            raise IndexError(f"Track index {index} out of range")
+        return self.apply_command(f"track-height {index} {float(height)!r}")
+
+    def get_tracks(self) -> List[Dict[str, Any]]:
+        """
+        Get the loaded data tracks, in draw order.
+
+        Returns
+        -------
+        list
+            One dict per track with keys "index", "name", "kind" (the gw HGW::FType value),
+            "bam_index" (source alignment index for intron tracks, otherwise -1) and
+            "height_fraction" (0.0 when the track uses the default height)
+        """
+        cdef size_t i
+        tracks = []
+        for i in range(self.thisptr.tracks.size()):
+            tracks.append({
+                "index": <int>i,
+                "name": self.thisptr.tracks[i].name,
+                "kind": <int>self.thisptr.tracks[i].kind,
+                "bam_index": <int>self.thisptr.tracks[i].bamIndex,
+                "height_fraction": <double>self.thisptr.tracks[i].height_fraction,
+            })
+        return tracks
+
+    def get_viewport(self) -> Dict[str, Any]:
+        """
+        Get the layout of the scale bar and region panes, e.g. for implementing a
+        drag-to-zoom on the scale bar.
+
+        Returns
+        -------
+        dict
+            Keys "scale_bar_enabled", "scale_bar_top", "scale_bar_bottom" and "gap" (in
+            frame-buffer pixels) and "regions", a list of dicts with keys "index", "chrom",
+            "start" and "end"
+        """
+        cdef float top = 0, bottom = 0
+        cdef float yh
+        cdef size_t i
+        # The scale bar spans topMenuSpace to topMenuSpace + overlayHeight + gap + yh * 0.7
+        if self.thisptr.opts.scale_bar:
+            yh = max(self.thisptr.fb_height * 0.0175, 10.0 * self.thisptr.monitorScale)
+            top = self.thisptr.topMenuSpace
+            bottom = (self.thisptr.topMenuSpace + self.thisptr.fonts.overlayHeight
+                      + self.thisptr.gap + yh * 0.70)
+        regions = []
+        for i in range(self.thisptr.regions.size()):
+            regions.append({
+                "index": <int>i,
+                "chrom": self.thisptr.regions[i].chrom,
+                "start": <int>self.thisptr.regions[i].start,
+                "end": <int>self.thisptr.regions[i].end,
+            })
+        return {
+            "scale_bar_enabled": bool(self.thisptr.opts.scale_bar),
+            "scale_bar_top": <float>top,
+            "scale_bar_bottom": <float>bottom,
+            "gap": <float>self.thisptr.gap,
+            "regions": regions,
+        }
+
+    def set_translation(self, enabled: bool):
+        """
+        Show or hide the amino acid translation track beneath the reference sequence.
+
+        Parameters
+        ----------
+        enabled : bool
+            True to show the translation track
 
         Returns
         -------
         Gw
             Self for method chaining
         """
-        self.thisptr.opts.tab_track_height = tab_track_height
-        return self
+        return self.apply_command("translate on" if enabled else "translate off")
+
+    def set_translation_frame(self, frame: int):
+        """
+        Set the reading frame of the translation track, relative to the translated strand.
+
+        Parameters
+        ----------
+        frame : int
+            1, 2 or 3
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        if frame not in (1, 2, 3):
+            raise ValueError(f"Frame must be 1, 2 or 3, got {frame!r}")
+        return self.apply_command(f"translate frame {frame}")
+
+    def set_translation_strand(self, strand: str):
+        """
+        Set the strand used by the translation track.
+
+        Parameters
+        ----------
+        strand : str
+            "+", "forward", "f" or "plus"; or "-", "reverse", "r" or "minus"
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        s = str(strand).lower()
+        allowed = ("+", "forward", "f", "plus", "-", "reverse", "r", "minus")
+        if s not in allowed:
+            raise ValueError(f"Strand must be one of {allowed}, got {strand!r}")
+        return self.apply_command(f"translate strand {s}")
+
+    def set_translation_code(self, code: int):
+        """
+        Set the NCBI genetic code used by the translation track.
+
+        Parameters
+        ----------
+        code : int
+            Genetic code table, 1 is the standard code
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        if code < 1:
+            raise ValueError(f"Genetic code must be >= 1, got {code}")
+        return self.apply_command(f"translate code {code}")
 
     @property
     def start_index(self) -> int:
@@ -1396,6 +1745,30 @@ cdef class Gw:
         self.thisptr.opts.theme.setPaintARGB(paint_enum, a, r, g, b)
         return self
 
+    def set_paint_ARGB(self, paint_enum: int, a: int, r: int, g: int, b: int):
+        """
+        Set the ARGB color for a specific paint type. Same as set_paint_ARBG.
+
+        Parameters
+        ----------
+        paint_enum : int
+            Paint type enumeration value from GwPalette (e.g., GwPalette.NORMAL_READ)
+        a : int
+            Alpha channel value (0-255)
+        r : int
+            Red channel value (0-255)
+        g : int
+            Green channel value (0-255)
+        b : int
+            Blue channel value (0-255)
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        return self.set_paint_ARBG(paint_enum, a, r, g, b)
+
     def set_active_region_index(self, index: int):
         """
         Set the currently active region for visualisation.
@@ -1410,8 +1783,8 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
-        if index < <int>self.thisptr.regions.size():
-            self.regionSelection = index
+        if 0 <= index < <int>self.thisptr.regions.size():
+            self.thisptr.regionSelection = index
         return self
 
     def clear_alignments(self) -> None:
@@ -1428,9 +1801,8 @@ cdef class Gw:
         """
         Remove all defined genomic regions.
         """
-        cdef size_t i
-        for i in range(self.thisptr.regions.size()):
-            self.remove_region(i)
+        while self.thisptr.regions.size() > 0:
+            self.remove_region(0)
         self.thisptr.clearImageCacheQueue()
 
     def clear(self) -> None:  #todo this is incomplete: tracks, variant files
@@ -1644,12 +2016,15 @@ cdef class Gw:
             Self for method chaining
         """
         cdef string c = chrom.encode("utf-8")
+        cdef pair[int, int] mp
         self.thisptr.regions.push_back(Region())
         self.thisptr.regions.back().chrom = c
         self.thisptr.regions.back().start = start
         self.thisptr.regions.back().end = end
-        self.thisptr.regions.back().markerPos = marker_start
-        self.thisptr.regions.back().markerPosEnd = marker_end
+        if marker_start >= 0:
+            mp.first = marker_start
+            mp.second = marker_end
+            self.thisptr.regions.back().markers.push_back(mp)
         self.thisptr.fetchRefSeq(self.thisptr.regions.back())
         self.thisptr.regionSelection = <int>self.thisptr.regions.size() - 1
         self.thisptr.resetCollectionRegionPtrs()
@@ -1672,17 +2047,98 @@ cdef class Gw:
         self.thisptr.removeRegion(index)
         return self
 
+    def add_marker(self, chrom: str, pos: int, end: int = -1):
+        """
+        Add a marker at a genomic position. Unlike markers passed to add_region, these
+        persist across navigation and are drawn in every region on the same chromosome.
+        Same as the "marker" command.
+
+        Parameters
+        ----------
+        chrom : str
+            Chromosome name
+        pos : int
+            Marker position
+        end : int, optional
+            Marker end position, defaults to pos + 1
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        if end < 0:
+            end = pos + 1
+        return self.apply_command(f"marker {chrom} {int(pos)} {int(end)}")
+
+    def remove_marker(self, chrom: str, pos: int):
+        """
+        Remove markers added with add_marker or the "marker" command at a position.
+        Same as the "remove-marker" command.
+
+        Parameters
+        ----------
+        chrom : str
+            Chromosome name
+        pos : int
+            Marker position, as passed to add_marker
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        return self.apply_command(f"remove-marker {chrom} {int(pos)}")
+
+    def clear_markers(self):
+        """
+        Remove all markers added with add_marker or the "marker" command. Markers given to
+        add_region are kept. Same as the "clear-markers" command.
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        return self.apply_command("clear-markers")
+
+    @property
+    def markers(self) -> List[Tuple[str, int, int]]:
+        """
+        Get the markers added with add_marker or the "marker" command.
+
+        Returns
+        -------
+        list
+            (chrom, start, end) tuples
+        """
+        return [(m.chrom, m.start, m.end) for m in self.thisptr.markers]
+
     def apply_command(self, command: str):
         """
         Apply a GW command string.
+
+        "expand-tracks on|off" sets the option rather than toggling it.
 
         Parameters
         ----------
         command : str
             GW command to execute (e.g., "filter", "count", etc.)
 
+        Returns
+        -------
+        Gw
+            Self for method chaining
         """
+        parts = command.strip().split()
+        if len(parts) == 2 and parts[0] == "expand-tracks":
+            want = parts[1].lower() in ("1", "on", "true", "yes")
+            if bool(self.thisptr.opts.expand_tracks) == want:
+                return self
+            command = "expand-tracks"  # the native command toggles
+
         cdef string c = command.encode("utf-8")
+        ImGui_SetCurrentContext(self.imgui_ctx)
         self.thisptr.inputText = c
         self.thisptr.commandProcessed()
         return self
@@ -1702,6 +2158,7 @@ cdef class Gw:
         mods : int
             Modifier keys
         """
+        ImGui_SetCurrentContext(self.imgui_ctx)
         self.thisptr.keyPress(key, scancode, action, mods)
     #todo
     # scroll_left, scroll_right, zoom_out, zoom_in
@@ -1978,5 +2435,6 @@ cdef class Gw:
         return np.asarray(self)
 
     def __dealloc__(self):
-        """ Freeing of Gw is left to the c++ layer"""
-        pass
+        del self.thisptr
+        if self.imgui_ctx != NULL:
+            ImGui_DestroyContext(self.imgui_ctx)

@@ -202,21 +202,47 @@ cdef class Gw:
     ----------
     reference : str
         Path to reference genome file
+    ini : str, optional
+        Path to a gw .gw.ini settings file. Without it the settings come from the
+        user's .gw.ini, as in standalone gw (a default one is written if none exists).
     **kwargs : dict, optional
             Additional parameters to configure the browser
     """
-    def __cinit__(self, reference: str, **kwargs: Any) -> None:
+    def __cinit__(self, reference: str, ini=None, **kwargs: Any) -> None:
         """Initialise the C++ GwPlot object with minimal required parameters."""
 
         cdef vector[string] bampaths, track_paths
         cdef vector[Region] regions
 
-        # Initialise with defaults
+        # Settings come from a gw .gw.ini file: the `ini` given, or else -- as in the
+        # standalone browser -- ~/.gw.ini, then ~/.config/.gw.ini, then one next to the
+        # executable, and if there is none a default one is written.         
         cdef IniOptions iopts
-        iopts.threads = 1
-        iopts.theme.setAlphas()
         cdef string theme = string(b"dark")
-        iopts.setTheme(theme)
+        cdef INIMap[string] view_thresholds
+        cdef INIFile* ini_file
+        if ini is not None:
+            ini = os.path.abspath(os.path.expanduser(str(ini)))
+            if not os.path.isfile(ini):
+                raise FileNotFoundError(f"gw ini file not found: {ini}")
+            iopts.ini_path = ini.encode("utf-8")
+            ini_file = new INIFile(iopts.ini_path)
+            try:
+                if not ini_file.read(iopts.myIni):
+                    raise ValueError(f"could not read gw ini file: {ini}")
+            finally:
+                del ini_file
+            iopts.getOptionsFromIni()
+        elif not iopts.readIni():
+            # No readable or writable ini (e.g. no home directory): use the built-in defaults.
+            iopts.threads = 1
+            iopts.setTheme(theme)
+            view_thresholds.set(b"soft_clip", str(iopts.soft_clip_threshold).encode())
+            view_thresholds.set(b"small_indel", str(iopts.small_indel_threshold).encode())
+            view_thresholds.set(b"snp", str(iopts.snp_threshold).encode())
+            view_thresholds.set(b"edge_highlights", str(iopts.edge_highlights).encode())
+            iopts.myIni.set(b"view_thresholds", view_thresholds)
+        iopts.theme.setAlphas()
         reference = os.path.expanduser(reference)
         tmp = bytes(reference.encode("utf-8"))
         cdef string tag = string(tmp)
@@ -245,7 +271,7 @@ cdef class Gw:
         if not iopts.genome_tag.empty():
             self.thisptr.loadIdeogramTag()
 
-    def __init__(self, reference: str, **kwargs: Any) -> None:
+    def __init__(self, reference: str, ini=None, **kwargs: Any) -> None:
         """
         Python-level initialisation for the GW object with flexible parameters.
 
@@ -253,6 +279,8 @@ cdef class Gw:
         ----------
         reference : str
             Path to reference genome file
+        ini : str, optional
+            Path to a gw .gw.ini settings file (default: the user's, as in standalone gw)
         **kwargs : dict, optional
             Additional parameters to configure the browser
 
@@ -849,6 +877,18 @@ cdef class Gw:
             json.dump(theme_data, f, indent=2)
 
         return self
+
+    @property
+    def ini_path(self) -> str:
+        """
+        The .gw.ini file the settings were loaded from ('' if none could be read or written).
+
+        Returns
+        -------
+        str
+            Path of the ini file
+        """
+        return self.thisptr.opts.ini_path
 
     @property
     def threads(self) -> int:

@@ -20,6 +20,18 @@ cdef extern from "utils.h" namespace "Utils" nogil:
         int start, end
 
 
+cdef extern from "ini.h" namespace "mINI" nogil:
+    # gw's ini settings: a map of sections, each a map of string values (INIStructure).
+    cdef cppclass INIMap[T]:
+        INIMap() nogil
+        T get(string key)
+        bint has(string key)
+        void set(string key, T obj)
+
+    cdef cppclass INIFile:
+        INIFile(string filename) nogil
+        bint read(INIMap[INIMap[string]]& data)
+
 cdef extern from "themes.h" namespace "Themes" nogil:
 
     cpdef enum GwPaint:
@@ -53,8 +65,13 @@ cdef extern from "themes.h" namespace "Themes" nogil:
         int zoom_out, zoom_in
         int start_index
         int soft_clip_threshold, small_indel_threshold, snp_threshold, variant_distance, low_memory
+        int edge_highlights
         int font_size
+        INIMap[INIMap[string]] myIni
+        string ini_path
         void setTheme(string &theme_str)
+        bint readIni()
+        void getOptionsFromIni()
 
     cdef cppclass Fonts:
         Fonts() nogil

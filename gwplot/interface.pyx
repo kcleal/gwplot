@@ -202,21 +202,47 @@ cdef class Gw:
     ----------
     reference : str
         Path to reference genome file
+    ini : str, optional
+        Path to a gw .gw.ini settings file. Without it the settings come from the
+        user's .gw.ini, as in standalone gw (a default one is written if none exists).
     **kwargs : dict, optional
             Additional parameters to configure the browser
     """
-    def __cinit__(self, reference: str, **kwargs: Any) -> None:
+    def __cinit__(self, reference: str, ini=None, **kwargs: Any) -> None:
         """Initialise the C++ GwPlot object with minimal required parameters."""
 
         cdef vector[string] bampaths, track_paths
         cdef vector[Region] regions
 
-        # Initialise with defaults
+        # Settings come from a gw .gw.ini file: the `ini` given, or else -- as in the
+        # standalone browser -- ~/.gw.ini, then ~/.config/.gw.ini, then one next to the
+        # executable, and if there is none a default one is written.         
         cdef IniOptions iopts
-        iopts.threads = 1
-        iopts.theme.setAlphas()
         cdef string theme = string(b"dark")
-        iopts.setTheme(theme)
+        cdef INIMap[string] view_thresholds
+        cdef INIFile* ini_file
+        if ini is not None:
+            ini = os.path.abspath(os.path.expanduser(str(ini)))
+            if not os.path.isfile(ini):
+                raise FileNotFoundError(f"gw ini file not found: {ini}")
+            iopts.ini_path = ini.encode("utf-8")
+            ini_file = new INIFile(iopts.ini_path)
+            try:
+                if not ini_file.read(iopts.myIni):
+                    raise ValueError(f"could not read gw ini file: {ini}")
+            finally:
+                del ini_file
+            iopts.getOptionsFromIni()
+        elif not iopts.readIni():
+            # No readable or writable ini (e.g. no home directory): use the built-in defaults.
+            iopts.threads = 1
+            iopts.setTheme(theme)
+            view_thresholds.set(b"soft_clip", str(iopts.soft_clip_threshold).encode())
+            view_thresholds.set(b"small_indel", str(iopts.small_indel_threshold).encode())
+            view_thresholds.set(b"snp", str(iopts.snp_threshold).encode())
+            view_thresholds.set(b"edge_highlights", str(iopts.edge_highlights).encode())
+            iopts.myIni.set(b"view_thresholds", view_thresholds)
+        iopts.theme.setAlphas()
         reference = os.path.expanduser(reference)
         tmp = bytes(reference.encode("utf-8"))
         cdef string tag = string(tmp)
@@ -245,7 +271,7 @@ cdef class Gw:
         if not iopts.genome_tag.empty():
             self.thisptr.loadIdeogramTag()
 
-    def __init__(self, reference: str, **kwargs: Any) -> None:
+    def __init__(self, reference: str, ini=None, **kwargs: Any) -> None:
         """
         Python-level initialisation for the GW object with flexible parameters.
 
@@ -253,6 +279,8 @@ cdef class Gw:
         ----------
         reference : str
             Path to reference genome file
+        ini : str, optional
+            Path to a gw .gw.ini settings file (default: the user's, as in standalone gw)
         **kwargs : dict, optional
             Additional parameters to configure the browser
 
@@ -851,6 +879,18 @@ cdef class Gw:
         return self
 
     @property
+    def ini_path(self) -> str:
+        """
+        The .gw.ini file the settings were loaded from ('' if none could be read or written).
+
+        Returns
+        -------
+        str
+            Path of the ini file
+        """
+        return self.thisptr.opts.ini_path
+
+    @property
     def threads(self) -> int:
         """
         Get the number of threads used for processing.
@@ -1150,6 +1190,42 @@ cdef class Gw:
         return self
 
     @property
+    def mods(self) -> bool:
+        """
+        Whether base modifications are shown (toggled by the `mods` command).
+
+        Returns
+        -------
+        bool
+            True if base modifications are drawn
+        """
+        return self.thisptr.opts.parse_mods
+
+    @property
+    def draw_line(self) -> bool:
+        """
+        Whether the vertical reference line is drawn (toggled by the `line` command).
+
+        Returns
+        -------
+        bool
+            True if the line is drawn
+        """
+        return self.thisptr.drawLine
+
+    @property
+    def min_junction_reads(self) -> int:
+        """
+        Minimum supporting reads for an intron to be drawn (set by `min-junction-reads N`).
+
+        Returns
+        -------
+        int
+            Current minimum
+        """
+        return self.thisptr.opts.min_junction_reads
+
+    @property
     def tlen_yscale(self) -> bool:
         """
         Get the template length y-scale factor.
@@ -1445,6 +1521,42 @@ cdef class Gw:
             "regions": regions,
         }
 
+    @property
+    def translation(self) -> bool:
+        """
+        Whether the amino acid translation track is shown.
+
+        Returns
+        -------
+        bool
+            True if the translation track is shown
+        """
+        return self.thisptr.opts.show_translation
+
+    @property
+    def translation_frame(self) -> int:
+        """
+        The translation track's reading frame: 1, 2 or 3 (as set_translation_frame takes it).
+
+        Returns
+        -------
+        int
+            Current reading frame
+        """
+        return self.thisptr.opts.translation_frame + 1
+
+    @property
+    def translation_strand(self) -> str:
+        """
+        The strand the translation track translates: "+" or "-".
+
+        Returns
+        -------
+        str
+            Current strand
+        """
+        return "+" if self.thisptr.opts.translation_strand else "-"
+
     def set_translation(self, enabled: bool):
         """
         Show or hide the amino acid translation track beneath the reference sequence.
@@ -1573,6 +1685,36 @@ cdef class Gw:
             Self for method chaining
         """
         self.thisptr.opts.soft_clip_threshold = soft_clip_threshold
+        return self
+
+    @property
+    def edge_highlights(self) -> int:
+        """
+        Get the region size (in base-pairs) up to which read-edge highlights are drawn;
+        0 when switched off (the `edges` command).
+
+        Returns
+        -------
+        int
+            Current edge highlight threshold
+        """
+        return self.thisptr.opts.edge_highlights
+
+    def set_edge_highlights(self, edge_highlights: int):
+        """
+        Set the region size (in base-pairs) up to which read-edge highlights are drawn.
+
+        Parameters
+        ----------
+        edge_highlights : int
+            New threshold; 0 switches edge highlights off
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.opts.edge_highlights = edge_highlights
         return self
 
     @property
@@ -2261,7 +2403,8 @@ cdef class Gw:
         """
         Draw the visualisation to the raster surface. Caches state for using with interactive functions.
 
-        Creates the raster surface if it doesn't exist yet.
+        Creates the raster surface if it doesn't exist yet. The GIL is released while gw
+        draws, so other Python threads keep running; don't draw from two threads at once.
 
         Parameters
         ----------
@@ -2277,8 +2420,11 @@ cdef class Gw:
             self.make_raster_surface()
         if clear_buffer:
             self.thisptr.processed = False
-        self.thisptr.syncImageCacheQueue()
-        self.thisptr.drawScreen(self.force_buffered_reads)
+        cdef GwPlot* plot = self.thisptr
+        cdef bint force_buffered_reads = self.force_buffered_reads
+        with nogil:
+            plot.syncImageCacheQueue()
+            plot.drawScreen(force_buffered_reads)
         return self
 
     def draw_image(self) -> Image.Image:
@@ -2343,7 +2489,11 @@ cdef class Gw:
         """
         if not self.raster_surface_created:
             return None
-        cdef pair[const uint8_t *, size_t] png_data = self.thisptr.encodeToPng(compression_level)
+        cdef GwPlot* plot = self.thisptr
+        cdef int level = compression_level
+        cdef pair[const uint8_t *, size_t] png_data
+        with nogil:  # encoding is slow for large canvases; let other threads run
+            png_data = plot.encodeToPng(level)
         if png_data.first != NULL and png_data.second > 0:
             return PyBytes_FromStringAndSize(<char *> png_data.first, png_data.second)
         raise RuntimeError("Encoding image failed, size was 0 bytes")
@@ -2364,7 +2514,11 @@ cdef class Gw:
         """
         if not self.raster_surface_created:
             return None
-        cdef pair[const uint8_t *, size_t] jpeg_data = self.thisptr.encodeToJpeg(quality)
+        cdef GwPlot* plot = self.thisptr
+        cdef int q = quality
+        cdef pair[const uint8_t *, size_t] jpeg_data
+        with nogil:
+            jpeg_data = plot.encodeToJpeg(q)
         if jpeg_data.first != NULL and jpeg_data.second > 0:
             return PyBytes_FromStringAndSize(<char *> jpeg_data.first, jpeg_data.second)
         raise RuntimeError("Encoding image failed, size was 0 bytes")

@@ -51,6 +51,43 @@ if not fs.exists(gw_lib_dir)
 endif
 
 
+# Extra include/lib search prefixes for Homebrew / conda
+# -----------------------------------------------------------------------------
+custom_prefix = get_option('prefix_path')
+
+if custom_prefix != ''
+  sys_prefix = custom_prefix
+else
+  prefix_candidates = [
+    '/opt/homebrew',
+    '/usr/local',
+    run_command('sh', ['-c', 'echo $CONDA_PREFIX'], check: false).stdout().strip(),
+    run_command('sh', ['-c', 'echo $PREFIX'], check: false).stdout().strip(),
+  ]
+  sys_prefix = ''
+  foreach candidate : prefix_candidates
+    if candidate != '' and (fs.exists(candidate / 'include') or fs.exists(candidate / 'lib'))
+      sys_prefix = candidate
+      break
+    endif
+  endforeach
+endif
+
+extra_inc_dirs = []
+extra_lib_dirs = []
+if sys_prefix != ''
+  if fs.exists(sys_prefix / 'include')
+    extra_inc_dirs += include_directories(sys_prefix / 'include', is_system: true)
+  endif
+  if fs.exists(sys_prefix / 'lib')
+    extra_lib_dirs += ['-L' + sys_prefix / 'lib']
+  endif
+endif
+
+# build_gw.py needs this so gw's Makefile links the right arch (it hardcodes /usr/local)
+build_env.set('GW_SYS_PREFIX', sys_prefix)
+
+
 # Build libgw library via custom target
 # -----------------------------------------------------------------------------
 build_gw_py = files('build_gw.py')
@@ -85,38 +122,6 @@ foreach inc : pysam_inc_cmd.stdout().strip().split(':')
 endforeach
 
 
-# Extra include/lib search prefixes for Homebrew / conda
-# -----------------------------------------------------------------------------
-custom_prefix = get_option('prefix_path')
-
-if custom_prefix != ''
-  sys_prefix = custom_prefix
-else
-  prefix_candidates = [
-    '/opt/homebrew',
-    '/usr/local',
-    run_command('sh', ['-c', 'echo $CONDA_PREFIX'], check: false).stdout().strip(),
-    run_command('sh', ['-c', 'echo $PREFIX'], check: false).stdout().strip(),
-  ]
-  sys_prefix = ''
-  foreach candidate : prefix_candidates
-    if candidate != '' and fs.exists(candidate)
-      sys_prefix = candidate
-      break
-    endif
-  endforeach
-endif
-
-extra_inc_dirs = []
-extra_lib_dirs = []
-if sys_prefix != ''
-  if fs.exists(sys_prefix / 'include')
-    extra_inc_dirs += include_directories(sys_prefix / 'include', is_system: true)
-  endif
-  if fs.exists(sys_prefix / 'lib')
-    extra_lib_dirs += ['-L' + sys_prefix / 'lib']
-  endif
-endif
 
 
 # Compiler / linker flags

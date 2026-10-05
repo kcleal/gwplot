@@ -1190,6 +1190,42 @@ cdef class Gw:
         return self
 
     @property
+    def mods(self) -> bool:
+        """
+        Whether base modifications are shown (toggled by the `mods` command).
+
+        Returns
+        -------
+        bool
+            True if base modifications are drawn
+        """
+        return self.thisptr.opts.parse_mods
+
+    @property
+    def draw_line(self) -> bool:
+        """
+        Whether the vertical reference line is drawn (toggled by the `line` command).
+
+        Returns
+        -------
+        bool
+            True if the line is drawn
+        """
+        return self.thisptr.drawLine
+
+    @property
+    def min_junction_reads(self) -> int:
+        """
+        Minimum supporting reads for an intron to be drawn (set by `min-junction-reads N`).
+
+        Returns
+        -------
+        int
+            Current minimum
+        """
+        return self.thisptr.opts.min_junction_reads
+
+    @property
     def tlen_yscale(self) -> bool:
         """
         Get the template length y-scale factor.
@@ -1485,6 +1521,42 @@ cdef class Gw:
             "regions": regions,
         }
 
+    @property
+    def translation(self) -> bool:
+        """
+        Whether the amino acid translation track is shown.
+
+        Returns
+        -------
+        bool
+            True if the translation track is shown
+        """
+        return self.thisptr.opts.show_translation
+
+    @property
+    def translation_frame(self) -> int:
+        """
+        The translation track's reading frame: 1, 2 or 3 (as set_translation_frame takes it).
+
+        Returns
+        -------
+        int
+            Current reading frame
+        """
+        return self.thisptr.opts.translation_frame + 1
+
+    @property
+    def translation_strand(self) -> str:
+        """
+        The strand the translation track translates: "+" or "-".
+
+        Returns
+        -------
+        str
+            Current strand
+        """
+        return "+" if self.thisptr.opts.translation_strand else "-"
+
     def set_translation(self, enabled: bool):
         """
         Show or hide the amino acid translation track beneath the reference sequence.
@@ -1613,6 +1685,36 @@ cdef class Gw:
             Self for method chaining
         """
         self.thisptr.opts.soft_clip_threshold = soft_clip_threshold
+        return self
+
+    @property
+    def edge_highlights(self) -> int:
+        """
+        Get the region size (in base-pairs) up to which read-edge highlights are drawn;
+        0 when switched off (the `edges` command).
+
+        Returns
+        -------
+        int
+            Current edge highlight threshold
+        """
+        return self.thisptr.opts.edge_highlights
+
+    def set_edge_highlights(self, edge_highlights: int):
+        """
+        Set the region size (in base-pairs) up to which read-edge highlights are drawn.
+
+        Parameters
+        ----------
+        edge_highlights : int
+            New threshold; 0 switches edge highlights off
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.opts.edge_highlights = edge_highlights
         return self
 
     @property
@@ -2301,7 +2403,8 @@ cdef class Gw:
         """
         Draw the visualisation to the raster surface. Caches state for using with interactive functions.
 
-        Creates the raster surface if it doesn't exist yet.
+        Creates the raster surface if it doesn't exist yet. The GIL is released while gw
+        draws, so other Python threads keep running; don't draw from two threads at once.
 
         Parameters
         ----------
@@ -2317,8 +2420,11 @@ cdef class Gw:
             self.make_raster_surface()
         if clear_buffer:
             self.thisptr.processed = False
-        self.thisptr.syncImageCacheQueue()
-        self.thisptr.drawScreen(self.force_buffered_reads)
+        cdef GwPlot* plot = self.thisptr
+        cdef bint force_buffered_reads = self.force_buffered_reads
+        with nogil:
+            plot.syncImageCacheQueue()
+            plot.drawScreen(force_buffered_reads)
         return self
 
     def draw_image(self) -> Image.Image:
@@ -2383,7 +2489,11 @@ cdef class Gw:
         """
         if not self.raster_surface_created:
             return None
-        cdef pair[const uint8_t *, size_t] png_data = self.thisptr.encodeToPng(compression_level)
+        cdef GwPlot* plot = self.thisptr
+        cdef int level = compression_level
+        cdef pair[const uint8_t *, size_t] png_data
+        with nogil:  # encoding is slow for large canvases; let other threads run
+            png_data = plot.encodeToPng(level)
         if png_data.first != NULL and png_data.second > 0:
             return PyBytes_FromStringAndSize(<char *> png_data.first, png_data.second)
         raise RuntimeError("Encoding image failed, size was 0 bytes")
@@ -2404,7 +2514,11 @@ cdef class Gw:
         """
         if not self.raster_surface_created:
             return None
-        cdef pair[const uint8_t *, size_t] jpeg_data = self.thisptr.encodeToJpeg(quality)
+        cdef GwPlot* plot = self.thisptr
+        cdef int q = quality
+        cdef pair[const uint8_t *, size_t] jpeg_data
+        with nogil:
+            jpeg_data = plot.encodeToJpeg(q)
         if jpeg_data.first != NULL and jpeg_data.second > 0:
             return PyBytes_FromStringAndSize(<char *> jpeg_data.first, jpeg_data.second)
         raise RuntimeError("Encoding image failed, size was 0 bytes")

@@ -597,6 +597,44 @@ class TestThresholdToggles(unittest.TestCase):
         self.assertIsNotNone(render(gw))
 
 
+
+class TestSettingsState(unittest.TestCase):
+    """gw's display settings can be read back, so callers needn't track them."""
+
+    def test_flip_toggles_read_back(self):
+        gw = make_plot()
+        for command, read in (("mods", lambda: gw.mods), ("line", lambda: gw.draw_line),
+                              ("log2-cov", lambda: gw.log2_cov)):
+            with self.subTest(command=command):
+                before = read()
+                gw.apply_command(command)
+                self.assertEqual(read(), not before)
+                gw.apply_command(command)
+                self.assertEqual(read(), before)
+
+    def test_edge_highlights(self):
+        gw = make_plot()
+        start = gw.edge_highlights
+        self.assertGreater(start, 0)
+        gw.apply_command("edges")
+        self.assertEqual(gw.edge_highlights, 0)
+        gw.apply_command("edges")
+        self.assertEqual(gw.edge_highlights, start)
+        self.assertEqual(gw.set_edge_highlights(5).edge_highlights, 5)
+
+    def test_min_junction_reads(self):
+        gw = make_plot()
+        gw.apply_command("min-junction-reads 7")
+        self.assertEqual(gw.min_junction_reads, 7)
+
+    def test_translation_state(self):
+        gw = make_plot()
+        self.assertFalse(gw.translation)
+        gw.set_translation(True).set_translation_frame(2).set_translation_strand("-")
+        self.assertEqual((gw.translation, gw.translation_frame, gw.translation_strand), (True, 2, "-"))
+        gw.set_translation(False)
+        self.assertFalse(gw.translation)
+
 def main():
     unittest.main()
 

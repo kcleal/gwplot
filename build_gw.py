@@ -39,6 +39,17 @@ def main():
     env = os.environ.copy()
     env['OLD_SKIA'] = '1' if old_skia else '0'
 
+    if system == 'Darwin':
+        imgui_export = ' -D\'IMGUI_API=__attribute__((visibility("default")))\''
+        prefix = os.environ.get('GW_SYS_PREFIX', '')
+        if prefix:
+            env['CPPFLAGS'] = f'-isystem {prefix}/include ' + env.get('CPPFLAGS', '')
+            env['LDFLAGS'] = f'-L{prefix}/lib ' + env.get('LDFLAGS', '')
+            env['PKG_CONFIG_PATH'] = (f'{prefix}/lib/pkgconfig:'
+                                      + env.get('PKG_CONFIG_PATH', ''))
+
+        env['CPPFLAGS'] = env.get('CPPFLAGS', '') + imgui_export
+
     # Check if we need to run make prep
     if not skia_dir.exists():
         print("Running 'make prep' to fetch Skia...")

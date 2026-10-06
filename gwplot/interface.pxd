@@ -3,7 +3,7 @@
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.utility cimport pair
-from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t, int32_t
+from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t, int32_t, int64_t
 
 cdef extern from "utils.h" namespace "Utils" nogil:
     cdef struct Dims:
@@ -152,6 +152,7 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
         vector[Region] regions
         vector[Marker] markers  # persistent markers, drawn in every region on the same chromosome
         vector[ReadCollection] collections
+        vector[sam_hdr_t*] headers  # one per bam, in collections' bamIdx order
         vector[GwTrack] tracks
 
         bint drawToBackWindow, terminalOutput
@@ -245,19 +246,18 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 cdef extern from "htslib/sam.h":
     cdef extern from "htslib/sam.h":
         ctypedef struct bam1_core_t:
+            int64_t pos  # hts_pos_t
             int32_t tid
-            int32_t pos
             uint16_t bin
             uint8_t qual
             uint8_t l_extranul
-            uint8_t flag
-            uint8_t unused1
-            uint8_t l_qname
-            uint16_t n_cigar
+            uint16_t flag
+            uint16_t l_qname
+            uint32_t n_cigar
             int32_t l_qseq
             int32_t mtid
-            int32_t mpos
-            int32_t isize
+            int64_t mpos  # hts_pos_t
+            int64_t isize  # hts_pos_t
 
         ctypedef struct bam1_t:
             bam1_core_t core
@@ -265,6 +265,17 @@ cdef extern from "htslib/sam.h":
             uint32_t m_data
             uint8_t *data
             uint64_t id
+
+        ctypedef struct sam_hdr_t:
+            pass
+
+        char *bam_get_qname(bam1_t *b)  # a macro in htslib
+        int sam_format1(const sam_hdr_t *h, const bam1_t *b, kstring_t *str)
+
+cdef extern from "htslib/kstring.h":
+    ctypedef struct kstring_t:
+        size_t l, m
+        char *s
 
 cdef class Gw:
 

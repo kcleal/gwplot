@@ -39,7 +39,8 @@ cdef extern from "themes.h" namespace "Themes" nogil:
         fcA, fcT, fcC, fcG, fcN, fcCoverage, fcTrack, fcNormal0, fcDel0, fcDup0, fcInvF0, fcInvR0, fcTra0,
         fcSoftClip0, fcBigWig, fcRoi, mate_fc, mate_fc0, ecMateUnmapped, ecSplit, ecSelected,
         lcJoins, lcCoverage, lcLightJoins, lcGTFJoins, lcLabel, lcBright, lcGap, tcDel, tcIns, tcLabels, tcBackground,
-        fcMarkers, fc5mc, fc5hmc, fcOther, fcCodonStart, fcCodonStop, fcCodonOther, bgCodonSelected
+        fcMarkers, fc5mc, fc5hmc, fcOther, fcCodonStart, fcCodonStop, fcCodonOther, bgCodonSelected,
+        fcSelectedBase, fcSelectedCodon, lcSelectedBase, lcCodonTick
 
     cdef cppclass BaseTheme:
         BaseTheme() nogil
@@ -168,6 +169,8 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         string inputText
         string selectedAlign, selectedIntron, selectedFeature
+        string selectedBaseChrom  # clicked reference base (empty = none)
+        int selectedBasePos  # 0-based position, -1 = none
 
         void initBack(int width, int height)
 

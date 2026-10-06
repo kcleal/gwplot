@@ -192,6 +192,19 @@ class GwPalette:
     CODON_SELECTED_BG = GwPaint.bgCodonSelected
     """Background color of a selected codon in the translation track"""
 
+    CODON_TICK = GwPaint.lcCodonTick
+    """Color of the codon boundary ticks in the translation track"""
+
+    # Selected reference base
+    SELECTED_BASE = GwPaint.fcSelectedBase
+    """Fill color of the column highlighting the selected reference base"""
+
+    SELECTED_CODON = GwPaint.fcSelectedCodon
+    """Fill color of the selected base's codon in the translation track"""
+
+    SELECTED_BASE_OUTLINE = GwPaint.lcSelectedBase
+    """Outline color of the selected base and codon highlights"""
+
 
 cdef class Gw:
     """
@@ -547,6 +560,51 @@ cdef class Gw:
         Clear the selected feature. Call before a mouse event to detect a click on empty space.
         """
         self.thisptr.selectedFeature.clear()
+
+    @property
+    def selected_base(self) -> Optional[Tuple[str, int]]:
+        """
+        The selected reference base, set by clicking a base in the reference track. It is
+        highlighted with a vertical line and, when the translation track is on, its codon.
+        Clicking the same base again deselects it.
+
+        Returns
+        -------
+        tuple or None
+            (chrom, 0-based position), or None if no base is selected
+        """
+        if self.thisptr.selectedBasePos < 0:
+            return None
+        return str(self.thisptr.selectedBaseChrom), self.thisptr.selectedBasePos
+
+    def select_base(self, chrom: str, pos: int):
+        """
+        Select a reference base, as if it had been clicked.
+
+        Parameters
+        ----------
+        chrom : str
+            Chromosome
+        pos : int
+            0-based position
+
+        Returns
+        -------
+        Gw
+            Self for method chaining
+        """
+        self.thisptr.selectedBaseChrom = chrom.encode("utf-8")
+        self.thisptr.selectedBasePos = pos
+        self.thisptr.redraw = <bint> True
+        return self
+
+    def clear_selected_base(self) -> None:
+        """
+        Clear the selected reference base and its highlight.
+        """
+        self.thisptr.selectedBaseChrom.clear()
+        self.thisptr.selectedBasePos = -1
+        self.thisptr.redraw = <bint> True
 
     @property
     def clear_buffer(self) -> bool:

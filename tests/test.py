@@ -496,7 +496,8 @@ class TestTracks(unittest.TestCase):
             gw.set_translation_code(0)
 
     def test_translation_palette(self):
-        for name in ("CODON_START", "CODON_STOP", "CODON_OTHER", "CODON_SELECTED_BG", "LINE_GAP"):
+        for name in ("CODON_START", "CODON_STOP", "CODON_OTHER", "CODON_SELECTED_BG", "LINE_GAP",
+                     "CODON_TICK", "SELECTED_BASE", "SELECTED_CODON", "SELECTED_BASE_OUTLINE"):
             self.assertTrue(hasattr(GwPalette, name), name)
         make_gw().set_paint_ARGB(GwPalette.CODON_START, 255, 0, 200, 0)
 
@@ -527,6 +528,43 @@ class TestInteraction(unittest.TestCase):
         self.assertEqual(gw.selected_intron, "")
         gw.clear_selected_align()
         self.assertEqual(gw.selected_align, "")
+
+    def test_select_base(self):
+        gw = make_plot((START, START + 80))
+        gw.set_translation(True)
+        gw.draw()
+        original = gw.array().copy()
+        self.assertIsNone(gw.selected_base)
+
+        gw.set_redraw(False)
+        gw.select_base(CHROM, START + 40)
+        self.assertEqual(gw.selected_base, (CHROM, START + 40))
+        self.assertTrue(gw.redraw)
+        gw.draw()
+        self.assertFalse(np.array_equal(gw.array(), original))
+
+        # The highlight is drawn after gw caches the frame, so clearing it leaves no trace
+        gw.clear_selected_base()
+        self.assertIsNone(gw.selected_base)
+        gw.draw()
+        self.assertTrue(np.array_equal(gw.array(), original))
+
+    def test_click_selects_reference_base(self):
+        gw = make_plot((START, START + 80))
+        gw.draw()
+        x, y = 400, 30  # the reference sequence row, above the coverage track
+
+        def click():
+            gw.mouse_event(x, y, GLFW.MOUSE_BUTTON_LEFT, GLFW.PRESS)
+            gw.mouse_event(x, y, GLFW.MOUSE_BUTTON_LEFT, GLFW.RELEASE)
+
+        click()
+        selected = gw.selected_base
+        self.assertIsNotNone(selected)
+        self.assertEqual(selected[0], CHROM)
+        self.assertTrue(START <= selected[1] < START + 80, selected)
+        click()  # clicking the same base again deselects it
+        self.assertIsNone(gw.selected_base)
 
     @unittest.skipUnless(have_pysam, "needs pysam to check which mates are in the test BAM")
     def test_select_mate(self):

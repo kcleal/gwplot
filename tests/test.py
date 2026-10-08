@@ -528,6 +528,53 @@ class TestInteraction(unittest.TestCase):
         gw.clear_selected_align()
         self.assertEqual(gw.selected_align, "")
 
+    @unittest.skipUnless(have_pysam, "needs pysam to check which mates are in the test BAM")
+    def test_select_mate(self):
+        gw = make_plot()
+        gw.set_canvas_size(800, 600)
+        gw.draw()
+        self.assertEqual(gw.select_mate(), "")  # nothing selected
+
+        def has_mate(f):  # the test BAM is a subset: not every read's mate is in it
+            af = pysam.AlignmentFile(BAM)
+            return any(r.query_name == f[0] and not r.flag & 0x900 and (r.flag & 0xC0) != (int(f[1]) & 0xC0)
+                       for r in af.fetch(CHROM, int(f[7]) - 1, int(f[7])))
+
+        # click down the pane for a paired read, with and without its mate in the BAM
+        # (mates on this chromosome only: the test reference has only chr1)
+        found = {}
+        for y in range(200, 590, 4):
+            gw.clear_selected_align()
+            gw.mouse_event(400, y, GLFW.MOUSE_BUTTON_LEFT, GLFW.PRESS)
+            gw.mouse_event(400, y, GLFW.MOUSE_BUTTON_LEFT, GLFW.RELEASE)
+            f = gw.selected_align.split("\t")
+            if len(f) >= 11 and int(f[1]) & 0xC0 and f[6] == "=" and not int(f[1]) & 0x900:
+                found.setdefault(has_mate(f), (y, f))
+            if len(found) == 2:
+                break
+        self.assertIn(True, found, "no read with its mate in the test BAM found to click")
+
+        y, read = found[True]
+        mate = gw.select_mate().split("\t")
+        self.assertEqual(mate[0], read[0])
+        self.assertEqual(int(mate[3]), int(read[7]))  # POS is the read's PNEXT
+        self.assertEqual(int(mate[1]) & 0xC0, int(read[1]) & 0xC0 ^ 0xC0)  # the other end
+        self.assertFalse(int(mate[1]) & 0x900)  # primary
+        self.assertEqual(gw.selected_align.split("\t"), mate)
+        back = gw.select_mate().split("\t")
+        self.assertEqual(back[:4], read[:4])
+        render(gw)
+
+        if False in found:  # a mate that isn't in the file: nothing to select
+            gw = make_plot()
+            gw.set_canvas_size(800, 600)
+            gw.draw()
+            y, read = found[False]
+            gw.mouse_event(400, y, GLFW.MOUSE_BUTTON_LEFT, GLFW.PRESS)
+            gw.mouse_event(400, y, GLFW.MOUSE_BUTTON_LEFT, GLFW.RELEASE)
+            self.assertEqual(gw.selected_align.split("\t")[0], read[0])
+            self.assertEqual(gw.select_mate(), "")
+
     def test_key_press(self):
         gw = make_plot()
         gw.draw()

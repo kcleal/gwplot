@@ -13,6 +13,8 @@ except (ImportError, ModuleNotFoundError):
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from cpython.bytes cimport PyBytes_FromStringAndSize
+from libc.stdint cimport uint16_t, int64_t
+from libc.stdlib cimport free
 from pysam.libcalignedsegment cimport AlignedSegment
 
 __all__ = ["Gw", "GwPalette"]
@@ -451,6 +453,63 @@ cdef class Gw:
         Clear the selected read. Call before a mouse event to detect a click on empty space.
         """
         self.thisptr.selectedAlign.clear()
+
+    def select_mate(self) -> str:
+        """
+        Jump to the selected read's mate and select it.
+
+        Runs gw's ``mate`` command (the selected region moves to the mate, +/-500 bp, and
+        the pair is highlighted), then makes the mate the selected read, so
+        ``selected_align`` returns it and calling this again jumps back.
+
+        Returns
+        -------
+        str
+            SAM record of the mate (its primary alignment, the other end of the pair), or an
+            empty string if no read with a mapped mate is selected or the mate isn't found
+        """
+        cdef int pane
+        cdef size_t i, j
+        cdef uint16_t other_end
+        cdef int64_t mate_pos
+        cdef bam1_t *b
+        cdef kstring_t ks
+        fields = str(self.thisptr.selectedAlign).split("\t")
+        if len(fields) < 11 or fields[6] == "*":
+            return ""
+        qname = fields[0]
+        try:
+            flag = int(fields[1])
+            mate_pos = int(fields[7]) - 1  # PNEXT is 1-based
+        except ValueError:
+            return ""
+        # 0x40/0x80: first/last in pair; match the other end (any end if unset)
+        other_end = 0x80 if flag & 0x40 else 0x40 if flag & 0x80 else 0
+
+        self.apply_command("mate")  # loads the mate's region and highlights the pair
+        pane = self.thisptr.regionSelection
+        for i in range(self.thisptr.collections.size()):
+            if self.thisptr.collections[i].regionIdx != pane:
+                continue
+            for j in range(self.thisptr.collections[i].readQueue.size()):
+                b = self.thisptr.collections[i].readQueue[j].delegate
+                if b == NULL or b.core.pos != mate_pos or b.core.flag & 0x900:  # secondary, supplementary
+                    continue
+                if other_end and not b.core.flag & other_end:
+                    continue
+                if bam_get_qname(b) != qname:
+                    continue
+                ks.l = 0
+                ks.m = 0
+                ks.s = NULL
+                if sam_format1(self.thisptr.headers[self.thisptr.collections[i].bamIdx], b, &ks) < 0:
+                    free(ks.s)
+                    return ""
+                sam = PyBytes_FromStringAndSize(ks.s, ks.l)
+                free(ks.s)
+                self.thisptr.selectedAlign = <string>sam
+                return sam.decode()
+        return ""
 
     @property
     def selected_intron(self) -> str:

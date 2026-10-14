@@ -88,3 +88,14 @@ The `GwPalette` class provides constants for all color and paint types used in G
 - `METHYLATED_C`: 5-methylcytosine (5mC) color for epigenetic modification
 - `HYDROXYMETHYLATED_C`: 5-hydroxymethylcytosine (5hmC) color for epigenetic modification
 - `OTHER_MODIFICATION`: Color for other base modifications
+
+### Translation and Selection
+
+- `CODON_START`: Start codon color in the translation track
+- `CODON_STOP`: Stop codon color in the translation track
+- `CODON_OTHER`: Color for other codons in the translation track
+- `CODON_SELECTED_BG`: Background color of the selected frame's lane in the translation track
+- `CODON_TICK`: Color of the codon boundary ticks in the translation track
+- `SELECTED_BASE`: Fill color of the column highlighting the selected reference base
+- `SELECTED_CODON`: Fill color of the selected base's codon in the translation track
+- `SELECTED_BASE_OUTLINE`: Outline color of the selected base and codon highlights

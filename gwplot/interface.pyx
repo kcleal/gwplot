@@ -672,6 +672,13 @@ cdef class Gw:
         """
         return self.thisptr.opts.dimensions.x
 
+    def _resize_canvas(self, width: int, height: int):
+        """Resize as gw does for a window: the raster surface, layout and caches are redone;
+        filters, selections and scroll are kept. The next draw re-reads the alignments."""
+        if self.thisptr.resizeCanvas(width, height) == 0:
+            raise RuntimeError(f"could not create a {width}x{height} raster surface")
+        return self
+
     def set_canvas_width(self, width: int):
         """
         Set the canvas width and recreate the raster surface.
@@ -686,10 +693,7 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
-        self.thisptr.fb_width = width
-        self.thisptr.opts.dimensions.x = width
-        self.thisptr.makeRasterSurface()
-        return self
+        return self._resize_canvas(width, self.thisptr.opts.dimensions.y)
 
     @property
     def canvas_height(self) -> int:
@@ -717,10 +721,7 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
-        self.thisptr.fb_height = height
-        self.thisptr.opts.dimensions.y = height
-        self.thisptr.makeRasterSurface()
-        return self
+        return self._resize_canvas(self.thisptr.opts.dimensions.x, height)
 
     @property
     def canvas_size(self) -> Tuple[int, int]:
@@ -750,12 +751,7 @@ cdef class Gw:
         Gw
             Self for method chaining
         """
-        self.thisptr.fb_width = width
-        self.thisptr.opts.dimensions.x = width
-        self.thisptr.fb_height = height
-        self.thisptr.opts.dimensions.y = height
-        self.thisptr.makeRasterSurface()
-        return self
+        return self._resize_canvas(width, height)
 
     @property
     def font_size(self) -> int:

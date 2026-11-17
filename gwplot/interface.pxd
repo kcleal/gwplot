@@ -200,6 +200,8 @@ cdef extern from "plot_manager.h" namespace "Manager" nogil:
 
         int makeRasterSurface()
 
+        int resizeCanvas(int width, int height)
+
         void syncImageCacheQueue()
 
         void clearImageCacheQueue()
